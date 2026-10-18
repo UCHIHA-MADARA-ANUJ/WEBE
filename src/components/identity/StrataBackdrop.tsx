@@ -11,17 +11,16 @@ import { mulberry32 } from '@/engine/genome';
 export function StrataBackdrop({ seed }: { seed: number }) {
   const flecks = useMemo(() => {
     const rng = mulberry32(seed ^ 0x7a3e);
-    return Array.from({ length: 48 }, () => ({
+    return Array.from({ length: 64 }, () => ({
       left: rng() * 100,
       top: rng() * 100,
-      size: 1 + rng() * 1.8,
-      opacity: 0.04 + rng() * 0.06,
+      size: 0.8 + rng() * 1.6,
+      opacity: 0.03 + rng() * 0.05,
     }));
   }, [seed]);
 
   return (
     <div className="strata-backdrop" aria-hidden="true">
-      {/* warm paper base is CSS; flecks are subtle */}
       <div className="strata-backdrop__grain">
         {flecks.map((f, i) => (
           <span
@@ -37,7 +36,6 @@ export function StrataBackdrop({ seed }: { seed: number }) {
           />
         ))}
       </div>
-      {/* thin rule accent */}
       <div className="strata-backdrop__rule" />
     </div>
   );
