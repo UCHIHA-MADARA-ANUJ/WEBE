@@ -7,6 +7,7 @@ import { MindPanel } from '@/components/MindPanel';
 import { Reconfigure } from '@/components/Reconfigure';
 import { StatusBar } from '@/components/StatusBar';
 import { StrataBackdrop } from '@/components/identity/StrataBackdrop';
+import { StrataMark } from '@/components/identity/StrataMark';
 import { LenisProvider } from '@/components/motion/LenisProvider';
 import { useEngine, EngineProvider } from '@/engine/store';
 import { CodexMode } from '@/modes/Codex';
@@ -15,42 +16,37 @@ import { ConsoleMode } from '@/modes/Console';
 import { LatticeMode } from '@/modes/Lattice';
 import { MosaicMode } from '@/modes/Mosaic';
 import { ZenMode } from '@/modes/Zen';
-import { ENTITY_BY_ID } from '@/content/graph';
-
-const ALTERNATIVES = [
-  { id: 'alt-lean', label: 'Lean Launch', desc: 'Ship day 3, learn in public. Fastest feedback, highest noise.', color: '#DC2626' },
-  { id: 'alt-community', label: 'Community-First', desc: '30 people, week 1. Then expand. Trust before scale.', color: '#1E40AF' },
-  { id: 'alt-stealth', label: 'Stealth Premium', desc: '10 partners at premium. Prove willingness to pay.', color: '#065F46' },
-];
 
 function ColdOpen({ onBegin }: { onBegin: (id: string) => void }) {
+  const { genome } = useEngine();
   return (
     <div className="coldcard">
-      <div className="coldcard__eyebrow">
-        <span className="coldcard__live">● LIVE</span> This workspace has no fixed shape
+      <div className="coldcard__mark">
+        <StrataMark size={42} />
       </div>
       <h1>
-        How do we launch<br/>in <em>14 days?</em>
+        This workspace has
+        <br />
+        no fixed shape.
       </h1>
-      <p className="coldcard__sub">
-        A real decision, with evidence on both sides. Pick a path — watch the workspace rebuild itself around how you work.
+      <p>
+        STRATA is a decision workspace that watches how you work — what you open,
+        how you compare, whether you follow dependencies or jump — then restructures
+        its own navigation, hierarchy and workflows around that behaviour. Two people
+        working on the same project will not see the same interface.
       </p>
-
-      <div className="coldcard__cards">
-        {ALTERNATIVES.map(a => (
-          <button key={a.id} className="coldcard__card" onClick={() => onBegin(a.id)} style={{ ['--c' as string]: a.color }}>
-            <span className="coldcard__card-dot" style={{ background: a.color }} />
-            <span className="coldcard__card-label">{a.label}</span>
-            <span className="coldcard__card-desc">{a.desc}</span>
-            <span className="coldcard__card-cta">Open →</span>
-          </button>
-        ))}
+      <div className="coldcard__hint">
+        <span><b>generation {genome.generation}</b></span>
+        <span>click any entity to begin</span>
+        <span>the mind panel shows the read</span>
       </div>
-
-      <div className="coldcard__foot">
-        <span>Or start at the question →</span>
-        <button className="coldcard__textbtn" onClick={() => onBegin('q-launch')}>How do we launch in 14 days?</button>
-        <span className="coldcard__hint">The Mind panel shows why it changes. Try two different paths — get two different workspaces.</span>
+      <div style={{ marginTop: 26, display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <button className="btn btn--accent" onClick={() => onBegin('q-launch')}>
+          begin with the question →
+        </button>
+        <button className="btn" onClick={() => onBegin('alt-lean')}>
+          jump to alternatives →
+        </button>
       </div>
     </div>
   );
@@ -61,11 +57,15 @@ function Shell() {
   const [focus, setFocus] = useState<string | null>(null);
   const [mind, setMind] = useState(false);
 
-  const handleNavigate = useCallback((id: string) => {
-    openNode(id);
-    setFocus(id);
-  }, [openNode]);
+  const handleNavigate = useCallback(
+    (id: string) => {
+      openNode(id);
+      setFocus(id);
+    },
+    [openNode],
+  );
 
+  // global scroll telemetry
   useEffect(() => {
     let lastY = window.scrollY;
     let acc = 0;
@@ -86,13 +86,21 @@ function Shell() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [noteScroll]);
 
+  // pointer telemetry
   useEffect(() => {
-    let lastX = 0, lastY = 0, lastT = performance.now(), started = false;
+    let lastX = 0;
+    let lastY = 0;
+    let lastT = performance.now();
+    let started = false;
     const onMove = (e: PointerEvent) => {
       const now = performance.now();
-      if (!started) { lastX = e.clientX; lastY = e.clientY; lastT = now; started = true; return; }
-      const dx = e.clientX - lastX, dy = e.clientY - lastY;
-      const dist = Math.hypot(dx, dy), dt = now - lastT;
+      if (!started) {
+        lastX = e.clientX; lastY = e.clientY; lastT = now; started = true; return;
+      }
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      const dist = Math.hypot(dx, dy);
+      const dt = now - lastT;
       if (dist > 0.5 && dt > 0) notePointer(dist, dt);
       lastX = e.clientX; lastY = e.clientY; lastT = now;
     };

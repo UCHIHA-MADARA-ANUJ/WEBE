@@ -487,42 +487,29 @@ a { color: inherit; text-decoration: none; }
 .toast__n { color: var(--ink-faint); opacity: 0.65; }
 .app[data-mind='true'] .toast { opacity: 0; transform: translate(-50%, -10px); pointer-events: none; }
 
-.bar__paradigm { display: flex; align-items: center; gap: 0.45rem; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
-.bar__paradigm-glyph { color: var(--accent); font-size: 0.9rem; }
-.bar__paradigm-pin { color: var(--accent); font-size: 0.6rem; margin-left: 0.3rem; }
-.bar__divider { width: 1px; height: 20px; background: var(--line-strong); align-self: center; }
-
-/* ── cold open — human first, zero nerd ── */
+/* ── cold open ── */
 .coldcard {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: min(720px, 92vw); text-align: center; z-index: 30; pointer-events: none;
-  animation: coldIn 0.7s var(--ease-out) both;
+  width: min(560px, 88vw); text-align: center; z-index: 30; pointer-events: none;
+  animation: coldIn 0.9s var(--ease-out) both;
 }
-.coldcard > * { pointer-events: auto; }
 .coldcard::before {
   content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: 170%; height: 145%;
-  background: radial-gradient(closest-side, var(--paper) 42%, rgba(253,248,240,0.92) 65%, transparent 80%);
+  width: 160%; height: 140%;
+  background: radial-gradient(closest-side, var(--paper) 38%, rgba(253,248,240,0.85) 62%, transparent 78%);
   z-index: -1; pointer-events: none;
 }
-@keyframes coldIn { from { opacity: 0; transform: translate(-50%, -48%); } to { opacity: 1; transform: translate(-50%, -50%); } }
-.coldcard__eyebrow { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 14px; }
-.coldcard__live { color: var(--accent); font-weight: 700; letter-spacing: 0.22em; }
-.coldcard h1 { font-family: var(--serif); font-size: clamp(2.2rem, 6vw, 3.4rem); font-weight: 300; letter-spacing: -0.02em; line-height: 1.02; margin: 0 0 12px; }
-.coldcard h1 em { font-weight: 400; font-style: italic; color: var(--ink); }
-.coldcard__sub { font-family: var(--serif); font-size: 1.05rem; line-height: 1.55; color: var(--ink-dim); max-width: 42ch; margin: 0 auto 22px; }
-.coldcard__cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 auto 18px; max-width: 680px; text-align: left; }
-.coldcard__card { position: relative; background: white; border: 1px solid var(--line-strong); border-left: 3px solid var(--c, var(--accent)); padding: 16px 14px 14px; text-align: left; transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease); }
-.coldcard__card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(10,10,10,0.08); border-color: var(--c, var(--ink)); }
-.coldcard__card-dot { display: block; width: 8px; height: 8px; border-radius: 50%; margin-bottom: 10px; }
-.coldcard__card-label { display: block; font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
-.coldcard__card-desc { display: block; font-family: var(--sans); font-size: 0.78rem; line-height: 1.45; color: var(--ink-dim); margin-bottom: 12px; min-height: 34px; }
-.coldcard__card-cta { display: inline-flex; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c, var(--accent)); font-weight: 600; }
-.coldcard__foot { display: flex; flex-direction: column; gap: 8px; align-items: center; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.04em; color: var(--ink-faint); border-top: 1px solid var(--line); padding-top: 14px; margin-top: 6px; max-width: 680px; margin-left: auto; margin-right: auto; }
-.coldcard__textbtn { font-family: var(--serif); font-size: 0.95rem; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-.coldcard__textbtn:hover { color: var(--ink); }
-.coldcard__hint { font-size: 0.58rem; letter-spacing: 0.06em; text-transform: none; color: var(--ink-faint); max-width: 42ch; line-height: 1.5; }
-@media (max-width: 640px) { .coldcard__cards { grid-template-columns: 1fr; } .coldcard { width: min(560px, 94vw); } }
+@keyframes coldIn { from { opacity: 0; transform: translate(-50%, -46%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+.coldcard__mark { display: flex; justify-content: center; margin-bottom: 18px; pointer-events: auto; }
+.coldcard h1 { font-family: var(--serif); font-size: clamp(2rem, 5.6vw, 3.1rem); font-weight: 300; letter-spacing: -0.015em; line-height: 1.05; margin: 0 0 0.5em; }
+.coldcard p { font-family: var(--serif); font-size: 1rem; line-height: 1.6; color: var(--ink-dim); max-width: 44ch; margin: 0 auto 1.5em; }
+.coldcard__hint {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-faint); display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap;
+}
+.coldcard__hint span { position: relative; }
+.coldcard__hint span + span::before { content: '·'; position: absolute; left: -0.55rem; color: var(--line-strong); }
+.coldcard__hint b { color: var(--accent); font-weight: 600; }
 
 /* ── status bar ── */
 .statusbar {
