@@ -46,7 +46,7 @@ Then visit `http://localhost:8000`. (A static server is needed because the app u
 
 ## Deploy
 
-The app is static and ready for GitHub Pages; all asset paths are relative. Pages has not been enabled for this repository yet. To publish this branch, open **Settings → Pages**, choose **Deploy from a branch**, select `arena/60c5e775-webe` and `/(root)`, then use the public URL shown by GitHub. An Actions-based Pages workflow is another option if the repository has workflow permissions enabled.
+The app is static and ready for GitHub Pages; all asset paths are relative. To publish this branch, enable Pages under **Settings → Pages**, choose **Deploy from a branch**, and select `arena/60c5e775-webe` with `/(root)`. GitHub will display the public URL after deployment. An Actions-based Pages workflow is another option for repositories that permit workflow deployments.
 
 ## Design and content notes
 
