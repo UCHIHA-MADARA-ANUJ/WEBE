@@ -8,7 +8,14 @@ import {
   type ParadigmId,
 } from './types';
 
-const STORAGE_KEY = 'deepfield.genome.v2';
+/**
+ * STRATA persistence key — scoped to this origin.
+ * Version 2 is engine-compatible; storage key is separate so Deep Field
+ * memories don't bleed into Strata.
+ */
+const STORAGE_KEY = 'strata/genome-v2';
+/** Legacy key — migrated on first load if strata key is empty */
+const LEGACY_KEY = 'deepfield.genome.v2';
 
 /** deterministic PRNG so a given generation always produces the same ordering */
 export function mulberry32(seed: number) {
@@ -54,7 +61,12 @@ export function newGenome(now = Date.now()): Genome {
 export function loadGenome(): Genome {
   if (typeof localStorage === 'undefined') return newGenome();
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let raw = localStorage.getItem(STORAGE_KEY);
+    // one-time migration from deep field
+    if (!raw) {
+      const legacy = localStorage.getItem(LEGACY_KEY);
+      if (legacy) raw = legacy;
+    }
     if (!raw) return newGenome();
     const parsed = JSON.parse(raw) as Genome;
     if (!parsed || parsed.version !== 2 || !Array.isArray(parsed.visited)) {

@@ -1,105 +1,60 @@
-import { useState } from 'react';
-import { useEngine } from '../engine/store';
-import { ARCHETYPES, PARADIGM_ORDER, PARADIGMS } from '../engine/types';
+'use client';
 
-function shorten(text: string, max = 30) {
+import { useState } from 'react';
+import Link from 'next/link';
+import { useEngine } from '@/engine/store';
+import { ARCHETYPES, PARADIGM_ORDER, PARADIGMS } from '@/engine/types';
+
+export const PARADIGM_DISPLAY: Record<string, { name: string; tagline: string }> = {
+  codex:         { name: 'Brief',       tagline: 'One question, one entity at a time.' },
+  constellation: { name: 'Atlas',       tagline: 'A map of the whole decision.' },
+  mosaic:        { name: 'Board',       tagline: 'A dense board that re-tiles itself.' },
+  lattice:       { name: 'Matrix',      tagline: 'Index + evidence, side by side.' },
+  console:       { name: 'Command',     tagline: 'A prompt. You type, it answers.' },
+  zen:           { name: 'Focus',       tagline: 'One entity, full bleed.' },
+};
+
+function shorten(text: string, max = 28) {
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 }
 
-export function Chrome({
-  onMind,
-  onNavigate,
-}: {
-  onMind: () => void;
-  onNavigate: (id: string) => void;
-}) {
-  const { paradigm, setParadigm, pinned, classification, genome, primary, mutate } = useEngine();
-  const [busy, setBusy] = useState(false);
-
+export function Chrome({ onMind, onNavigate }: { onMind: () => void; onNavigate: (id: string) => void }) {
+  const { paradigm, setParadigm, pinned, classification, genome, primary } = useEngine();
   const top = classification.top;
   const spec = ARCHETYPES.find((a) => a.id === top);
   const confidence = Math.round(classification.confidence * 100);
 
   return (
     <header className="bar">
-      <div className="brand" onClick={() => window.scrollTo({ top: 0 })}>
-        <span className="brand__mark">Deep Field</span>
-        <span className="brand__sub">living atlas</span>
-      </div>
+      <Link href="/" className="brand" style={{ textDecoration: 'none' }}>
+        <span className="brand__mark">Strata</span>
+        <span className="brand__sub">The interface follows the work</span>
+      </Link>
 
-      <button
-        className="genbadge"
-        title="Force the next generation — unlock behaviour, re-seed the arrangement"
-        onClick={() => {
-          setBusy(true);
-          mutate();
-          window.setTimeout(() => setBusy(false), 320);
-        }}
-      >
-        {busy ? '···' : 'gen'} <b>{genome.generation}</b>
-      </button>
+      {/* primary action is the hero — not buried */}
+      {primary.nodeId && (
+        <button className="btn btn--accent btn--sm bar__primary" onClick={() => onNavigate(primary.nodeId as string)}>
+          {shorten(primary.label)}
+        </button>
+      )}
 
       <div className="bar__spacer" />
 
-      <nav className="switcher" aria-label="structure">
-        {PARADIGM_ORDER.map((p) => {
-          const ps = PARADIGMS[p];
-          return (
-            <button
-              key={p}
-              className="switch"
-              data-on={paradigm === p}
-              onClick={() => setParadigm(p, true)}
-              title={`${ps.name} — ${ps.tagline}`}
-            >
-              <span className="switch__glyph">{ps.glyph}</span>
-              <span className="switch__name">{ps.name}</span>
-              {genome.used.includes(p) && paradigm !== p && (
-                <span className="switch__badge" title="you have used this structure" />
-              )}
-            </button>
-          );
-        })}
-      </nav>
-
-      {pinned && (
-        <button
-          className="pinbtn"
-          title="Release the engine — let it restructure on its own again"
-          onClick={() => setParadigm(paradigm, false)}
-        >
-          ◉
-        </button>
-      )}
-
-      <div
-        className="readout"
-        title={
-          classification.blank
-            ? 'the engine has no read on you yet'
-            : `the engine reads you as ${top} — ${confidence}% confidence`
-        }
-      >
-        <span className="readout__glyph">{classification.blank ? '◌' : spec?.glyph}</span>
-        <span className="readout__bar">
-          <span className="readout__fill" style={{ width: `${confidence}%` }} />
-        </span>
-        <b>{classification.blank ? 'listening' : `${confidence}%`}</b>
+      {/* minimal paradigm indicator — not 6 buttons shouting at you */}
+      <div className="bar__paradigm">
+        <span className="bar__paradigm-glyph">{PARADIGMS[paradigm].glyph}</span>
+        <span className="bar__paradigm-name">{PARADIGM_DISPLAY[paradigm]?.name ?? paradigm}</span>
+        {pinned && <span className="bar__paradigm-pin">● pinned</span>}
       </div>
 
-      {primary.nodeId && (
-        <button
-          className="btn btn--accent btn--sm bar__primary"
-          title={primary.label}
-          onClick={() => onNavigate(primary.nodeId as string)}
-        >
-          {shorten(primary.label, 28)}
-        </button>
-      )}
+      <div className="bar__divider" />
 
-      <button className="btn btn--sm" onClick={onMind} title="open the mind panel">
-        Mind
+      <button className="btn btn--ghost btn--sm" onClick={onMind}>
+        Why this layout?
       </button>
+      <Link href="/lab" className="btn btn--sm">
+        Lab
+      </Link>
     </header>
   );
 }
