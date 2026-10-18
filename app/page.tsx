@@ -17,35 +17,78 @@ import { LatticeMode } from '@/modes/Lattice';
 import { MosaicMode } from '@/modes/Mosaic';
 import { ZenMode } from '@/modes/Zen';
 
+// ── Human-first premium Cold Open ──────────────────────────────────────
 function ColdOpen({ onBegin }: { onBegin: (id: string) => void }) {
-  const { genome } = useEngine();
   return (
-    <div className="coldcard">
-      <div className="coldcard__mark">
-        <StrataMark size={42} />
+    <div className="cold">
+      {/* soft backdrop already via StrataBackdrop; this is layout */}
+      <div className="cold__left">
+        <div className="cold__kicker">
+          <span className="cold__dot" /> STRATA · Decision workspace
+        </div>
+        <h1 className="cold__h">
+          How do we
+          <br />
+          <em>launch</em> in
+          <br />
+          14 days?
+        </h1>
+        <p className="cold__p">
+          You have 200 warm contacts, a working product, and two weeks.
+          Pick a path — STRATA reshapes around how you work.
+        </p>
+        <div className="cold__meta">
+          <span>3 paths · 33 pieces of work</span>
+          <span className="cold__sep">·</span>
+          <span>no setup · just start</span>
+        </div>
       </div>
-      <h1>
-        This workspace has
-        <br />
-        no fixed shape.
-      </h1>
-      <p>
-        STRATA is a decision workspace that watches how you work — what you open,
-        how you compare, whether you follow dependencies or jump — then restructures
-        its own navigation, hierarchy and workflows around that behaviour. Two people
-        working on the same project will not see the same interface.
-      </p>
-      <div className="coldcard__hint">
-        <span><b>generation {genome.generation}</b></span>
-        <span>click any entity to begin</span>
-        <span>the mind panel shows the read</span>
-      </div>
-      <div style={{ marginTop: 26, display: 'flex', gap: 10, justifyContent: 'center' }}>
-        <button className="btn btn--accent" onClick={() => onBegin('q-launch')}>
-          begin with the question →
+
+      <div className="cold__right">
+        <button className="pathcard" onClick={() => onBegin('alt-lean')} style={{ ['--acc' as string]: '#DC2626' }}>
+          <div className="pathcard__top">
+            <span className="pathcard__eyebrow">Path A — Fast</span>
+            <span className="pathcard__arrow">→</span>
+          </div>
+          <div className="pathcard__title">Lean Launch</div>
+          <div className="pathcard__desc">Ship publicly on day 3. Learn in the open. Daily iterations. Maximum speed.</div>
+          <div className="pathcard__stats">
+            <span><b>Day 3</b> public</span>
+            <span><b>High</b> tempo</span>
+            <span><b>Open</b> link</span>
+          </div>
         </button>
-        <button className="btn" onClick={() => onBegin('alt-lean')}>
-          jump to alternatives →
+
+        <button className="pathcard" onClick={() => onBegin('alt-community')} style={{ ['--acc' as string]: '#1E40AF' }}>
+          <div className="pathcard__top">
+            <span className="pathcard__eyebrow">Path B — Warm</span>
+            <span className="pathcard__arrow">→</span>
+          </div>
+          <div className="pathcard__title">Community-First</div>
+          <div className="pathcard__desc">Seed 30 hand-picked users. Tight feedback loop. Expand in waves.</div>
+          <div className="pathcard__stats">
+            <span><b>30</b> invites</span>
+            <span><b>Day 10</b> public</span>
+            <span><b>Medium</b> load</span>
+          </div>
+        </button>
+
+        <button className="pathcard" onClick={() => onBegin('alt-stealth')} style={{ ['--acc' as string]: '#065F46' }}>
+          <div className="pathcard__top">
+            <span className="pathcard__eyebrow">Path C — Precise</span>
+            <span className="pathcard__arrow">→</span>
+          </div>
+          <div className="pathcard__title">Stealth Premium</div>
+          <div className="pathcard__desc">10 design partners at premium. Prove willingness to pay before you scale.</div>
+          <div className="pathcard__stats">
+            <span><b>10</b> partners</span>
+            <span><b>Paid</b> trial</span>
+            <span><b>Low</b> load</span>
+          </div>
+        </button>
+
+        <button className="cold__ghost" onClick={() => onBegin('q-launch')}>
+          Or start from the core question →
         </button>
       </div>
     </div>
@@ -65,7 +108,6 @@ function Shell() {
     [openNode],
   );
 
-  // global scroll telemetry
   useEffect(() => {
     let lastY = window.scrollY;
     let acc = 0;
@@ -86,21 +128,13 @@ function Shell() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [noteScroll]);
 
-  // pointer telemetry
   useEffect(() => {
-    let lastX = 0;
-    let lastY = 0;
-    let lastT = performance.now();
-    let started = false;
+    let lastX = 0, lastY = 0, lastT = performance.now(), started = false;
     const onMove = (e: PointerEvent) => {
       const now = performance.now();
-      if (!started) {
-        lastX = e.clientX; lastY = e.clientY; lastT = now; started = true; return;
-      }
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
-      const dist = Math.hypot(dx, dy);
-      const dt = now - lastT;
+      if (!started) { lastX = e.clientX; lastY = e.clientY; lastT = now; started = true; return; }
+      const dx = e.clientX - lastX; const dy = e.clientY - lastY;
+      const dist = Math.hypot(dx, dy); const dt = now - lastT;
       if (dist > 0.5 && dt > 0) notePointer(dist, dt);
       lastX = e.clientX; lastY = e.clientY; lastT = now;
     };
@@ -119,10 +153,10 @@ function Shell() {
           <motion.div
             key={paradigm}
             className="paradigm-stage"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.36, ease: [0.22, 0.61, 0.36, 1] }}
             layout
           >
             {paradigm === 'codex' && <CodexMode {...props} />}
@@ -133,7 +167,11 @@ function Shell() {
             {paradigm === 'zen' && <ZenMode {...props} />}
           </motion.div>
         </AnimatePresence>
-        {cold && paradigm === 'constellation' && <ColdOpen onBegin={handleNavigate} />}
+        {cold && (
+          <div className="cold-wrap">
+            <ColdOpen onBegin={handleNavigate} />
+          </div>
+        )}
       </main>
       <StatusBar />
       <MindPanel open={mind} onClose={() => setMind(false)} />

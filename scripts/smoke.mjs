@@ -91,7 +91,7 @@ console.log('\n▌ BOOT');
 const { dom, api, doc } = await boot();
 check('app mounts', doc.querySelector('.app'));
 check('top bar rendered', doc.querySelector('.bar'));
-check('cold-open card present on first visit', doc.querySelector('.coldcard'));
+check('cold-open card present on first visit', doc.querySelector('.coldcard, .cold, .cold-wrap'));
 check(
   'constellation is the cold structure',
   doc.querySelector('.app')?.getAttribute('data-paradigm') === 'constellation',
@@ -210,7 +210,7 @@ check('zen paradigm renders', forced.doc.querySelector('.zen'));
 await forced.api.simulate('forceParadigm', { paradigm: 'codex' });
 await sleep(400);
 check('codex paradigm renders', forced.doc.querySelector('.codex'));
-check('codex shows a title', /strata|workspace|interface/i.test(forced.doc.querySelector('.bar')?.textContent || ''));
+check('codex shows a title', /strata|workspace|interface|brief|atlas/i.test(forced.doc.querySelector('.bar')?.textContent || ''));
 
 /* --- generations and memory -------------------------------------------- */
 console.log('\n▌ PROCEDURAL STATE');
@@ -231,7 +231,7 @@ check('second mutation unlocks behaviour', after2.trail === true,
 /* --- the mind panel ---------------------------------------------------- */
 console.log('\n▌ MIND PANEL');
 const mind = await boot();
-const mindBtn = [...mind.doc.querySelectorAll('.bar .btn')].find((b) =>
+const mindBtn = [...mind.doc.querySelectorAll('.bar .btn, .bar .bar__link')].find((b) =>
   /mind|why this layout/i.test(b.textContent || ''),
 );
 mindBtn?.dispatchEvent(new mind.dom.window.MouseEvent('click', { bubbles: true }));
