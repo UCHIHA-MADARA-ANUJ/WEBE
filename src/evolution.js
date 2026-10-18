@@ -138,7 +138,6 @@ export function createEvolutionEngine() {
 
   function recordSkip(show) {
     profile.metrics.skips += 1;
-    profile.metrics.fastSkims += 1;
     log('skip', { id: show?.id || null });
     if (show) recordOpen(show);
     else persist(profile);
