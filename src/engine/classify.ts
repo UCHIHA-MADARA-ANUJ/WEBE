@@ -16,8 +16,9 @@ export function normalise(raw: FeatureVector): Record<FeatureKey, number> {
     breadth: clamp01(raw.breadth),
     revisit: clamp01(raw.revisit / 0.6),
     volume: clamp01(raw.volume),
+    cadence: clamp01(raw.cadence),
     scan: clamp01(raw.scan / 1500),
-    dwell: clamp01(raw.dwell / 8000),
+    dwell: clamp01(raw.dwell / 6000),
     command: clamp01(raw.command / 0.5),
     spatial: clamp01(raw.spatial / 0.5),
     query: clamp01(raw.query / 0.6),
@@ -51,13 +52,33 @@ export function computeFeatures(
     breadth: s.opens ? new Set(s.path).size / s.opens : 0,
     revisit: s.opens ? s.revisits / s.opens : 0,
     volume: clamp01(s.opens / 8),
-    scan: s.scrollSeconds ? s.scrollPixels / s.scrollSeconds : 0,
+    cadence: cadenceOf(s),
+    scan: Math.max(
+      s.scrollSeconds ? s.scrollPixels / s.scrollSeconds : 0,
+      s.pointerMs > 400 ? (s.pointerPx / (s.pointerMs / 1000)) : 0,
+    ),
     dwell: s.opens ? s.focusMs / s.opens : 0,
     command: s.actions.command / totalActions,
     spatial: s.actions.pan / totalActions,
     query: (s.actions.search + s.actions.filter) / totalActions,
     edge: s.actions.edge / totalActions,
   };
+}
+
+/**
+ * Impatience: the mean gap between two consecutive objects, mapped so that
+ * ~0.4 s reads as frantic and ~4 s reads as patient.
+ */
+export function cadenceOf(s: SessionSignals): number {
+  if (s.path.length < 3) return 0;
+  const gaps: number[] = [];
+  for (let i = 1; i < s.path.length; i++) {
+    const d = s.openTimes[i] - s.openTimes[i - 1];
+    if (d > 0) gaps.push(d);
+  }
+  if (!gaps.length) return 0;
+  const mean = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+  return clamp01(1 - (mean - 400) / 3600);
 }
 
 /** the concrete numbers behind a read, used to phrase the reasons honestly */
@@ -98,7 +119,7 @@ const REASON_TEMPLATES: Record<
   reader: (n, c) => [
     `you spend ${(c.focusMs / Math.max(1, c.opens) / 1000).toFixed(1)}s on each object before moving on`,
     `${Math.round(n.linearity * 100)}% of your moves follow a stated relation (${c.steps} of ${c.steps + c.jumps})`,
-    `depth, not breadth — ${c.unique} distinct objects, opened in sequence`,
+    `depth, not breadth — ${c.unique} objects, opened ${Math.round((1 - n.cadence) * 100)}% at your own pace`,
   ],
   contemplative: (_n, c) => [
     `single-object attention: ${(c.focusMs / 1000).toFixed(0)}s on ${c.opens} object${c.opens === 1 ? '' : 's'}`,
@@ -113,9 +134,9 @@ const REASON_TEMPLATES: Record<
     `you travel by relation ${Math.round(n.edge * 100)}% of the time`,
   ],
   skimmer: (n, c) => [
-    `scroll velocity sits at ${Math.round(n.scan * 100)}% of the fast band (${c.fastScrolls} fast bursts)`,
+    `motion sits at ${Math.round(n.scan * 100)}% of the fast band (${c.fastScrolls} fast scroll bursts)`,
+    `you open objects ${Math.round(n.cadence * 100)}% as fast as a hurried visitor`,
     `${c.opens} objects opened, ${(c.focusMs / 1000).toFixed(0)}s of attention spread across them`,
-    `you read ${Math.round((1 - n.dwell) * 100)}% less of each object than a reader does`,
   ],
   analyst: (n, c) => [
     `${c.queries} searches and ${c.filters} filters — you interrogate the corpus`,
@@ -143,7 +164,7 @@ export function viable(a: ArchetypeId, f: FeatureVector, c: ReadContext): boolea
     case 'scout':
       return c.opens >= 2;
     case 'skimmer':
-      return c.fastScrolls >= 2 || f.scan > 700;
+      return c.fastScrolls >= 2 || f.scan > 700 || f.cadence > 0.72;
     case 'analyst':
       return c.queries + c.filters >= 2;
     case 'commander':

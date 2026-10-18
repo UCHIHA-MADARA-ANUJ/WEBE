@@ -19,7 +19,7 @@ function sameOrder(a: string[], b: string[]) {
  * Nothing is committed until you open it.
  */
 export function MosaicMode({ focus, navigate }: ModeProps) {
-  const { genome, noteFilter, noteSearch, related } = useEngine();
+  const { genome, note, noteFilter, noteSearch, related } = useEngine();
   const [query, setQuery] = useState('');
   const [tag, setTag] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(focus);
@@ -169,7 +169,10 @@ export function MosaicMode({ focus, navigate }: ModeProps) {
                   className="btn btn--sm"
                   onClick={() => {
                     const rel = related(n.id)[0]?.id;
-                    if (rel) navigate(rel);
+                    if (rel) {
+                      note('edge');
+                      navigate(rel);
+                    }
                   }}
                 >
                   follow a relation
@@ -225,7 +228,10 @@ export function MosaicMode({ focus, navigate }: ModeProps) {
               className="btn btn--sm btn--accent"
               onClick={() => {
                 const rel = related(openNode.id)[0]?.id;
-                if (rel) navigate(rel);
+                if (rel) {
+                  note('edge');
+                  navigate(rel);
+                }
               }}
             >
               follow a relation →

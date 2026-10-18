@@ -101,12 +101,12 @@ export function decideParadigm(
 /** Headline for the reconfiguration overlay. */
 export function headlineFor(from: ParadigmId, to: ParadigmId, archetype: ArchetypeId): string {
   const verbs: Record<ArchetypeId, string> = {
-    reader: 'settles',
-    contemplative: 'stillens',
-    scout: 'wanders',
-    skimmer: 'sweeps',
-    analyst: 'compares',
-    commander: 'directs',
+    reader: 'settle into a text',
+    contemplative: 'go still',
+    scout: 'wander the map',
+    skimmer: 'sweep the surface',
+    analyst: 'compare side by side',
+    commander: 'take the keyboard',
   };
   return `You ${verbs[archetype]} — the interface unfolded out of ${PARADIGMS[from].name} and into ${PARADIGMS[to].name}.`;
 }

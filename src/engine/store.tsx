@@ -66,6 +66,7 @@ export interface EngineApi {
   closeNode: () => void;
   followEdge: (id: string) => void;
   noteScroll: (pixels: number, velocity: number, dtMs: number) => void;
+  notePointer: (pixels: number, dtMs: number) => void;
   noteSearch: (q: string) => void;
   noteFilter: (tag: string) => void;
   noteCommand: (cmd: string) => void;
@@ -225,13 +226,12 @@ export function EngineProvider({ children }: { children: React.ReactNode }) {
 
       if (s.path.length) {
         const prev = s.path[s.path.length - 1];
-        if (isNeighbour(prev, id)) {
-          s.steps++;
-          s.actions.edge++;
-        } else s.jumps++;
+        if (isNeighbour(prev, id)) s.steps++;
+        else s.jumps++;
       }
 
       s.path.push(id);
+      s.openTimes.push(Date.now());
       s.opens++;
       if (s.seen.includes(id)) s.revisits++;
       else s.seen.push(id);
@@ -281,6 +281,7 @@ export function EngineProvider({ children }: { children: React.ReactNode }) {
         } else s.jumps++;
       }
       s.path.push(id);
+      s.openTimes.push(Date.now());
       s.opens++;
       if (s.seen.includes(id)) s.revisits++;
       else s.seen.push(id);
@@ -302,6 +303,26 @@ export function EngineProvider({ children }: { children: React.ReactNode }) {
       if (velocity > 900) s.fastScrolls++;
       else if (velocity < 120) s.slowScrolls++;
       bump();
+    },
+    [bump],
+  );
+
+  const lastPointerBump = useRef(0);
+  const notePointer = useCallback(
+    (pixels: number, dtMs: number) => {
+      const s = signalsRef.current;
+      // a cursor teleport is not a swipe — ignore sub-frame jumps
+      if (dtMs < 8) return;
+      const capped = Math.min(pixels, 60);
+      s.pointerPx += capped;
+      s.pointerMs += Math.min(120, dtMs);
+      const v = s.pointerPx / (s.pointerMs / 1000);
+      s.peakPointer = Math.max(s.peakPointer, v);
+      const now = Date.now();
+      if (now - lastPointerBump.current > 120) {
+        lastPointerBump.current = now;
+        bump();
+      }
     },
     [bump],
   );
@@ -442,6 +463,7 @@ export function EngineProvider({ children }: { children: React.ReactNode }) {
     closeNode,
     followEdge,
     noteScroll,
+    notePointer,
     noteSearch,
     noteFilter,
     noteCommand,

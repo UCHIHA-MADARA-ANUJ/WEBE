@@ -60,7 +60,7 @@ export function StatusBar() {
   }, [signals, classification, genome]);
 
   return (
-    <div className="statusbar">
+    <div className="statusbar" role="status" aria-live="polite">
       <span className="statusbar__dot" style={{ opacity: flash ? 1 : 0.4 }} />
       <span className="statusbar__note">{note}</span>
       <span className="statusbar__spacer" />
