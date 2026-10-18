@@ -1,6 +1,6 @@
 import { ARCHETYPES, PARADIGMS, PARADIGM_ORDER } from '../engine/types';
 import { useEngine } from '../engine/store';
-import { confidenceLabel } from '../engine/classify';
+import { confidenceLabel, normalise } from '../engine/classify';
 import { NODE_BY_ID } from '../content/graph';
 import { Panel } from './common';
 
@@ -34,12 +34,21 @@ export function MindPanel({ open, onClose }: { open: boolean; onClose: () => voi
     ['commands', String(signals.commands.length)],
     ['queries', String(signals.queries.length)],
     ['filters', String(signals.filters.length)],
+    ...Object.entries(signals.actions).map(
+      ([k, v]) => [`action:${k}`, String(v)] as [string, string],
+    ),
   ];
 
   return (
     <>
       <div className="scrim" data-open={open} onClick={onClose} />
-      <aside className="mind" data-open={open} aria-hidden={!open}>
+      <aside
+        className="mind"
+        data-open={open}
+        aria-hidden={!open}
+        role="dialog"
+        aria-label="The Mind — how the engine reads you"
+      >
         <div className="mind__head">
           <div>
             <h2 className="mind__title">The Mind</h2>
@@ -54,8 +63,28 @@ export function MindPanel({ open, onClose }: { open: boolean; onClose: () => voi
         </div>
 
         <div className="mind__body">
+          <Panel label="How this works">
+            <p
+              className="mono"
+              style={{ fontSize: '0.66rem', color: 'var(--ink-dim)', lineHeight: 1.75, margin: 0 }}
+            >
+              This site has no fixed shape. The engine below watches how you move —
+              what you open, how long you stay, whether you follow a relation or
+              jump across the field, how fast you scroll, whether you type — and
+              rebuilds the <b>layout</b>, the <b>hierarchy</b> and the{' '}
+              <b>available actions</b> around that behaviour.
+              <br />
+              <br />
+              Read enough and it will restructure on its own, and tell you exactly
+              what it changed. Pin a structure with the top bar if you would rather
+              it left you alone.
+            </p>
+          </Panel>
+
           <Panel label="How it reads you">
-            {ARCHETYPES.map((a) => {
+            {[...ARCHETYPES]
+              .sort((x, y) => (classification.scores[y.id] ?? 0) - (classification.scores[x.id] ?? 0))
+              .map((a) => {
               const score = classification.scores[a.id] ?? 0;
               return (
                 <div className="arch" key={a.id} data-top={classification.top === a.id}>
@@ -90,6 +119,19 @@ export function MindPanel({ open, onClose }: { open: boolean; onClose: () => voi
             >
               {classification.evidence} observations · margin {Math.round(classification.margin * 100)}%
             </p>
+          </Panel>
+
+          <Panel label="Signal vector · normalised 0–1">
+            <div className="featuregrid">
+              {Object.entries(normalise(classification.features)).map(([k, v]) => (
+                <div className="feature" key={k}>
+                  <div className="feature__k">{k}</div>
+                  <div className="feature__v" data-zero={v === 0}>
+                    {v.toFixed(2)}
+                  </div>
+                </div>
+              ))}
+            </div>
           </Panel>
 
           <Panel label="Raw observations">

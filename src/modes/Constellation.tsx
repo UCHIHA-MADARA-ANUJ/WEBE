@@ -358,7 +358,6 @@ export function ConstellationMode({ focus, navigate }: ModeProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate(n.id);
-                  note('edge');
                 }}
                 onDoubleClick={(e) => {
                   e.stopPropagation();
@@ -474,7 +473,10 @@ export function ConstellationMode({ focus, navigate }: ModeProps) {
                   <button
                     key={r.id}
                     className="relation"
-                    onClick={() => navigate(r.id)}
+                    onClick={() => {
+                      note('edge');
+                      navigate(r.id);
+                    }}
                   >
                     <span className="relation__t">{other.title}</span>
                     <span className="relation__k">{r.kind.replace(/-/g, ' ')}</span>

@@ -66,6 +66,8 @@ export interface SessionSignals {
   startedAt: number;
   /** every node opened, in order — the raw trajectory */
   path: string[];
+  /** timestamps of each open, parallel to `path` */
+  openTimes: number[];
   /** tags the user filtered on */
   filters: string[];
   /** free-text queries issued */
@@ -102,6 +104,12 @@ export interface SessionSignals {
   seen: string[];
   /** max scroll velocity observed, px/s */
   peakVelocity: number;
+  /** pointer travel, in px */
+  pointerPx: number;
+  /** wall time over which that travel happened, ms */
+  pointerMs: number;
+  /** peak pointer velocity, px/s */
+  peakPointer: number;
   /** count of pointer-driven drags */
   drags: number;
 }
@@ -110,6 +118,7 @@ export function emptySignals(now = Date.now()): SessionSignals {
   return {
     startedAt: now,
     path: [],
+    openTimes: [],
     filters: [],
     queries: [],
     commands: [],
@@ -129,6 +138,9 @@ export function emptySignals(now = Date.now()): SessionSignals {
     focusStart: 0,
     seen: [],
     peakVelocity: 0,
+    pointerPx: 0,
+    pointerMs: 0,
+    peakPointer: 0,
     drags: 0,
   };
 }
@@ -146,6 +158,8 @@ export interface FeatureVector {
   revisit: number;
   /** how much of the corpus has been touched (0..1) */
   volume: number;
+  /** how impatiently objects are opened (0 = patient, 1 = frantic) */
+  cadence: number;
   /** scroll velocity, px/s */
   scan: number;
   /** mean ms spent per opened node */
@@ -210,8 +224,8 @@ export const ARCHETYPES: ArchetypeSpec[] = [
     glyph: '\u00b6',
     blurb: 'Settles into a text, lingers, follows one thread deep.',
     prefers: 'codex',
-    weights: { dwell: 1.2, linearity: 0.9, volume: 0.6, scan: 0.7, breadth: 0.4 },
-    ideal: { dwell: 1, linearity: 1, volume: 0.55, scan: 0, breadth: 0.35 },
+    weights: { dwell: 1.2, linearity: 0.9, cadence: 0.8, volume: 0.6, scan: 0.7, breadth: 0.4 },
+    ideal: { dwell: 1, linearity: 1, cadence: 0.3, volume: 0.55, scan: 0, breadth: 0.35 },
   },
   {
     id: 'contemplative',
@@ -219,8 +233,8 @@ export const ARCHETYPES: ArchetypeSpec[] = [
     glyph: '\u25d0',
     blurb: 'Rarely acts. Wants one thing, large, unhurried.',
     prefers: 'zen',
-    weights: { dwell: 1.3, volume: 1, scan: 0.4, query: 0.3, command: 0.3, linearity: 0.3 },
-    ideal: { dwell: 1, volume: 0.12, scan: 0, query: 0, command: 0, linearity: 0.6 },
+    weights: { dwell: 1.3, volume: 1, scan: 0.4, query: 0.3, command: 0.3, linearity: 0.3, cadence: 0.5 },
+    ideal: { dwell: 1, volume: 0.12, scan: 0, query: 0, command: 0, linearity: 0.6, cadence: 0.2 },
   },
   {
     id: 'scout',
@@ -228,8 +242,8 @@ export const ARCHETYPES: ArchetypeSpec[] = [
     glyph: '\u2726',
     blurb: 'Hops widely, jumps between distant relatives, wants the map.',
     prefers: 'constellation',
-    weights: { breadth: 1, edge: 0.6, volume: 0.7, spatial: 0.8, dwell: 0.4, linearity: 0.3 },
-    ideal: { breadth: 1, edge: 0.7, volume: 0.75, spatial: 0.8, dwell: 0.1, linearity: 0.2 },
+    weights: { breadth: 1, edge: 0.6, volume: 0.7, spatial: 0.8, dwell: 0.4, linearity: 0.3, cadence: 0.4 },
+    ideal: { breadth: 1, edge: 0.7, volume: 0.75, spatial: 0.8, dwell: 0.1, linearity: 0.2, cadence: 0.4 },
   },
   {
     id: 'skimmer',
@@ -237,8 +251,8 @@ export const ARCHETYPES: ArchetypeSpec[] = [
     glyph: '\u2248',
     blurb: 'Scrolls fast, skims surfaces, collects rather than reads.',
     prefers: 'mosaic',
-    weights: { scan: 1.2, volume: 0.6, dwell: 0.9, breadth: 0.5, linearity: 0.3 },
-    ideal: { scan: 1, volume: 0.6, dwell: 0.05, breadth: 0.6, linearity: 0.2 },
+    weights: { scan: 0.6, cadence: 1.2, dwell: 1, volume: 0.5, breadth: 0.4, linearity: 0.3 },
+    ideal: { scan: 1, cadence: 1, dwell: 0.05, volume: 0.6, breadth: 0.6, linearity: 0.2 },
   },
   {
     id: 'analyst',
@@ -246,8 +260,8 @@ export const ARCHETYPES: ArchetypeSpec[] = [
     glyph: '\u229e',
     blurb: 'Filters, compares, re-reads. Wants two things at once.',
     prefers: 'lattice',
-    weights: { query: 1.1, revisit: 0.7, edge: 0.5, command: 0.4, volume: 0.4, dwell: 0.3 },
-    ideal: { query: 1, revisit: 0.6, edge: 0.5, command: 0.4, volume: 0.4, dwell: 0.5 },
+    weights: { query: 1.1, revisit: 0.7, edge: 0.5, command: 0.4, volume: 0.4, dwell: 0.3, cadence: 0.3 },
+    ideal: { query: 1, revisit: 0.6, edge: 0.5, command: 0.4, volume: 0.4, dwell: 0.5, cadence: 0.3 },
   },
   {
     id: 'commander',
@@ -255,8 +269,8 @@ export const ARCHETYPES: ArchetypeSpec[] = [
     glyph: '\u276f',
     blurb: 'Drives the site by keyboard. Prefers verbs to buttons.',
     prefers: 'console',
-    weights: { command: 1.3, edge: 0.4, query: 0.4, spatial: 0.3, volume: 0.3, dwell: 0.3 },
-    ideal: { command: 1, edge: 0.4, query: 0.4, spatial: 0.1, volume: 0.35, dwell: 0.2 },
+    weights: { command: 1.3, edge: 0.4, query: 0.4, spatial: 0.3, volume: 0.3, dwell: 0.3, cadence: 0.4 },
+    ideal: { command: 1, edge: 0.4, query: 0.4, spatial: 0.1, volume: 0.35, dwell: 0.2, cadence: 0.4 },
   },
 ];
 

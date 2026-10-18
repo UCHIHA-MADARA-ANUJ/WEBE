@@ -15,6 +15,30 @@ place again, because the site remembers.
 > Live site: **[uchiha-madara-anuj.github.io/WEBE](https://uchiha-madara-anuj.github.io/WEBE)**
 > Source: **github.com/UCHIHA-MADARA-ANUJ/WEBE**
 
+### Proof, not promise
+
+`node scripts/live-check.mjs` drives the built site in a real browser with two
+visitors and shows the same URL becoming two different applications:
+
+```
+▌ HURRIED VISITOR
+  PASS  structure changed on its own — constellation → mosaic
+  PASS  it moved to a dense board — paradigm=mosaic
+  PASS  it explained itself — You sweep the surface — the interface unfolded
+        out of Constellation and into Mosaic.
+  PASS  status bar reports the read — mosaic · read skimmer 73% · gen 2 · 6 seen
+
+▌ PATIENT VISITOR
+  PASS  structure changed on its own — constellation → codex
+  PASS  it moved to a reading column — paradigm=codex
+  PASS  status bar reports the read — codex · read reader 66% · gen 1 · 3 seen
+```
+
+One visitor who clicks without reading gets a dense, re-sorting **mosaic
+board**. One who opens an object, lingers, and follows a relation gets a
+single-column **codex**. Nobody chose that. The engine decided, and it told
+them why.
+
 ---
 
 ## 1. What the site actually is
@@ -32,7 +56,7 @@ it. The engine reorganises *everything around it*.
 
 ### 2.1 What it tracks
 
-Ten continuous features are derived from the raw event stream every time the
+Eleven continuous features are derived from the raw event stream every time the
 interface re-renders (`src/engine/classify.ts`):
 
 | feature | what it measures | why it matters |
@@ -42,15 +66,31 @@ interface re-renders (`src/engine/classify.ts`):
 | `revisit` | share of opens that are re-opens | comparison vs. consumption |
 | `volume` | how much of the corpus has been touched | one object vs. many |
 | `dwell` | milliseconds of attention per object | reading vs. skimming |
-| `scan` | scroll velocity in px/s | skimming vs. settling |
+| `cadence` | mean gap between two objects (0.4 s → 1, 4 s → 0) | impatience |
+| `scan` | motion in px/s — scroll **or** pointer travel | skimming vs. settling |
 | `command` | share of actions that were typed verbs | pointer vs. keyboard |
 | `spatial` | share of actions that were drags / zooms | map-thinking vs. list-thinking |
 | `query` | share of actions that were searches or filters | interrogation |
-| `edge` | share of travel done by relation | graph-navigation |
+| `edge` | share of travel done by an explicit relation link | graph-navigation |
+
+Two details matter more than they look:
+
+- **Motion is not only scrolling.** In the Constellation nothing scrolls, so a
+  visitor can move the cursor quickly and the page never moves. The engine
+  therefore tracks pointer velocity as well and takes the faster of the two as
+  `scan` — otherwise a map-shaped paradigm would make every visitor look
+  sedentary. Single-event cursor teleports are discarded, so a flick of the
+  wrist counts as motion but a programmatic jump does not.
+- **`edge` means an explicit relation, not an arrival.** Clicking a node on the
+  map is a *jump*; only pressing a relation chip (in the dossier, the mosaic
+  sheet, the lattice) counts as travelling by relation. Without that
+  distinction every click on the map would look like graph-navigation and the
+  engine would never learn that someone is wandering.
 
 The raw counters behind them (opens, relation steps, cross-field jumps, scroll
-pixels, peak velocity, focus time, elapsed time, commands, queries, filters) are
-all visible in the **Mind panel**, so the algorithm is never a black box.
+pixels, peak velocity, focus time, elapsed time, commands, queries, filters and
+every action counter) are all visible in the **Mind panel**, so the algorithm
+is never a black box.
 
 ### 2.2 How it decides
 
@@ -78,8 +118,9 @@ score(archetype)  = Σ weight × affinity / Σ weight
 and a single stray click can fake them, so every read must clear an
 evidentiary bar before it is allowed to become the headline: a Contemplative
 needs ≥ 5 s of real attention; a Commander needs ≥ 2 typed commands; a Skimmer
-needs ≥ 2 fast scroll bursts. If the winning read is not credible, the engine
-falls through to the next credible one.
+needs ≥ 2 fast scroll bursts **or** an impatient cadence (objects opened less
+than a second apart). If the winning read is not credible, the engine falls
+through to the next credible one.
 
 **Step 3 — decide, conservatively.** The engine only restructures when the
 read is confident (≥ 0.42) and the margin over the runner-up is clear (≥ 0.05),
@@ -181,7 +222,8 @@ npm run preview    # serve the production build
 ### Tests
 
 ```bash
-node scripts/smoke.mjs      # 30 headless assertions against the real app
+node scripts/smoke.mjs       # 30 headless assertions against the real app
+node scripts/live-check.mjs  # 7 end-to-end assertions in a real browser
 node scripts/screenshot.mjs  # renders every paradigm in headless Chromium
 ```
 
@@ -189,6 +231,13 @@ node scripts/screenshot.mjs  # renders every paradigm in headless Chromium
 different visitors — a reader, a skimmer, an analyst — then asserts that the
 engine *restructures itself* in response, that all six paradigms render, that
 generations unlock behaviour, and that the Mind panel reports honestly.
+
+`scripts/live-check.mjs` drives the built site in headless Chromium with two
+genuinely different visitors — one clicks frantically and never stays, one opens
+an object, reads it and follows a relation — and asserts that the same URL
+restructures into **Mosaic** for the first and **Codex** for the second, and
+that the interface explains itself each time. It is the executable form of the
+claim this project is making.
 
 ---
 

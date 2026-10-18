@@ -5,7 +5,7 @@ import { PARADIGM_ORDER, PARADIGMS } from '../engine/types';
 import type { ModeProps } from './types';
 
 interface Line {
-  cls: 'sys' | 'ok' | 'hi' | 'err' | 'head';
+  cls: 'sys' | 'ok' | 'hi' | 'err' | 'head' | 'body';
   text: string;
 }
 
@@ -139,7 +139,7 @@ export function ConsoleMode({ focus, navigate, openMind }: ModeProps) {
         emit('ok', `▸ ${n.title}`);
         emit('sys', `  ${n.summary}`);
         emit('sys', '');
-        emit('sys', n.body[0]);
+        emit('body', n.body[0]);
         break;
       }
       case 'go': {

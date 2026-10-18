@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { EDGES, FAMILIES, NODE_BY_ID, type FieldNode } from '../content/graph';
+import { useEngine } from '../engine/store';
 
 export function familyColor(family: FieldNode['family']): string {
   const f = FAMILIES[family];
@@ -53,6 +54,7 @@ export function Relations({
     }));
 
   const list = limit ? rels.slice(0, limit) : rels;
+  const { note } = useEngine();
   if (!list.length) return null;
 
   return (
@@ -67,7 +69,10 @@ export function Relations({
           <button
             key={`${r.id}-${i}`}
             className="relation"
-            onClick={() => onOpen(r.id)}
+            onClick={() => {
+              note('edge');
+              onOpen(r.id);
+            }}
             type="button"
           >
             <span className="relation__t">{other.title}</span>

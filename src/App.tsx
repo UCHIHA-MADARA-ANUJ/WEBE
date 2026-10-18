@@ -47,7 +47,7 @@ function ColdOpen({ onBegin }: { onBegin: (id: string) => void }) {
 }
 
 function Shell() {
-  const { paradigm, noteScroll, cold, genome, openNode } = useEngine();
+  const { paradigm, noteScroll, notePointer, cold, genome, openNode } = useEngine();
   const [focus, setFocus] = useState<string | null>(null);
   const [mind, setMind] = useState(false);
 
@@ -81,10 +81,40 @@ function Shell() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [noteScroll]);
 
+  /* pointer telemetry — a paradigm that does not scroll still has motion */
+  useEffect(() => {
+    let lastX = 0;
+    let lastY = 0;
+    let lastT = performance.now();
+    let started = false;
+
+    const onMove = (e: PointerEvent) => {
+      const now = performance.now();
+      if (!started) {
+        lastX = e.clientX;
+        lastY = e.clientY;
+        lastT = now;
+        started = true;
+        return;
+      }
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      const dist = Math.hypot(dx, dy);
+      const dt = now - lastT;
+      if (dist > 0.5 && dt > 0) notePointer(dist, dt);
+      lastX = e.clientX;
+      lastY = e.clientY;
+      lastT = now;
+    };
+
+    window.addEventListener('pointermove', onMove, { passive: true });
+    return () => window.removeEventListener('pointermove', onMove);
+  }, [notePointer]);
+
   const props = { focus, navigate: handleNavigate, openMind: () => setMind(true) };
 
   return (
-    <div className="app" data-paradigm={paradigm}>
+    <div className="app" data-paradigm={paradigm} data-mind={mind}>
       <Backdrop seed={genome.seed} />
       <Chrome onMind={() => setMind((v) => !v)} onNavigate={handleNavigate} />
       <main className="stage">
