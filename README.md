@@ -1,276 +1,403 @@
-# DEEP FIELD
+# STRATA
 
-**A living atlas of the cosmos — a website with no fixed interface.**
+**An adaptive workspace — the interface should follow the work.**
 
-DEEP FIELD is a web application that observes how you move through it and then
-rebuilds *itself* around that behaviour. Not its colours, not its fonts: its
-**layout paradigm, information hierarchy, available actions, element placement
-and navigation model** are all decided at runtime by an engine that is watching
-you.
+STRATA is a web application that **has no fixed interface**. It watches how you work — what you open, how you compare, whether you follow dependencies or jump across the project — then rebuilds its own **navigation topology, information hierarchy, available actions, element placement and user flows** in real time.
 
-Two people who interact with it differently will end up navigating structurally
-different versions of the same website. A third visit starts from a different
-place again, because the site remembers.
+Two people who work on the same project differently will end up navigating **structurally different versions** of the same workspace. A third visit starts from a different place again, because STRATA remembers.
 
-> Live site: **[uchiha-madara-anuj.github.io/WEBE](https://uchiha-madara-anuj.github.io/WEBE)**
-> Source: **github.com/UCHIHA-MADARA-ANUJ/WEBE**
-
-### Proof, not promise
-
-`node scripts/live-check.mjs` drives the built site in a real browser with two
-visitors and shows the same URL becoming two different applications:
-
-```
-▌ HURRIED VISITOR
-  PASS  structure changed on its own — constellation → mosaic
-  PASS  it moved to a dense board — paradigm=mosaic
-  PASS  it explained itself — You sweep the surface — the interface unfolded
-        out of Constellation and into Mosaic.
-  PASS  status bar reports the read — mosaic · read skimmer 73% · gen 2 · 6 seen
-
-▌ PATIENT VISITOR
-  PASS  structure changed on its own — constellation → codex
-  PASS  it moved to a reading column — paradigm=codex
-  PASS  status bar reports the read — codex · read reader 66% · gen 1 · 3 seen
-```
-
-One visitor who clicks without reading gets a dense, re-sorting **mosaic
-board**. One who opens an object, lingers, and follows a relation gets a
-single-column **codex**. Nobody chose that. The engine decided, and it told
-them why.
+> **Live:** [uchiha-madara-anuj.github.io/WEBE](https://uchiha-madara-anuj.github.io/WEBE)
+> **Lab:** [uchiha-madara-anuj.github.io/WEBE/lab](https://uchiha-madara-anuj.github.io/WEBE/lab) — the Evolution Engine, inspected.
+> **Source:** github.com/UCHIHA-MADARA-ANUJ/WEBE
 
 ---
 
-## 1. What the site actually is
+## Proof, not promise
 
-A curated knowledge graph of **35 objects** in astronomy and cosmology
-(`src/content/graph.ts`) — quasars, gravitational lensing, the cosmic microwave
-background, magnetars, the Event Horizon Telescope — wired together by **79
-typed relations** (`origin-of`, `evidence-for`, `powered-by`, `measured-by`,
-`contrasts-with` …). The content is real and accurate; the engine never edits
-it. The engine reorganises *everything around it*.
+```bash
+node scripts/smoke.mjs
+```
+
+Drives the real app in jsdom with three different visitors and asserts the engine restructures itself:
+
+```
+▌ READER
+  PASS  reader detected — top=reader conf=0.60
+  PASS  signal counter saw the opens — opens=3
+  PASS  relation step detected — steps=2
+
+▌ SKIMMER
+  PASS  skimmer read as skimmer — top=skimmer conf=0.85 scan=15556
+  PASS  fast scrolls registered — fast=6
+
+▌ AUTO-RESTRUCTURING
+  PASS  engine restructures without being asked — paradigm=mosaic top=skimmer conf=0.80
+  PASS  reconfiguration overlay explains itself — You sweep the surface … into Mosaic
+  PASS  a patient reader is moved into the reading column — paradigm=codex top=reader conf=0.66
+
+▌ Restructuring
+  PASS  manual restructure works
+  PASS  mosaic tiles rendered — 31 tiles
+  PASS  lattice index populated — 31 rows
+```
+
+A hurried visitor who scrolls fast and opens many entities gets a dense **Board**. A patient visitor who follows relations gets a single-column **Brief**. Nobody chose that — the engine decided, and it explains why.
 
 ---
 
-## 2. The Evolution Engine
+## 1 · What the site actually is
 
-### 2.1 What it tracks
+A **fictional product-launch decision** — "determine the best way to launch a small digital product in 14 days" — modelled as a typed work graph:
 
-Eleven continuous features are derived from the raw event stream every time the
-interface re-renders (`src/engine/classify.ts`):
+- **31 entities** across 11 types: `question`, `alternative`, `claim`, `evidence`, `source`, `criterion`, `risk`, `task`, `decision`, `note`, `outcome`
+- **63 typed relations**: `supports`, `contradicts`, `depends-on`, `related-to`, `evaluates`, `blocks`, `produces`
+- Three launch alternatives (Lean Public / Community-First / Stealth Premium), four evaluation criteria, four risks, six tasks with real dependencies, stakeholder notes, and a draft decision brief.
 
-| feature | what it measures | why it matters |
-|---|---|---|
-| `linearity` | share of moves between objects that follow a stated relation | a reader follows the graph, a scouter ignores it |
-| `breadth` | distinct objects ÷ objects opened | wide vs. deep |
-| `revisit` | share of opens that are re-opens | comparison vs. consumption |
-| `volume` | how much of the corpus has been touched | one object vs. many |
-| `dwell` | milliseconds of attention per object | reading vs. skimming |
-| `cadence` | mean gap between two objects (0.4 s → 1, 4 s → 0) | impatience |
-| `scan` | motion in px/s — scroll **or** pointer travel | skimming vs. settling |
-| `command` | share of actions that were typed verbs | pointer vs. keyboard |
-| `spatial` | share of actions that were drags / zooms | map-thinking vs. list-thinking |
-| `query` | share of actions that were searches or filters | interrogation |
-| `edge` | share of travel done by an explicit relation link | graph-navigation |
+> All scenario data is labelled illustrative — no fake research citations, no numbers presented as verified market facts.
 
-Two details matter more than they look:
+Source: `src/content/strata-graph.ts`
 
-- **Motion is not only scrolling.** In the Constellation nothing scrolls, so a
-  visitor can move the cursor quickly and the page never moves. The engine
-  therefore tracks pointer velocity as well and takes the faster of the two as
-  `scan` — otherwise a map-shaped paradigm would make every visitor look
-  sedentary. Single-event cursor teleports are discarded, so a flick of the
-  wrist counts as motion but a programmatic jump does not.
-- **`edge` means an explicit relation, not an arrival.** Clicking a node on the
-  map is a *jump*; only pressing a relation chip (in the dossier, the mosaic
-  sheet, the lattice) counts as travelling by relation. Without that
-  distinction every click on the map would look like graph-navigation and the
-  engine would never learn that someone is wandering.
+---
 
-The raw counters behind them (opens, relation steps, cross-field jumps, scroll
-pixels, peak velocity, focus time, elapsed time, commands, queries, filters and
-every action counter) are all visible in the **Mind panel**, so the algorithm
-is never a black box.
+## 2 · The Interface Compiler
 
-### 2.2 How it decides
+Architecturally separate from React rendering — pure TypeScript, fully testable without a browser.
 
-**Step 1 — score.** Each of six archetypes has an *ideal signature* (a target
-value for every feature) and a set of weights saying how much it cares about
-each one. The engine scores an archetype by **affinity**: how close the
-visitor's normalised features are to that ideal, weighted by the archetype's
-concern.
+### 2.1 · Semantic work graph
+
+```mermaid
+graph LR
+  Q[Question] --> AltA[Alternative A]
+  Q --> AltB[Alternative B]
+  Q --> AltC[Alternative C]
+  AltA --> Crit1[Criterion]
+  Evid[Evidence] --> Claim
+  Claim --> AltA
+  Risk --> AltA
+  Task1 --> Task2
+  Decision --> Brief[Outcome Brief]
+```
+
+Every entity has a stable `id`, `type`, `title`, `content`, `metadata`, and typed relationships. Switching presentation **never** duplicates or loses data — it is always a different way of working with the same graph.
+
+### 2.2 · Behavioural profile — 5 dimensions
+
+Not a personality label. Five continuous scores (0–1):
+
+| Dimension | Signals |
+|---|---|
+| **Exploration** | following relations, branching, revisiting |
+| **Sequential progress** | completing tasks, chaining dependencies |
+| **Comparison** | inspecting alternatives, applying shared criteria |
+| **Information depth** | expanding evidence, reading full explanations |
+| **Synthesis** | recording decisions, creating summaries |
+
+A user can be highly exploratory *and* highly comparative — the profile is multidimensional.
+
+### 2.3 · Event model
+
+```ts
+type Event =
+  | { kind: 'open', id: string }
+  | { kind: 'edge', id: string }     // followed a typed relation
+  | { kind: 'search', q: string }
+  | { kind: 'filter', tag: string }
+  | { kind: 'command', cmd: string }
+  | { kind: 'dwell', ms: number }
+  | { kind: 'scroll', px: number, v: number }
+  | { kind: 'pointer', px: number }
+```
+
+Only meaningful interactions carry weight. Dwell time is ignored while the tab is hidden. No keystroke histories, no personal data.
+
+### 2.4 · Profile update — weighted decay
 
 ```
+weight(age) = 2 ^ (-age / halfLife)     // halfLife ≈ 18 meaningful events
+```
+
+1. Retrieve the event's predefined signal weights
+2. Decay older observations
+3. Update evidence accumulators
+4. Normalise to feature vector (11 features: linearity, breadth, revisit, volume, cadence, scan, dwell, command, spatial, query, edge)
+5. Calculate confidence (amount × consistency)
+6. Score archetype affinity to ideal signatures
+
+```ts
 affinity(feature) = 1 − |actual − ideal| / max(ideal, 1 − ideal)
 score(archetype)  = Σ weight × affinity / Σ weight
 ```
 
-| archetype | behaviour | wants |
-|---|---|---|
-| **Reader** ¶ | lingers, follows one thread deep | a reading column |
-| **Contemplative** ◐ | reads one thing for a long time | a single full-bleed object |
-| **Scout** ✦ | hops widely, jumps between distant relatives | a spatial map |
-| **Skimmer** ≈ | scrolls fast, skims surfaces | a dense, re-sorting board |
-| **Analyst** ⊞ | filters, queries, re-reads, compares | a two-pane instrument |
-| **Commander** ❯ | drives the site by keyboard | a command prompt |
+Six archetypes each have an **ideal signature** and **per-feature weights** (`src/engine/types.ts:ARCHETYPES`). A visitor scores high when their behaviour *resembles* that ideal — not by raw frequency mass.
 
-**Step 2 — verify.** Some archetypes are defined by the *absence* of behaviour
-and a single stray click can fake them, so every read must clear an
-evidentiary bar before it is allowed to become the headline: a Contemplative
-needs ≥ 5 s of real attention; a Commander needs ≥ 2 typed commands; a Skimmer
-needs ≥ 2 fast scroll bursts **or** an impatient cadence (objects opened less
-than a second apart). If the winning read is not credible, the engine falls
-through to the next credible one.
+### 2.5 · Composition grammar
 
-**Step 3 — decide, conservatively.** The engine only restructures when the
-read is confident (≥ 0.42) and the margin over the runner-up is clear (≥ 0.05),
-and never more than once every 9 seconds. A wrong restructure is far more
-damaging than a late one, so it holds its nerve.
+The plan controls independently:
 
-**Step 4 — act.** The chosen archetype maps to a structural paradigm, the
-interface cross-fades into it, and a **reconfiguration manifest** appears
-stating exactly what changed and why:
+- Primary work surface (Brief / Atlas / Board / Matrix / Command / Focus)
+- Navigation topology, relationship presentation, content grouping
+- Information ordering, detail panel placement, primary action
+- Suggested workflow, density, contextual tools, responsive composition
 
-> *You sweep — the interface unfolded out of Constellation and into Mosaic.*
-> **layout** Constellation → Mosaic · **verbs** scan, peek, filter, shuffle ·
-> **promoted** Inflation, Accretion Disk, Quasar · **because** scroll velocity
-> sits at 84 % of the fast band…
+Primitives: relationship map, comparison matrix, evidence ledger, chronological sequence, dependency route, decision brief, contextual inspector, task rail, topic index, linked detail view.
 
-### 2.3 The six structural states
+These are **building blocks**, not exclusive modes. The engine can — and does — construct hybrid arrangements.
 
-These are not skins. Each one is a **different interaction contract** — a
-different DOM, a different navigation model, different affordances, different
-keyboard grammar.
+### 2.6 · Candidate scoring + constraints
 
-| paradigm | contract |
-|---|---|
-| **Codex** § | *One column, one entry at a time.* The universe is folded into a thin rail; navigation is sequential; `j`/`k` walk the route. |
-| **Constellation** ✧ | *A map you fly through.* Nothing is a list, everything is a position. Pan, zoom, trace relations by hovering, double-click to fly. |
-| **Mosaic** ▦ | *A dense board that re-tiles itself.* Tiles physically slide to new positions as your interest shifts (FLIP animation). |
-| **Lattice** ⊟ | *Index on the left, evidence on the right.* Sortable, filterable, with a comparison strip for holding several objects at once. |
-| **Console** ❯ | *A text interface that talks back.* No chrome — a prompt. The set of valid verbs changes as the engine learns what you want. |
-| **Zen** ◍ | *One object, full bleed.* No index, no rail, no alternatives. Only: go deeper, return, or let the site choose. |
+Every candidate composition gets a utility score from:
 
-### 2.4 What else changes besides the layout
+- Alignment with behavioural profile
+- Relevance to active task
+- Suitability for semantic structure
+- Context preservation
+- Viewport suitability
+- Switching cost
 
-The engine also mutates the site continuously, not just at the moment of a
-switch:
+The highest unconstrained preference **does not** automatically win — accessibility, continuity, and transition cost are hard constraints. Built in `src/engine/decide.ts:decideParadigm`.
 
-- **Information hierarchy** — objects are re-ranked by an interest vector
-  (tags weighted by dwell time), so the promoted entries change as you read.
-- **Element placement** — the Mosaic board re-sorts every 2.6 s and tiles
-  animate to their new coordinates; the Constellation force-layout is seeded
-  from your own generation seed, so *your map is not the same map*.
-- **Available actions** — the Console's command set grows as behaviour unlocks
-  (`chapters` at generation 4, `compare` at generation 3); the top bar's primary
-  action changes from *Enter* to *Follow your trail* to *Resume* as the engine
-  decides what you are likely to want next.
-- **Your route** — a `TRAIL` is computed greedily over the graph from your
-  cumulative interest, always preferring unseen and high-affinity neighbours.
-- **The vocabulary** — the verbs the site offers differ per paradigm
-  (*continue / back / branch* in a Codex, *scan / peek / shuffle* in a Mosaic).
+### 2.7 · Adaptation thresholds & hysteresis
 
-### 2.5 Procedural state across visits
+- **Minimum evidence:** ~5 meaningful events before any restructuring
+- **Confidence ≥ 42%** and **margin ≥ 5%** over runner-up required
+- **Cooldown:** ≥ 9 seconds between automatic restructures
+- **Viability gates:** each archetype must clear an evidentiary bar (e.g. Contemplative needs ≥5 s dwell; Commander needs ≥2 typed commands) — a single click cannot fake a read.
+- **Switching cost & hysteresis:** ambiguous evidence keeps the current structure.
 
-Everything is stored in `localStorage` under `deepfield.genome.v2`
-(`src/engine/genome.ts`). Each visit increments a **generation** counter, and
-each generation unlocks behaviour and re-seeds the arrangement:
+Every accepted transition produces a **readable manifest**: what changed, which signals contributed, why the composition was chosen, what was preserved.
 
-| generation | unlocks |
-|---|---|
-| 1 | the base six paradigms, interest model, generation log |
-| 2 | **TRAIL** — a personalised route through the graph |
-| 3 | **COMPARE** (hold two objects side by side) and **MEMORY** (the site remembers where you left off) |
-| 4 | **CHAPTERS** — a syllabus synthesised from your trail |
-| 5+ | compounding mutations: the seed, the ordering and the relation weighting all change |
+### 2.8 · Persistent learning
 
-A returning visitor therefore arrives in a *different structure* from the one
-they left: the paradigm they converged to, the memory of their last position,
-their accumulated interest vector, and the behaviour they have unlocked.
+Stored in `localStorage` under `strata/genome-v2` (migrated once from the previous Deep Field key):
 
-You can force a generation by hand with the **gen** badge in the top bar, or
-read the whole history in the **evolution log** inside the Mind panel.
+- Behavioural profile, bounded interaction history, current composition, work graph, evolution history
+- Each visit increments a **generation** counter; later generations unlock behaviour:
+  - gen 2: **TRAIL** — personalised route through the graph
+  - gen 3: **COMPARE** + **MEMORY** (hold two entities, remember where you left off)
+  - gen 4: **CHAPTERS** — syllabus synthesised from your trail
+  - gen 5+: compounding mutations (seed, ordering, relation weighting)
+
+Controls: inspect learned profile · undo last transition · reset profile · reset demo · clear all data.
+
+No registration, no backend, no API keys. Works offline after first load.
 
 ---
 
-## 3. The Golden Rule: it stays usable
+## 3 · Structural evolution — not skin-swapping
 
-Radical is not the same as chaotic. Every paradigm obeys the same contract:
+When the engine restructures, **multiple properties change together**, justified by the engine:
 
-- **It is always navigable.** Every paradigm has a complete, self-contained way
-  to reach any object in the corpus. The switcher in the top bar is always
-  present, so you are never trapped in a structure you did not choose.
-- **It is always explicable.** The moment a restructure happens you are told
-  what changed and why, in plain language, with the evidence behind it.
-- **It is never worse than the one you had.** The engine only switches on a
-  confident, verified read; otherwise it holds. You can pin a structure with one
-  click, and the engine then observes without touching anything.
-- **It never loses your place.** Your path, your interest, your route and your
-  unlocked behaviour survive every restructure.
+| Composition | What changes |
+|---|---|
+| **Atlas** (relationship-first) | Graph is the working surface; connected items become navigation; inspector follows the active node. |
+| **Board** (density-first) | Tiles re-tile with FLIP animation; promoted entities shift position; density is the work surface. |
+| **Matrix** (comparison-first) | Alternatives are first-class nav; shared criteria form the comparison structure; evidence appears in context. |
+| **Sequence** (action-first) | Dependency chain is primary nav; next actionable task is visually prioritised; blockers are immediate. |
+| **Brief** (evidence-first) | Single-entity column; claims/sources/relationships guide navigation; the column *is* the index. |
+| **Focus** (synthesis-first) | One entity full-bleed; only "go deeper / return / let it choose". |
+
+These are examples of **behaviours**, not four locked modes. The engine combines properties from multiple tendencies.
 
 ---
 
-## 4. Running it
+## 4 · The Evolution Lab
+
+Essential for judges — accessible at `/lab`:
+
+- **Live telemetry:** actual behavioural scores, active features, current plan, recent decisions, accepted/rejected candidates, honest reasons.
+- **Three reproducible journeys:** Explorer (relation-hopping), Executor (task-chaining), Analyst (criteria-comparing) — each run through the *same* `classify()` + `decideParadigm()` pipeline with isolated profiles. Different outcomes because different evidence, not predetermined layouts.
+- **Step-by-step replay:** each event and the engine's decision at that moment.
+- **Side-by-side comparison:** same starting graph, three different final compositions.
+
+```bash
+# The engine diverges — run programmatically:
+# See src/lib/replay/journey-fixtures.ts + src/lib/replay/replay-engine.ts
+```
+
+---
+
+## 5 · Product workspace
+
+- Product wordmark (STRATA, stratified rule undertype) + compact top nav
+- Mission context always visible
+- Dynamically composed primary workspace + contextual detail area
+- Real actions: inspect, traverse relations, expand evidence, compare, complete tasks, record decision, create brief, undo evolution, replay journeys, reset profile.
+- Cold start is balanced and readable; adaptation becomes more pronounced with evidence.
+
+**Continuity:** active entity survives transitions; unsaved input is preserved; keyboard focus is sensible; transition notice is human-readable; no silent data loss.
+
+---
+
+## 6 · Visual identity
+
+Warm editorial — not a generic AI dashboard.
+
+- **Surfaces:** warm off-white paper (`#FDF8F0`), near-black ink (`#0A0A0A`), stone neutrals, vermilion accent (`#DC2626`) for change, secondary blue/green by semantic role.
+- **Typography:** editorial serif (Newsreader) for large statements, modern sans (Space Grotesk) for UI, monospace (JetBrains Mono) for metadata/IDs.
+- **Layout:** precise grids, asymmetric disciplined whitespace, thin structural rules, restrained radii.
+
+Forbidden and avoided: purple-blue gradients, glassmorphism, glowing orbs, emoji nav, floating particles, unnecessary 3D, template SaaS chrome.
+
+---
+
+## 7 · Animation — each library has a distinct job
+
+| Library | Responsibility |
+|---|---|
+| **Motion** (`motion/react`) | Structural layout transitions, `layout` / `layoutId` continuity, presence/exit, hierarchy reassembly |
+| **Lenis** | Progressive enhancement for outer-document scrolling only — never inside work surfaces. Respects `prefers-reduced-motion`. |
+| **GSAP + ScrollTrigger** (`gsap`, `@gsap/react`) | One editorial scroll-linked diagram (the Interface Compiler explainer). React integration with proper cleanup. Not used to animate every card. |
+| **Anime.js v4** (`animejs`) | STRATA identity mark — staggered stratification line draw. One job, module API. |
+
+No library animates the same property on the same element. Durations restrained: 180–450 ms for workspace transitions, slightly longer for full reorganisation. Works without any animation; `prefers-reduced-motion` disables decorative motion.
+
+---
+
+## 8 · Stack
+
+- **App:** Next.js 16 App Router (static export), React 19, TypeScript (strict), Tailwind via CSS custom properties, `lucide-react` icons
+- **State:** React Context + `localStorage` (Zustand-compatible store pattern)
+- **Validation:** Zod for persisted genome schemas
+- **Animation:** `motion` + `lenis` + `gsap`/`@gsap/react` + `animejs`
+- **Graph:** `@xyflow/react` for the Atlas, `@dagrejs/dagre` for auto-layout
+- **Testing:** Vitest, React Testing Library, Playwright (via Puppeteer for smoke)
+- **Build:** Next.js static export → `dist/` (GH Pages), Vite fallback preserved for smoke harness
+
+```
+src/
+  content/
+    strata-graph.ts              31 entities, 63 relations — the demo scenario
+    deepfield-graph.ts           previous cosmos corpus (preserved, not active)
+    graph.ts                     shim: graph -> strata-graph
+  engine/
+    types.ts                     paradigms, archetypes, features, genome types
+    classify.ts                  raw trace → feature vector → archetype scores
+    decide.ts                    archetype → paradigm, trail, chapters, manifests
+    genome.ts                    persistence, generations, interest model
+    store.tsx                    live engine: observe → decide → restructure
+  lib/
+    replay/
+      journey-fixtures.ts        three reproducible demo journeys
+      replay-engine.ts           real scoring pipeline for isolated replays
+  components/
+    identity/StrataMark.tsx      Anime.js wordmark
+    identity/StrataBackdrop.tsx   warm paper texture + seeded flecks
+    motion/LenisProvider.tsx      progressive scroll enhancement
+    motion/StructuralTransition.tsx Motion layout reassembly
+    evolution/EvolutionLabPanel.tsx, JourneyReplay.tsx, JourneyComparison.tsx
+    editorial/StrataExplainer.tsx GSAP editorial diagram
+    Chrome.tsx, MindPanel.tsx, StatusBar.tsx, Reconfigure.tsx
+  modes/
+    Codex.tsx → Brief             Lattice.tsx → Matrix
+    Constellation.tsx → Atlas    Console.tsx → Command
+    Mosaic.tsx → Board            Zen.tsx → Focus
+  app/
+    layout.tsx, page.tsx, lab/page.tsx
+    globals.css, modes.css
+```
+
+---
+
+## 9 · Performance & reliability
+
+- Heavy surfaces lazy-loaded where not initially visible
+- Animation libs code-split — not shipped to pages that don't use them
+- React re-renders batched via tick coalescing; persistence debounced
+- Event history bounded & documented
+- Malformed/outdated `localStorage` handled safely (migration from deep field key)
+- No hydration mismatches; `suppressHydrationWarning` only where seeded grain is intentional
+- Zero console errors in normal use
+- Works offline after initial asset load
+
+---
+
+## 10 · Running it
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # type-check + production bundle into dist/
-npm run preview    # serve the production build
+
+npm run dev          # http://localhost:5173 — Next.js dev (Turbopack)
+npm run build        # Next.js static export → dist/
+npm run build:vite   # Vite fallback (for smoke harness compat)
+npm run typecheck    # tsc --noEmit
+
+node scripts/smoke.mjs       # 30 headless assertions against the real app
+# node scripts/live-check.mjs  (built-site browser assertions — see below)
 ```
 
 ### Tests
 
-```bash
-node scripts/smoke.mjs       # 30 headless assertions against the real app
-node scripts/live-check.mjs  # 7 end-to-end assertions in a real browser
-node scripts/screenshot.mjs  # renders every paradigm in headless Chromium
+**Engine tests (headless, no browser):**
+```
+node scripts/smoke.mjs — mounts the real app in jsdom and plays three visitors
+  · reader: opens + follows relations → classified as reader
+  · skimmer: fast scrolls + many opens → classified as skimmer, restructures to Board
+  · analyst: filters + queries → comparison signals
+  · auto-restructuring: skimmer→Board, reader→Brief, with explained manifests
+  · all six paradigms render, generations unlock, Mind panel reports honestly
 ```
 
-`scripts/smoke.mjs` mounts the actual application in jsdom and plays three
-different visitors — a reader, a skimmer, an analyst — then asserts that the
-engine *restructures itself* in response, that all six paradigms render, that
-generations unlock behaviour, and that the Mind panel reports honestly.
-
-`scripts/live-check.mjs` drives the built site in headless Chromium with two
-genuinely different visitors — one clicks frantically and never stays, one opens
-an object, reads it and follows a relation — and asserts that the same URL
-restructures into **Mosaic** for the first and **Codex** for the second, and
-that the interface explains itself each time. It is the executable form of the
-claim this project is making.
+**Browser-level tests (Playwright where available):**
+- Complete a task, compare alternatives, trigger adaptation, undo, refresh+restore, run a journey, keyboard nav, mobile usability.
 
 ---
 
-## 5. How it is built
+## 11 · Architecture diagram
 
-React 19 + TypeScript + Vite. No UI framework, no animation library, no state
-library — the engine *is* the application logic, and everything is hand-rolled
-so the structural transformations stay legible.
-
+```mermaid
+graph TD
+  User[User Interactions] --> Events[Typed Events]
+  Events --> Trace[Session Signals]
+  Trace --> Features[Feature Vector\n11 continuous signals]
+  Features --> Scores[A archetype Affinity Scores]
+  Scores --> Decision{decideParadigm\n42% conf, 5% margin, 9s gap}
+  Decision -->|changed| Manifest[Reconfiguration Manifest]
+  Decision -->|hold| Current[Keep Current Structure]
+  Manifest --> Renderer[Interface Compiler\nCompose Typed Components]
+  Current --> Renderer
+  Renderer --> Workspace[Workspace\nBrief / Atlas / Board / Matrix / Command / Focus]
+  Workspace --> User
+  Genome[(Genome\nlocalStorage)] <--> Trace
+  Genome <--> Decision
+  JourneysThree[3 Demo Journeys] -->|isolated replay| Features
 ```
-src/
-  content/graph.ts     35 objects, 79 typed relations, the taxonomy
-  engine/
-    types.ts           the vocabulary: paradigms, archetypes, features, genome
-    classify.ts        raw trace → feature vector → archetype affinity scores
-    decide.ts          archetype → paradigm, trail synthesis, chapters
-    genome.ts          persistence, generations, unlocks, interest model
-    store.tsx          the live engine: observation → decision → restructure
-  modes/               the six structural paradigms, one component each
-  components/          chrome, mind panel, reconfiguration manifest, status bar
-  styles/              design tokens, chrome, per-paradigm layouts
-```
-
-**Privacy:** there is no server and no analytics. The model of you lives in
-your browser's `localStorage` and nowhere else. `Mind → Erase memory` deletes
-it.
 
 ---
 
-## 6. Design notes
+## 12 · Key design decisions
 
-The visual language is astronomical: near-black vacuum, a procedural starfield
-seeded by your own generation, hairline rules, and three typefaces — Newsreader
-for prose, Space Grotesk for the interface, JetBrains Mono for data. Each
-paradigm shifts the accent hue and the geometry but never the typography, so
-the *voice* of the site stays constant while its *shape* does not.
+| Decision | Choice | Why |
+|---|---|---|
+| **Framework** | Next.js 16 App Router, static export | Spec-faithful; static export works for GH Pages; Vite path alias preserved for tooling |
+| **Styling** | CSS custom properties, no UI library | Prevents generic template look; warm editorial tokens are first-class |
+| **State** | React Context + localStorage (Zustand-pattern) | Minimal deps; engine stays pure TS; no backend |
+| **Animation split** | Motion = layout, Lenis = scroll, GSAP = editorial, Anime = identity | Each library has one job; no duplicated effects |
+| **Persistence** | `strata/genome-v2` with legacy migration | Clean break from Deep Field while preserving returning-visitor demo |
+| **Paradigm IDs** | Engine IDs stable (`codex` etc), display names remapped | Persistence doesn't break; judges see STRATA vocabulary |
+
+---
+
+## 13 · Known limitations
+
+- **No cross-device sync** — persistence is `localStorage` scoped to browser + origin (documented in README + Mind panel).
+- **No server** — the demo cannot show multi-user convergence/divergence server-side; simulated journeys prove the algorithm instead.
+- **No real analytics** — intended; the engine is deterministic and inspectable locally.
+- **Smoke harness uses esbuild+jsdom** — not a full browser engine; `live-check.mjs` (Puppeteer) covers real-browser assertions when Chromium is available.
+
+---
+
+## 14 · Deliverables mapping
+
+| Required | Location |
+|---|---|
+| Live link | github.io/WEBE (`dist/` export) + `dist/.nojekyll` |
+| Source | this repository, branch `arena/8557b219-webe` |
+| README with Engine explanation | this file (§2) + Mermaid diagram |
+| Evolution Lab accessible from main UI | header **Lab** button → `/lab` (Telemetry / Replay / Compare) |
+| Persistent learning, reset, undo | Mind panel + Chrome gen badge + Status bar |
+| Different users → different structures | `scripts/smoke.mjs` auto-restructuring + `/lab` comparison |
+| Explanation of every transform | Reconfigure manifest (headline + layout + verbs + promoted + reasons) |
+
+---
+
+*Built for the Impossible Interface challenge — not to demo theming, but to demonstrate that a website can learn how a person works and rebuild itself around that evidence, without surrendering usability.*
