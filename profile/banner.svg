@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" fill="none" role="img" aria-label="Anuj Phulera — interface engineer">
+  <defs>
+    <radialGradient id="glow" cx="0.18" cy="0.42" r="0.72">
+      <stop offset="0" stop-color="#9FB4FF" stop-opacity="0.16"/>
+      <stop offset="0.55" stop-color="#9FB4FF" stop-opacity="0.04"/>
+      <stop offset="1" stop-color="#06070A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.86" cy="0.72" r="0.55">
+      <stop offset="0" stop-color="#E0B15C" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#E0B15C" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="#FFFFFF" stroke-opacity="0.028" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="rule" x1="0" y1="0" x2="1200" y2="0">
+      <stop offset="0" stop-color="#9FB4FF" stop-opacity="0"/>
+      <stop offset="0.15" stop-color="#9FB4FF" stop-opacity="0.5"/>
+      <stop offset="0.75" stop-color="#9FB4FF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#9FB4FF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="300" fill="#06070A"/>
+  <rect width="1200" height="300" fill="url(#grid)"/>
+  <rect width="1200" height="300" fill="url(#glow)"/>
+  <rect width="1200" height="300" fill="url(#glow2)"/>
+
+  <!-- orbital arcs -->
+  <g opacity="0.5">
+    <ellipse cx="985" cy="150" rx="205" ry="72" stroke="#9FB4FF" stroke-opacity="0.20" stroke-width="1" transform="rotate(-16 985 150)"/>
+    <ellipse cx="985" cy="150" rx="150" ry="52" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="1" transform="rotate(-16 985 150)"/>
+    <ellipse cx="985" cy="150" rx="255" ry="96" stroke="#E0B15C" stroke-opacity="0.10" stroke-width="1" transform="rotate(-16 985 150)"/>
+    <circle cx="985" cy="150" r="3" fill="#9FB4FF" fill-opacity="0.85"/>
+    <circle cx="1176" cy="86" r="2.4" fill="#9FB4FF" fill-opacity="0.9"/>
+    <circle cx="806" cy="222" r="1.8" fill="#E0B15C" fill-opacity="0.9"/>
+  </g>
+
+  <!-- scattered stars -->
+  <g fill="#FFFFFF">
+    <circle cx="742" cy="58" r="1.1" fill-opacity="0.30"/>
+    <circle cx="1132" cy="248" r="1.3" fill-opacity="0.22"/>
+    <circle cx="884" cy="42" r="0.9" fill-opacity="0.35"/>
+    <circle cx="1058" cy="262" r="1" fill-opacity="0.25"/>
+    <circle cx="700" cy="182" r="0.9" fill-opacity="0.20"/>
+    <circle cx="1156" cy="150" r="1.2" fill-opacity="0.18"/>
+  </g>
+
+  <!-- left edge marker -->
+  <rect x="0" y="0" width="3" height="300" fill="#9FB4FF" fill-opacity="0.55"/>
+
+  <!-- type block -->
+  <g>
+    <text x="72" y="96" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="12.5" letter-spacing="4.2" fill="#8B93A7">INTERFACE ENGINEER</text>
+
+    <text x="70" y="164" font-family="Georgia, 'Times New Roman', serif"
+          font-size="54" letter-spacing="0.4" fill="#F2F0EB">Anuj Phulera</text>
+
+    <rect x="72" y="192" width="300" height="1" fill="url(#rule)"/>
+
+    <text x="72" y="222" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="13" letter-spacing="0.4" fill="#9AA2B4">I build interfaces that rebuild themselves</text>
+    <text x="72" y="243" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="13" letter-spacing="0.4" fill="#9AA2B4">around the person using them.</text>
+
+    <text x="72" y="276" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="10.5" letter-spacing="2.6" fill="#5C6376">DEEP FIELD · VERDE · NIRMAN · RESONATE</text>
+  </g>
+</svg>
