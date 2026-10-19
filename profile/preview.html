@@ -1,302 +1,254 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Profile preview — how it will look</title>
+<title>Preview — your GitHub profile</title>
 <style>
-  :root[data-theme="dark"] {
-    --bg: #0d1117; --panel: #0d1117; --border: #30363d; --border-muted: #21262d;
-    --fg: #e6edf3; --muted: #8b949e; --link: #4493f8; --subtle: #6e7681;
-    --btn: #21262d; --btn-border: #363b42; --header: #010409; --code: #161b22;
-    --banner: url('./banner-dark.svg');
+  :root{
+    --bg:#0d1117; --panel:#0d1117; --border:#30363d; --muted-border:#21262d;
+    --fg:#e6edf3; --muted:#8b949e; --link:#4493f8; --subtle:#6e7681;
+    --btn:#21262d; --btnb:#363b42; --head:#010409; --code:#161b22; --codefg:#e6edf3;
+    --crimson:#C1121F; --emble:#FF3B3B;
   }
-  :root[data-theme="light"] {
-    --bg: #ffffff; --panel: #ffffff; --border: #d1d9e0; --border-muted: #d1d9e0;
-    --fg: #1f2328; --muted: #59636e; --link: #0969da; --subtle: #818b98;
-    --btn: #f6f8fa; --btn-border: #d1d9e0; --header: #f6f8fa; --code: #f6f8fa;
-    --banner: url('./banner-light.svg');
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
-    font-size: 14px; line-height: 1.5;
-    transition: background .18s ease, color .18s ease;
-  }
-  a { color: var(--link); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+       font-size:14px;line-height:1.5}
+  a{color:var(--link);text-decoration:none}
+  a:hover{text-decoration:underline}
 
-  /* ── top nav ── */
-  .nav {
-    background: var(--header); border-bottom: 1px solid var(--border);
-    padding: 14px 24px; display: flex; align-items: center; gap: 14px;
-    font-size: 14px; position: sticky; top: 0; z-index: 10;
-    backdrop-filter: blur(12px);
-  }
-  .gh-mark { width: 30px; height: 30px; border-radius: 50%; background: var(--fg); opacity: .92;
-             display: grid; place-items: center; color: var(--header); font-weight: 800; font-size: 15px; }
-  .nav-user { font-weight: 600; }
-  .nav-spacer { flex: 1; }
-  .theme-btn {
-    background: var(--btn); color: var(--fg); border: 1px solid var(--btn-border);
-    border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer;
-    font-family: inherit; font-weight: 500;
-  }
-  .theme-btn:hover { border-color: var(--muted); }
+  .nav{background:var(--head);border-bottom:1px solid var(--border);padding:14px 24px;
+       display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:10}
+  .mark{width:30px;height:30px;border-radius:50%;background:var(--fg);display:grid;place-items:center;
+        color:var(--head);font-weight:800;font-size:15px}
+  .nav b{font-weight:600}
+  .sp{flex:1}
+  .tag{font-size:11px;letter-spacing:1.4px;color:var(--subtle);border:1px solid var(--border);
+       border-radius:20px;padding:4px 10px;text-transform:uppercase}
 
-  /* ── layout ── */
-  .page { max-width: 1280px; margin: 0 auto; padding: 32px 24px 96px; display: grid;
-          grid-template-columns: 296px minmax(0, 1fr); gap: 40px; }
-  @media (max-width: 900px) { .page { grid-template-columns: 1fr; gap: 24px; } }
+  .page{max-width:1240px;margin:0 auto;padding:32px 24px 96px;display:grid;
+        grid-template-columns:290px minmax(0,1fr);gap:44px}
+  @media(max-width:920px){.page{grid-template-columns:1fr;gap:24px}}
 
-  /* ── sidebar ── */
-  .avatar {
-    width: 100%; aspect-ratio: 1; border-radius: 50%;
-    background: radial-gradient(circle at 32% 28%, #2b3a55 0%, #111827 55%, #0b0f17 100%);
-    border: 1px solid var(--border); display: grid; place-items: center;
-    font-family: Georgia, serif; font-size: 84px; letter-spacing: 2px;
-    color: rgba(255,255,255,.9); user-select: none;
-  }
-  :root[data-theme="light"] .avatar {
-    background: radial-gradient(circle at 32% 28%, #dbe4f5 0%, #eef1f7 55%, #f7f9fc 100%);
-    color: #23324a;
-  }
-  .name { font-size: 24px; font-weight: 600; line-height: 1.25; margin: 18px 0 0; }
-  .handle { font-size: 20px; font-weight: 300; color: var(--muted); margin: 0 0 14px; }
-  .follow {
-    width: 100%; background: var(--btn); border: 1px solid var(--btn-border); color: var(--fg);
-    border-radius: 6px; padding: 6px 16px; font-size: 14px; font-weight: 500;
-    cursor: pointer; font-family: inherit; margin-bottom: 16px;
-  }
-  .follow:hover { border-color: var(--muted); }
-  .bio { margin: 0 0 16px; font-size: 15px; }
-  .social { color: var(--muted); font-size: 14px; margin-bottom: 16px; display: flex;
-            align-items: center; gap: 6px; flex-wrap: wrap; }
-  .social b { color: var(--fg); font-weight: 600; }
-  .links { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border-muted);
-           padding-top: 16px; font-size: 14px; }
-  .links span { display: flex; align-items: center; gap: 8px; color: var(--fg); overflow: hidden;
-                text-overflow: ellipsis; white-space: nowrap; }
-  .links svg { flex: none; opacity: .6; }
-  .ach-title { font-weight: 600; font-size: 16px; margin: 26px 0 12px; }
-  .badge {
-    width: 64px; height: 64px; border-radius: 50%;
-    background: linear-gradient(140deg, #2b3a55, #16202f);
-    border: 1px solid var(--border); display: grid; place-items: center; font-size: 28px;
-  }
+  .avatar{width:100%;aspect-ratio:1;border-radius:50%;border:1px solid var(--border);
+          background:radial-gradient(circle at 34% 26%,#3a0a10,#12060a 62%,#08050a);
+          display:grid;place-items:center;overflow:hidden}
+  .avatar img{width:74%;height:74%}
+  .name{font-size:24px;font-weight:600;margin:18px 0 0}
+  .handle{font-size:19px;font-weight:300;color:var(--muted);margin:0 0 14px}
+  .follow{width:100%;background:var(--btn);border:1px solid var(--btnb);color:var(--fg);
+          border-radius:6px;padding:6px 16px;font:inherit;font-weight:500;cursor:pointer;margin-bottom:16px}
+  .bio{margin:0 0 16px;font-size:15px}
+  .social{color:var(--muted);margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .social b{color:var(--fg)}
+  .links{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--muted-border);
+         padding-top:16px}
+  .links span{display:flex;gap:8px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .links svg{flex:none;opacity:.6}
+  .ach{font-weight:600;font-size:16px;margin:26px 0 12px}
+  .badge{width:64px;height:64px;border-radius:50%;border:1px solid #4a1119;
+         background:radial-gradient(circle at 35% 30%,#5c060c,#1a0407);display:grid;place-items:center}
+  .badge img{width:58%;height:58%}
 
-  /* ── readme card ── */
-  .card { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--panel); }
-  .card-head {
-    background: var(--header); border-bottom: 1px solid var(--border);
-    padding: 10px 16px; font-size: 13px; color: var(--muted);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .card-head b { color: var(--fg); font-weight: 600; }
-  .card-body { padding: 32px 40px 40px; }
-  @media (max-width: 640px) { .card-body { padding: 24px 20px 32px; } }
+  .card{border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--panel)}
+  .card-head{background:var(--head);border-bottom:1px solid var(--border);padding:10px 16px;
+             font-size:13px;color:var(--muted);
+             display:flex;align-items:center;gap:8px}
+  .card-head b{color:var(--fg);font-weight:600}
+  .card-body{padding:28px 40px 40px}
+  @media(max-width:640px){.card-body{padding:20px}}
 
-  .banner { width: 100%; display: block; border-radius: 6px; margin: 0 0 32px; }
-  .center { text-align: center; }
-  h1 { font-size: 2em; font-weight: 600; margin: 0 0 8px; letter-spacing: -.01em; }
-  h3 { font-size: 1.25em; font-weight: 600; margin: 32px 0 12px; }
-  h4 { font-size: 1em; font-weight: 600; margin: 0 0 8px; }
-  h4 a { color: var(--link); }
-  p { margin: 0 0 16px; }
-  .sub { color: var(--muted); font-size: 14.5px; line-height: 1.65; }
-  hr { border: 0; border-top: 1px solid var(--border-muted); margin: 32px 0; }
-  code {
-    background: var(--code); padding: .2em .4em; border-radius: 6px; font-size: 85%;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
-  ul { padding-left: 26px; margin: 0 0 16px; }
-  li { margin: 7px 0; }
-  li code { font-size: 12px; }
-  table { border-collapse: collapse; width: 100%; margin: 0; }
-  td { padding: 4px 18px 24px 0; vertical-align: top; border: 0; }
-  td + td { padding-left: 22px; border-left: 1px solid var(--border-muted); }
-  @media (max-width: 640px) {
-    table, tr, td { display: block; width: 100%; }
-    td { padding: 0 0 22px; border: 0 !important; }
-  }
-  .detail {
-    border: 1px solid var(--border); border-radius: 6px; padding: 10px 16px;
-    color: var(--muted); font-size: 14px; background: var(--code);
-  }
-  .detail b { color: var(--fg); }
-  .stack { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-  .stack img { height: 28px; }
-  .note {
-    margin-top: 28px; padding: 12px 16px; border-left: 3px solid var(--link);
-    background: color-mix(in srgb, var(--link) 8%, transparent);
-    border-radius: 0 6px 6px 0; font-size: 13px; color: var(--muted);
-  }
-  .note b { color: var(--fg); }
+  .center{text-align:center}
+  h1{font-size:2.1em;font-weight:700;letter-spacing:.01em;margin:8px 0 10px}
+  h2{font-size:1.5em;font-weight:600;border-bottom:1px solid var(--muted-border);
+     padding-bottom:.3em;margin:28px 0 16px;display:flex;align-items:center;gap:10px}
+  h3{font-size:1.15em;font-weight:600;margin:0 0 8px;display:flex;align-items:center;gap:7px}
+  h3 a{color:var(--link)}
+  p{margin:0 0 14px}
+  code{background:var(--code);padding:.15em .42em;border-radius:6px;font-size:82%;
+       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#ffb4b4}
+  hr{border:0;border-top:1px solid var(--muted-border);margin:28px 0}
+  blockquote{margin:0 0 16px;padding:.2em 0 .2em 1em;border-left:.25em solid var(--crimson);color:var(--muted)}
+  blockquote p{margin:0}
+  table{border-collapse:collapse;width:100%}
+  td{border:1px solid var(--muted-border);padding:16px 18px;vertical-align:top;width:50%}
+  @media(max-width:700px){table,tr,td{display:block;width:100%}td+td{border-top:0}}
+  .detail{border:1px solid var(--border);border-radius:6px;padding:10px 16px;
+          background:var(--code);color:var(--muted)}
+  .detail b{color:var(--fg)}
+  .stack{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+  .stack img{height:28px}
+  .status td{width:auto}
+  .status td:first-child{white-space:nowrap;color:var(--fg);font-weight:600;width:130px}
+  .status td:last-child{color:var(--muted)}
+  .banner-wrap{width:100%;border-radius:6px;overflow:hidden;line-height:0}
+  .banner-wrap img{width:100%;display:block}
+  .kicker{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.18em;
+          color:var(--subtle);display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .kicker code{color:#c9bfc6;background:#160f13}
+  .note{margin-top:26px;padding:12px 16px;border-left:3px solid var(--crimson);
+        background:rgba(193,18,31,.08);border-radius:0 6px 6px 0;font-size:13px;color:var(--muted)}
+  .note b{color:var(--fg)}
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <div class="gh-mark">A</div>
-  <span class="nav-user">yourusername</span>
-  <span class="nav-spacer"></span>
-  <button class="theme-btn" onclick="toggleTheme()">☀︎ / ☾ &nbsp;theme</button>
+  <div class="mark">A</div>
+  <span><b>yourusername</b></span>
+  <span class="sp"></span>
+  <span class="tag">live preview · animations running</span>
 </div>
 
 <div class="page">
 
-  <!-- ══════════ SIDEBAR ══════════ -->
   <aside>
-    <div class="avatar">AP</div>
-
-    <h2 class="name">Anuj Phulera</h2>
+    <div class="avatar"><img src="./sharingan.svg" alt="" /></div>
+    <h2 class="name" style="border:0;padding:0;margin:18px 0 0;display:block">Anuj Phulera</h2>
     <p class="handle">yourusername</p>
-
     <button class="follow">Follow</button>
-
     <p class="bio">Interface engineer. I build sites that rebuild themselves around the person using them.</p>
-
     <div class="social">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5.5 3.5v-1a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1h2.5a1 1 0 0 1 1 1v2h-1.25a1.75 1.75 0 0 0 0 3.5H14v3a1 1 0 0 1-1 1h-2.5v-1.25a1.75 1.75 0 0 0-3.5 0V14H4.5a1 1 0 0 1-1-1V10H2.25a1.75 1.75 0 0 1 0-3.5H3.5V5a1 1 0 0 1 1-1z"/></svg>
-      <b>0</b> followers &nbsp;·&nbsp; <b>0</b> following
+      <b>0</b> followers · <b>0</b> following
     </div>
-
     <div class="links">
-      <span>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0Z"/></svg>
-        uchiha-madara-anuj.github.io/WEBE
-      </span>
-      <span>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm0 1.5a.25.25 0 0 0-.25.25v.4l6.5 3.4 6.5-3.4v-.4a.25.25 0 0 0-.25-.25Z"/></svg>
-        anuj@example.com
-      </span>
+      <span><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0Z"/></svg> uchiha-madara-anuj.github.io/WEBE</span>
+      <span><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm0 1.5a.25.25 0 0 0-.25.25v.4l6.5 3.4 6.5-3.4v-.4a.25.25 0 0 0-.25-.25Z"/></svg> anuj@example.com</span>
     </div>
-
-    <div class="ach-title">Achievements</div>
-    <div class="badge">🚀</div>
+    <div class="ach">Achievements</div>
+    <div class="badge"><img src="./sharingan.svg" alt="" /></div>
   </aside>
 
-  <!-- ══════════ README ══════════ -->
   <main>
     <div class="card">
       <div class="card-head"><b>yourusername</b> / README.md</div>
       <div class="card-body">
 
-        <img class="banner" id="banner" src="./banner-dark.svg" alt="Anuj Phulera — interface engineer" />
+        <div class="banner-wrap"><img src="./banner.svg" alt="Anuj Phulera — Wake up to reality" /></div>
 
-        <h1 class="center">Hi, I'm Anuj.</h1>
+        <div class="center" style="margin-top:18px"><img src="./typing.svg" alt="Wake up to reality." /></div>
+        <div class="center"><img src="./sharingan.svg" width="132" alt="Sharingan" /></div>
 
-        <p class="center"><b>I build interfaces that rebuild themselves around the person using them.</b></p>
+        <h1 class="center">ANUJ PHULERA</h1>
 
-        <p class="center sub">
-          Most websites show everyone the same page. Mine watch how you move — where you linger,
-          what you skip, how fast you read — then restructure their own layout, hierarchy and
-          navigation to match. Two people leave a different website behind.
+        <p class="center kicker">
+          <code>UCHIHA CLAN</code><code>INTERFACE ENGINEER</code><code>JAIPUR, INDIA</code>
         </p>
 
-        <p class="center">
+        <p class="center" style="margin-top:14px">
+          <a href="#"><b>The Path</b></a> &nbsp;·&nbsp;
           <a href="#"><b>Work</b></a> &nbsp;·&nbsp;
-          <a href="#"><b>Live demo</b></a> &nbsp;·&nbsp;
+          <a href="#"><b>Live Site</b></a> &nbsp;·&nbsp;
           <a href="#"><b>Email</b></a>
         </p>
 
-        <hr />
+        <img src="./divider.svg" width="100%" alt="" />
 
-        <h3>◈ Right now</h3>
-        <ul style="list-style:none;padding-left:0">
-          <li>🔭 <b>Building</b> &nbsp; DEEP FIELD — a cosmos atlas with no fixed interface. Six structural paradigms, eleven live behavioural signals, and an engine that explains every decision it makes.</li>
-          <li>🌱 <b>Growing</b> &nbsp; VERDE — a vertical farm that waters itself. ESP32 firmware, a TensorFlow Lite disease classifier, and a custom PCB.</li>
-          <li>⚡ <b>Shipping</b> &nbsp; CommitQuest — reads any GitHub profile like a scorecard and hands you quests to fix what's missing.</li>
-        </ul>
+        <h2>⦿ The Eye</h2>
+        <p>I build <b>interfaces that rebuild themselves around the person using them.</b></p>
+        <p style="color:var(--muted)">Most websites show everyone the same page. Mine watch how you move — where you linger, what you skip, how fast you read — then restructure their own layout, hierarchy and navigation to match. Two people leave a completely different website behind. The engine explains every change it makes, and never makes one it can't justify.</p>
+        <blockquote><p><em>That is not a random shuffle. That is a decision.</em></p></blockquote>
 
-        <hr />
+        <img src="./divider.svg" width="100%" alt="" />
 
-        <h3>◈ Selected work</h3>
+        <h2>⦿ Right Now</h2>
+        <table class="status">
+          <tr><td>🔴 Building</td><td><b style="color:var(--fg)">DEEP FIELD</b> — a living atlas of the cosmos with no fixed interface. Six structural paradigms, eleven live behavioural signals, and an engine that earns the right to rearrange the page.</td></tr>
+          <tr><td>🩸 Growing</td><td><b style="color:var(--fg)">VERDE</b> — a vertical farm that waters itself. ESP32 firmware, TensorFlow Lite disease classifier, custom PCB, Hindi/English control channel.</td></tr>
+          <tr><td>🗡 Shipping</td><td><b style="color:var(--fg)">COMMITQUEST</b> — reads any GitHub profile like a scorecard and hands you quests to fix what's missing.</td></tr>
+        </table>
 
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <h2>⦿ Selected Work</h2>
         <table>
           <tr>
-            <td width="50%">
-              <h4><a href="#">DEEP FIELD</a></h4>
-              <div class="sub">A living atlas of the cosmos whose layout, hierarchy and navigation model are rebuilt at runtime around each visitor's behaviour — and which explains every change in plain English.</div>
+            <td>
+              <h3><img src="./sharingan.svg" width="15" /> <a href="#">DEEP FIELD</a></h3>
+              <div style="color:var(--muted)">A cosmos atlas that reorganises its own layout and navigation model per visitor — and explains every decision in plain language.</div>
               <p style="margin:10px 0 0"><code>React 19</code> <code>Vite</code> <code>TypeScript</code></p>
             </td>
-            <td width="50%">
-              <h4><a href="#">VERDE OS</a></h4>
-              <div class="sub">Mission control for an autonomous vertical farm. Live ESP32 telemetry, an AI plant doctor, and every API key kept server-side behind five whitelisted routes.</div>
-              <p style="margin:10px 0 0"><code>Next 16</code> <code>TypeScript</code> <code>Firebase</code></p>
+            <td>
+              <h3><img src="./sharingan.svg" width="15" /> <a href="#">VERDE OS</a></h3>
+              <div style="color:var(--muted)">Mission control for an autonomous vertical farm. Live ESP32 telemetry, AI plant doctor, every key server-side behind whitelisted routes.</div>
+              <p style="margin:10px 0 0"><code>Next 16</code> <code>Firebase</code> <code>Gemini</code></p>
             </td>
           </tr>
           <tr>
-            <td width="50%">
-              <h4><a href="#">NIRMAN</a></h4>
-              <div class="sub">An AI-powered e-waste pickup network for India. Three role dashboards, live routing, and a booking pipeline that runs end to end.</div>
-              <p style="margin:10px 0 0"><code>Next 14</code> <code>Firebase</code> <code>Supabase</code></p>
+            <td>
+              <h3><img src="./sharingan.svg" width="15" /> <a href="#">NIRMAN</a></h3>
+              <div style="color:var(--muted)">An AI-powered e-waste pickup network for India. Three role dashboards, live routing, end-to-end bookings.</div>
+              <p style="margin:10px 0 0"><code>Next 14</code> <code>Supabase</code> <code>Leaflet</code></p>
             </td>
-            <td width="50%">
-              <h4><a href="#">SKILLVERSE</a></h4>
-              <div class="sub">Turns screen time into skill time. Thirty-four routes, eight AI analysis pipelines, and a 250-respondent research dataset behind every product claim.</div>
+            <td>
+              <h3><img src="./sharingan.svg" width="15" /> <a href="#">SKILLVERSE</a></h3>
+              <div style="color:var(--muted)">Turns screen time into skill time. 34 routes, 8 AI pipelines, a 250-respondent research dataset.</div>
               <p style="margin:10px 0 0"><code>Next 14</code> <code>Gemini</code> <code>Postgres</code></p>
             </td>
           </tr>
           <tr>
-            <td width="50%">
-              <h4><a href="#">COMMITQUEST</a></h4>
-              <div class="sub">Scans a GitHub profile, scores the balance of your contribution types, and hands you quests to unlock whatever's missing. Zero dependencies, 53 assertions.</div>
+            <td>
+              <h3><img src="./sharingan.svg" width="15" /> <a href="#">COMMITQUEST</a></h3>
+              <div style="color:var(--muted)">Scores the balance of your contribution types and hands you quests to unlock the rest. Zero dependencies, 53 assertions.</div>
               <p style="margin:10px 0 0"><code>Vanilla JS</code> <code>GitHub API</code></p>
             </td>
-            <td width="50%">
-              <h4><a href="#">RESONATE</a></h4>
-              <div class="sub">A cinematic platform about algorithmic empathy. Custom GLSL shaders, ~25 pages of scroll-driven narrative.</div>
+            <td>
+              <h3><img src="./sharingan.svg" width="15" /> <a href="#">RESONATE</a></h3>
+              <div style="color:var(--muted)">A cinematic platform about algorithmic empathy. Custom GLSL shaders, ~25 pages of scroll-driven narrative.</div>
               <p style="margin:10px 0 0"><code>React 19</code> <code>Three.js</code> <code>GSAP</code></p>
             </td>
           </tr>
         </table>
 
-        <div class="detail">▶ <b>Three more, if you're curious</b> &nbsp;<span class="sub">— collapsed by default</span></div>
+        <div class="detail" style="margin-top:16px">▶ <b>⚔ Three more, if you're curious</b> &nbsp;<span style="color:var(--muted)">— collapsed by default</span></div>
 
-        <hr />
+        <img src="./divider.svg" width="100%" alt="" />
 
-        <h3>◈ What I actually spend my time on</h3>
-        <p class="sub">
-          Interfaces that change shape are easy to make unusable. The interesting problem isn't the
-          reshuffling — it's earning the right to reshuffle.
-        </p>
-        <p class="sub">
-          So DEEP FIELD only reconstructs itself when the engine has <b style="color:var(--fg)">evidence</b>
-          (a confident read, a clear margin over the runner-up) and never more than once every nine
-          seconds. It shows you what changed and why. It lets you pin a structure and switch the engine
-          off. And it never loses your place.
-        </p>
-        <p class="sub">
-          That constraint — <em>adapt, but never at the cost of trust</em> — is the thing I care about.
-          Everything I build is an argument for it.
-        </p>
+        <h2>⦿ The Path</h2>
+        <p style="color:var(--muted)">Interfaces that change shape are easy to make <b style="color:var(--fg)">unusable</b>. Anyone can shuffle a grid. The hard part was never the shuffling.</p>
+        <blockquote><p><b style="color:#ff8a8a">The hard part is earning the right to shuffle.</b></p></blockquote>
+        <p style="color:var(--muted)">So DEEP FIELD only reconstructs itself when the engine has <b style="color:var(--fg)">evidence</b> — a confident read, and a clear margin over the runner-up — and never more than once every nine seconds. It shows you what changed and why. It lets you pin a structure and switch the engine off. It never loses your place.</p>
+        <p style="color:var(--muted)">Every project here is an argument for the same idea: <em>adapt, but never at the cost of trust.</em></p>
 
-        <hr />
+        <img src="./divider.svg" width="100%" alt="" />
 
-        <h3 style="text-align:center">◈ The stack</h3>
+        <h2>⦿ Arsenal</h2>
         <div class="stack">
-          <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white&labelColor=1F2328" alt="TypeScript" />
-          <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=000&labelColor=1F2328" alt="React" />
-          <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white&labelColor=1F2328" alt="Next.js" />
-          <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white&labelColor=1F2328" alt="Three.js" />
-          <img src="https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white&labelColor=1F2328" alt="Tailwind" />
-          <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=000&labelColor=1F2328" alt="Firebase" />
-          <img src="https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white&labelColor=1F2328" alt="Supabase" />
-          <img src="https://img.shields.io/badge/ESP32-E7352C?style=for-the-badge&logo=espressif&logoColor=white&labelColor=1F2328" alt="ESP32" />
-          <img src="https://img.shields.io/badge/Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white&labelColor=1F2328" alt="Gemini" />
-          <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white&labelColor=1F2328" alt="Vercel" />
+          <img src="https://img.shields.io/badge/TypeScript-C1121F?style=for-the-badge&logo=typescript&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/React-C1121F?style=for-the-badge&logo=react&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/Next.js-C1121F?style=for-the-badge&logo=nextdotjs&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/Three.js-C1121F?style=for-the-badge&logo=threedotjs&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/Tailwind-C1121F?style=for-the-badge&logo=tailwindcss&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/Firebase-8B0A14?style=for-the-badge&logo=firebase&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/Supabase-8B0A14?style=for-the-badge&logo=supabase&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/ESP32-8B0A14?style=for-the-badge&logo=espressif&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/Gemini-8B0A14?style=for-the-badge&logo=googlegemini&logoColor=white&labelColor=0B0709" alt="">
+          <img src="https://img.shields.io/badge/Vercel-8B0A14?style=for-the-badge&logo=vercel&logoColor=white&labelColor=0B0709" alt="">
         </div>
 
-        <hr />
+        <img src="./divider.svg" width="100%" alt="" />
 
-        <p class="center sub">Jaipur, India &nbsp;·&nbsp; building things that shouldn't fit in a browser tab</p>
+        <div class="center">
+          <img src="./sharingan.svg" width="64" alt="" />
+          <p style="margin-top:16px"><em>“Wake up to reality. Nothing ever goes as planned in this world.”</em></p>
+          <p style="color:var(--muted);font-size:12.5px"><b style="color:var(--fg)">— Madara Uchiha</b> · and also every deploy I've ever done at 2 a.m.</p>
+        </div>
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <p class="center" style="color:var(--muted);font-size:12.5px">
+          Jaipur, India · building things that shouldn't fit in a browser tab
+        </p>
+        <p class="center" style="font-size:13px">
+          <a href="#"><b>Repositories</b></a> &nbsp;·&nbsp; <a href="#"><b>DEEP FIELD</b></a> &nbsp;·&nbsp; <a href="#"><b>Email</b></a>
+        </p>
 
         <div class="note">
-          <b>This banner swaps itself.</b> The README uses <code>&lt;picture&gt;</code> with
-          <code>prefers-color-scheme</code>, so GitHub serves the dark banner to dark-mode visitors and the
-          light one to light-mode visitors. Hit <b>☀︎ / ☾</b> above to see it happen.
+          <b>This is the real thing, animating.</b> The eye spins, the tomoe orbit, embers rise,
+          and the tagline types itself. All of it is SMIL inside the SVG files — no JavaScript,
+          no external services, so it keeps moving on GitHub.
         </div>
 
       </div>
@@ -304,15 +256,5 @@
   </main>
 
 </div>
-
-<script>
-  function toggleTheme() {
-    const root = document.documentElement;
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    document.getElementById('banner').src =
-      next === 'dark' ? './banner-dark.svg' : './banner-light.svg';
-  }
-</script>
 </body>
 </html>
