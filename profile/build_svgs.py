@@ -43,7 +43,13 @@ def tomoe(scale=1.0, fill="#050308"):
 
 
 def rotating_tomoe(cx, cy, orbit, count=3, dur="9s", fill="#050308", scale=1.0):
-    """Three tomoe on a group that spins forever."""
+    """Three tomoe that spin forever.
+
+    The translate lives on an OUTER group and the rotation on an INNER one.
+    Putting both on the same element lets <animateTransform additive="replace">
+    wipe out the translate, which draws the tomoe around the origin instead of
+    around the eye. Never merge these two groups.
+    """
     parts = []
     for i in range(count):
         a = i * (360 / count)
@@ -51,11 +57,12 @@ def rotating_tomoe(cx, cy, orbit, count=3, dur="9s", fill="#050308", scale=1.0):
             f'<g transform="rotate({a}) translate(0,{-orbit})">{tomoe(scale, fill)}</g>'
         )
     return (
-        f'<g transform="translate({cx},{cy})" opacity="0.97">'
+        f'<g transform="translate({cx},{cy})">'
+        f'<g opacity="0.97">'
         f'<animateTransform attributeName="transform" type="rotate" '
-        f'from="0 {cx} {cy}" to="360 {cx} {cy}" dur="{dur}" repeatCount="indefinite" additive="replace"/>'
+        f'from="0 0 0" to="360 0 0" dur="{dur}" repeatCount="indefinite"/>'
         + "".join(parts) +
-        "</g>"
+        '</g></g>'
     )
 
 
@@ -84,12 +91,14 @@ def embers(n=30, w=1200, h=340):
 
 
 def crest(cx, cy, r=56, fill="#3A1116", opacity="0.30", spin=None):
-    """Uchiha uchiwa — a fan: circle with a curved tapering tail."""
-    a = f'<animateTransform attributeName="transform" type="rotate" ' \
-        f'from="0 {cx} {cy}" to="360 {cx} {cy}" dur="{spin}" repeatCount="indefinite"/>' if spin else ""
-    return (
-        f'<g transform="translate({cx},{cy})" opacity="{opacity}" fill="{fill}">'
-        f'{a}'
+    """Uchiha uchiwa - a fan: circle with a curved tapering tail.
+
+    As with the tomoe, the spin is applied to an inner group so it cannot
+    shadow the outer translate.
+    """
+    anim = (f'<animateTransform attributeName="transform" type="rotate" '
+            f'from="0 0 0" to="360 0 0" dur="{spin}" repeatCount="indefinite"/>') if spin else ""
+    body = (
         f'<circle cx="0" cy="{-r * 0.22:.1f}" r="{r * 0.80:.1f}"/>'
         f'<path d="M {r * 0.46:.1f},{r * 0.36:.1f} '
         f'C {r * 0.84:.1f},{r * 0.70:.1f} {r * 0.94:.1f},{r * 1.16:.1f} {r * 0.70:.1f},{r * 1.46:.1f} '
@@ -101,7 +110,11 @@ def crest(cx, cy, r=56, fill="#3A1116", opacity="0.30", spin=None):
         f'C {r * -0.12:.1f},{r * 1.12:.1f} {r * -0.19:.1f},{r * 1.46:.1f} {r * 0.02:.1f},{r * 1.63:.1f} '
         f'C {r * 0.30:.1f},{r * 1.88:.1f} {r * 0.74:.1f},{r * 1.77:.1f} {r * 1.00:.1f},{r * 1.45:.1f} '
         f'C {r * 1.30:.1f},{r * 1.08:.1f} {r * 1.18:.1f},{r * 0.62:.1f} {r * 0.78:.1f},{r * 0.32:.1f} Z"/>'
-        "</g>"
+    )
+    return (
+        f'<g transform="translate({cx},{cy})">'
+        f'<g opacity="{opacity}" fill="{fill}">{anim}{body}</g>'
+        f'</g>'
     )
 
 

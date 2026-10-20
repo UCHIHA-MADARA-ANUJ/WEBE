@@ -72,17 +72,23 @@ def stage3(cx, cy, R, dur="9s"):
 
 
 def stage_mangekyo(cx, cy, R, dur="11s"):
-    blade = BLADE
+    """Three-blade Mangekyo.
+
+    translate + scale on the outer group, rotation on an inner one, so the
+    animation cannot shadow the positioning transform.
+    """
     k = R / 96.0
     arms = "".join(
-        f'<g transform="rotate({a})"><path d="{blade}" fill="#050308"/></g>'
+        f'<g transform="rotate({a})"><path d="{BLADE}" fill="#050308"/></g>'
         for a in (0, 120, 240)
     )
     return eye_shell(cx, cy, R) + f'''
-    <g transform="translate({cx},{cy}) scale({k:.3f})">
-      <animateTransform attributeName="transform" type="rotate"
-        from="0 {cx} {cy}" to="360 {cx} {cy}" dur="{dur}" repeatCount="indefinite" additive="replace"/>
-      {arms}
+    <g transform="translate({cx},{cy})">
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+          from="0 0 0" to="360 0 0" dur="{dur}" repeatCount="indefinite"/>
+        <g transform="scale({k:.3f})">{arms}</g>
+      </g>
     </g>
     <circle cx="{cx}" cy="{cy}" r="{R * 0.175:.1f}" fill="#040206"/>
     <circle cx="{cx}" cy="{cy}" r="{R * 0.175:.1f}" fill="none" stroke="{CRIMSON}" stroke-opacity="0.5" stroke-width="1.2"/>'''
@@ -161,9 +167,8 @@ evolution = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{EW}" height="{EH
   </g>
 
   <!-- evolution flash -->
-  <circle cx="{CX}" cy="{CY}" r="{ER * 0.5:.0f}" fill="none" stroke="{BLAZE}" stroke-width="2" opacity="0">
-    <animate attributeName="opacity" values="0;0.55;0" keyTimes="0;0.315;0.35" dur="{CYCLE}" repeatCount="indefinite"/>
-    <animate attributeName="r" values="{ER * 0.6:.0f};{ER * 2.6:.0f}" keyTimes="0;1" dur="0.9s" begin="5.8s" repeatCount="indefinite"/>
+  <circle cx="{CX}" cy="{CY}" r="{ER * 1.15:.0f}" fill="none" stroke="{BLAZE}" stroke-width="2" opacity="0">
+    <animate attributeName="opacity" values="0;0;0.5;0;0;0;0.5;0;0" keyTimes="0;0.28;0.315;0.35;0.61;0.63;0.665;0.70;1" dur="{CYCLE}" repeatCount="indefinite"/>
   </circle>
 
   <!-- captions -->
