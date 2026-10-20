@@ -6,7 +6,8 @@
         YOUR_EMAIL      → your email
      Keep all four .svg files next to this README in the repo root.
 
-     Assets: banner.svg · sharingan.svg · divider.svg · typing.svg
+     Assets: banner.svg · evolution.svg · bingo.svg · seal.svg
+             sharingan.svg · divider.svg · typing.svg
      ═══════════════════════════════════════════════════════════════════════ -->
 
 <div align="center">
@@ -20,7 +21,7 @@
 </div>
 
 <div align="center">
-  <img src="./sharingan.svg" width="132" alt="Sharingan" />
+  <img src="./evolution.svg" width="100%" alt="Sharingan → Mangekyō → Rinnegan" />
 </div>
 
 <h1 align="center">ANUJ PHULERA</h1>
@@ -37,6 +38,12 @@
   <a href="https://uchiha-madara-anuj.github.io/WEBE"><b>Live Site</b></a> &nbsp;·&nbsp;
   <a href="mailto:YOUR_EMAIL"><b>Email</b></a>
 </p>
+
+<br/>
+
+<div align="center">
+  <img src="./bingo.svg" width="100%" alt="Bingo Book — S-rank" />
+</div>
 
 <img src="./divider.svg" width="100%" alt="" />
 
@@ -178,7 +185,7 @@ cost of trust.*
 
 <div align="center">
 
-<img src="./sharingan.svg" width="64" alt="Sharingan" />
+<img src="./seal.svg" width="72" alt="Uchiha crest" />
 
 <br/><br/>
 
@@ -193,6 +200,10 @@ cost of trust.*
 <img src="./divider.svg" width="100%" alt="" />
 
 <div align="center">
+
+<img src="./seal.svg" width="34" alt="" />
+
+<br/><br/>
 
 <sub>Jaipur, India · building things that shouldn't fit in a browser tab</sub>
 

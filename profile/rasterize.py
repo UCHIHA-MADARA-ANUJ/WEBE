@@ -269,19 +269,39 @@ def render(svg_path, out_path, scale=SS):
             d.polygon(sp, fill=tuple(paint) + (int(255 * alpha),))
         canvas.alpha_composite(layer)
 
-    def walk(el, m, alpha):
+    def walk(el, m, alpha, inh_fill=None, inh_stroke=None):
         tag = el.tag.split('}')[-1]
         m = mul(m, parse_transform(el.get('transform')))
         op = float(el.get('opacity', 1))
         fo = float(el.get('fill-opacity', 1))
         a = alpha * op * fo
 
-        paint = parse_paint(el, grads)
+        inherited = el.get('fill') or inh_fill
+        if el.get('fill') is None and inh_fill:
+            class _E:  # shim so parse_paint sees the inherited value
+                def get(self, k, d=None):
+                    return inh_fill if k == 'fill' else el.get(k, d)
+            paint = parse_paint(_E(), grads)
+        else:
+            paint = parse_paint(el, grads)
+        stroke_in = el.get('stroke') or inh_stroke
 
         if tag == 'rect' and paint:
             x, y = float(el.get('x', 0)), float(el.get('y', 0))
             w, h = float(el.get('width', 0)), float(el.get('height', 0))
             paint_shape([(x, y), (x + w, y), (x + w, y + h), (x, y + h)], paint, a, m)
+        elif tag == 'circle' and not paint and el.get('stroke'):
+            cx, cy, r = float(el.get('cx', 0)), float(el.get('cy', 0)), float(el.get('r', 0))
+            sw = float(el.get('stroke-width', 1))
+            layer = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+            d = ImageDraw.Draw(layer)
+            c = hex_rgb(el.get('stroke'))
+            sa = float(el.get('stroke-opacity', 1)) * a
+            px, py = apply(m, cx, cy)
+            rr = r * (abs(m[0]) if m[0] else 1)
+            d.ellipse([(px - rr) * scale, (py - rr) * scale, (px + rr) * scale, (py + rr) * scale],
+                      outline=c + (int(255 * sa),), width=max(1, int(sw * scale)))
+            canvas.alpha_composite(layer)
         elif tag == 'circle' and paint:
             cx, cy, r = float(el.get('cx', 0)), float(el.get('cy', 0)), float(el.get('r', 0))
             paint_shape(ellipse_pts(cx, cy, r, r), paint, a, m)
@@ -328,7 +348,7 @@ def render(svg_path, out_path, scale=SS):
             canvas.alpha_composite(layer)
 
         for child in el:
-            walk(child, m, a)
+            walk(child, m, a, inherited, stroke_in)
 
     walk(root, IDENT, 1.0)
 
