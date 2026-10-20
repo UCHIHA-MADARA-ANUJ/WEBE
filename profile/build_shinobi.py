@@ -193,7 +193,7 @@ banner = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" vi
 
   <text x="72" y="288" font-family="{MONO}" font-size="10" letter-spacing="2.5" fill="{DIM}">DEEP FIELD · VERDE · NIRMAAN · RESONATE</text>
 
-  <text x="72" y="316" font-family="{MONO}" font-size="8.5" letter-spacing="3" fill="{CHAKRA_D}">JAIPUR · INDIA</text>
+  <text x="72" y="316" font-family="{MONO}" font-size="8.5" letter-spacing="3" fill="{CHAKRA_D}">GURUGRAM · HARYANA · INDIA</text>
 </svg>
 '''
 
@@ -244,21 +244,23 @@ typing = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{TW}" height="{TH}" 
 
 
 # ── registry card ───────────────────────────────────────────────────────────
-RW, RH = 860, 300
+RW, RH = 860, 340
 rows = [
-    ("ORIGIN",     "JAIPUR, INDIA",           CREAM),
-    ("VILLAGE",    "INDEPENDENT",             CREAM),
+    ("ORIGIN",     "GURUGRAM, HARYANA",       CREAM),
+    ("COUNTRY",    "INDIA",                   CREAM),
+    ("AFFILIATION","INDEPENDENT",             CREAM),
+    ("GRADE",      "GENIN · CLASS 10",        CHAKRA),
+    ("AGE",        "FIFTEEN",                 CREAM),
     ("SPECIALITY", "INTERFACE SYSTEMS",       VERM_L),
-    ("NATURE",     "TYPE · REACT · ESP32",    CREAM),
     ("STATUS",     "ACTIVE",                  "#7BE38B"),
 ]
 row_svg = []
-y = 168
+y = 160
 for label, value, col in rows:
     row_svg.append(f'<text x="248" y="{y}" font-family="{MONO}" font-size="10.5" fill="{ASH}">{label}</text>')
-    row_svg.append(f'<text x="400" y="{y}" font-family="{MONO}" font-size="10.5" fill="{col}">{value}</text>')
+    row_svg.append(f'<text x="430" y="{y}" font-family="{MONO}" font-size="10.5" fill="{col}">{value}</text>')
     row_svg.append(f'<line x1="248" y1="{y + 8}" x2="{RW - 40}" y2="{y + 8}" stroke="{DIM}" stroke-opacity="0.22" stroke-width="0.8"/>')
-    y += 24
+    y += 23
 
 registry = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{RW}" height="{RH}" viewBox="0 0 {RW} {RH}" fill="none" role="img" aria-label="Shinobi registration">
 {DEFS}
@@ -272,9 +274,9 @@ registry = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{RW}" height="{RH}
   <text x="{RW - 34}" y="38" font-family="{MONO}" font-size="10.5" letter-spacing="3.6" fill="{VERM_L}" text-anchor="end">NO. 001</text>
   <line x1="34" y1="52" x2="{RW - 34}" y2="52" stroke="{VERM}" stroke-opacity="0.28"/>
 
-  <rect x="34" y="72" width="176" height="176" rx="6" fill="#0A080D" stroke="{VERM}" stroke-opacity="0.32"/>
-  {seal_ring(122, 160, 68, ticks=28, op=0.24, spin="60s")}
-  {emblem(122, 160, 52, turns=2.6, width=7.4, dur="22s")}
+  <rect x="34" y="84" width="176" height="176" rx="6" fill="#0A080D" stroke="{VERM}" stroke-opacity="0.32"/>
+  {seal_ring(122, 172, 68, ticks=28, op=0.24, spin="60s")}
+  {emblem(122, 172, 52, turns=2.6, width=7.4, dur="22s")}
 
   <text x="248" y="88" font-family="{MONO}" font-size="9.5" letter-spacing="3" fill="{ASH}">DESIGNATION</text>
   <text x="246" y="126" font-family="{BLACK}" font-size="34" letter-spacing="0.8" fill="{CREAM}">ANUJ PHULERA</text>
@@ -282,7 +284,7 @@ registry = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{RW}" height="{RH}
 
   {''.join(row_svg)}
 
-  <text x="248" y="288" font-family="{MONO}" font-size="9" letter-spacing="2.4" fill="{DIM}">SEAL INTACT · NOT FOR SALE</text>
+  <text x="248" y="322" font-family="{MONO}" font-size="9" letter-spacing="2.4" fill="{DIM}">SEAL INTACT · NOT FOR SALE</text>
 </svg>
 '''
 
@@ -338,7 +340,7 @@ stats = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{SW_}" height="{SH_}"
   {''.join(bar(i, *b) for i, b in enumerate(BARS))}
 
   <line x1="34" y1="{Y0 + len(BARS) * GAP + 4}" x2="{SW_ - 34}" y2="{Y0 + len(BARS) * GAP + 4}" stroke="{VERM}" stroke-opacity="0.18"/>
-  <text x="34" y="{Y0 + len(BARS) * GAP + 30}" font-family="{MONO}" font-size="9" letter-spacing="2.6" fill="{DIM}">01 · INTERFACE ENGINEER · JAIPUR</text>
+  <text x="34" y="{Y0 + len(BARS) * GAP + 30}" font-family="{MONO}" font-size="9" letter-spacing="2.6" fill="{DIM}">01 · INTERFACE ENGINEER · GURUGRAM</text>
   <text x="{SW_ - 34}" y="{Y0 + len(BARS) * GAP + 30}" font-family="{MONO}" font-size="9" letter-spacing="2.6" fill="{DIM}" text-anchor="end">STATUS ACTIVE</text>
 </svg>
 '''

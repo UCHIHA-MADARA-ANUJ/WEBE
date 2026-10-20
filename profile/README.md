@@ -2,9 +2,7 @@
      ANUJ PHULERA — profile README
      github.com/Anuj-Phulera
      -------------------------------------------------------------------
-     Replace before committing:
-        YOUR_EMAIL     → your email
-        YOUR_DISCORD   → your Discord handle
+     Nothing left to replace — details are live.
 
      Keep all six .svg files next to this README in the repo root.
      Assets: banner.svg · emblem.svg · registry.svg · stats.svg
@@ -30,15 +28,15 @@
 <p align="center">
   <code>SEALING CORPS</code> &nbsp;·&nbsp;
   <code>INTERFACE ENGINEER</code> &nbsp;·&nbsp;
-  <code>JAIPUR, INDIA</code>
+  <code>GURUGRAM, INDIA</code>
 </p>
 
 <p align="center">
   <a href="#-selected-work"><b>Work</b></a> &nbsp;·&nbsp;
   <a href="#-the-path"><b>The Path</b></a> &nbsp;·&nbsp;
   <a href="https://github.com/Anuj-Phulera/WEBE"><b>Live Site</b></a> &nbsp;·&nbsp;
-  <a href="mailto:YOUR_EMAIL"><b>Email</b></a> &nbsp;·&nbsp;
-  <a href="https://discord.com/users/YOUR_DISCORD"><b>Discord</b></a>
+  <a href="mailto:anuj.phulera.work@gmail.com"><b>Email</b></a> &nbsp;·&nbsp;
+  <a href="https://discord.com/users/1417462466304016494"><b>Discord</b></a>
 </p>
 
 <br/>
@@ -182,13 +180,13 @@ cost of trust.*
 
 <br/><br/>
 
-<sub>Jaipur, India · building things that shouldn't fit in a browser tab</sub>
+<sub>Gurugram, Haryana · building things that shouldn't fit in a browser tab</sub>
 
 <br/><br/>
 
 <a href="https://github.com/Anuj-Phulera?tab=repositories"><b>Repositories</b></a> &nbsp;·&nbsp;
 <a href="https://github.com/Anuj-Phulera/WEBE"><b>DEEP FIELD</b></a> &nbsp;·&nbsp;
-<a href="mailto:YOUR_EMAIL"><b>Email</b></a> &nbsp;·&nbsp;
-<a href="https://discord.com/users/YOUR_DISCORD"><b>Discord</b></a>
+<a href="mailto:anuj.phulera.work@gmail.com"><b>Email</b></a> &nbsp;·&nbsp;
+<a href="https://discord.com/users/1417462466304016494"><b>Discord</b></a>
 
 </div>

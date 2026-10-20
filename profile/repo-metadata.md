@@ -1,5 +1,7 @@
 # Repo descriptions & topics — Anuj-Phulera
 
+_All 8 of your repos. Copy-paste straight in._
+
 For each repo: **Settings** (gear next to About) → paste description → add topics → set Website.
 
 GitHub is case-insensitive in URLs, so `Nirman-Portfolio` and `NIrman-Portfolio` resolve to the same repo — that capital `I` is cosmetic. Same for every name here.
