@@ -12,7 +12,7 @@
      ═══════════════════════════════════════════════════════════════════════ -->
 
 <div align="center">
-  <img src="./opening.svg" alt="Anuj Phulera — title sequence" width="100%" />
+  <img src="./opening.svg" alt="Anuj Phulera — title sequence" width="100%" loading="eager" />
 </div>
 
 <br/>
@@ -60,11 +60,13 @@ runtime by watching how you actually read.
 
 ## ⦿ Right Now
 
-| | |
-|---|---|
-| 🔴 **Building** | **DEEP FIELD** — a living atlas of the cosmos with no fixed interface. Six structural paradigms, eleven live behavioural signals, and an engine that earns the right to rearrange the page. |
-| 🩸 **Growing** | **VERDE** — a vertical farm that waters itself. ESP32 firmware, TensorFlow Lite disease classifier, custom PCB, Hindi/English control channel. |
-| 🗡 **Shipping** | **NIRMAAN** — an AI-powered e-waste pickup network for India. Three roles, live routing, bookings that run end to end. |
+<div align="center">
+  <img src="./now.svg" width="100%" alt="Three fronts: DEEP FIELD, VERDE, NIRMAAN" loading="eager" />
+</div>
+
+**DEEP FIELD** is a living atlas of the cosmos with no fixed interface. **VERDE** is a
+vertical farm that waters itself. **NIRMAAN** is an AI-powered e-waste pickup network
+for India — three roles, live routing, bookings that run end to end.
 
 <img src="./divider.svg" width="100%" alt="" />
 

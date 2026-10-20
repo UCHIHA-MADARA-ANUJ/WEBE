@@ -61,7 +61,7 @@ GitHub will say: *"You found a secret! `Anuj-Phulera/Anuj-Phulera` is a special 
 Everything you need is in `github-profile-shinobi.zip`. Unzip it, then either:
 
 **Browser (no git):**
-1. **Add file → Upload files** → drag all **10 SVGs** → Commit
+1. **Add file → Upload files** → drag all **11 SVGs** → Commit
 2. Open `README.md` → ✏️ → select all → delete → paste the new contents → Commit
 
 **Terminal:**
@@ -74,7 +74,7 @@ sed -i 's/YOUR_EMAIL/you@example.com/g' README.md
 git add -A && git commit -m "the seal is set" && git push
 ```
 
-**All ten SVGs must sit loose in the repo root** — flat, next to README.md.
+**All eleven SVGs must sit loose in the repo root** — flat, next to README.md.
 The README references them as `./opening.svg`. In a subfolder, they break.
 
 ## Step 3 — Pin your eight

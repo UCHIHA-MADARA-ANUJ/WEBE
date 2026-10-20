@@ -289,10 +289,17 @@ def build():
     <circle cx="{CX}" cy="{RING_Y}" r="{RING_R}" fill="none" stroke="{VERM}" stroke-width="1.4"/>
     <path d="M {CX - 96:.1f},{RING_Y} a 96,96 0 1 1 96,96" fill="none" stroke="{VERM_L}" stroke-width="2"/>
   </g>
-  <g opacity="0.11">
-    {tr("opacity", [(0, 0.11), (1.0, 0.11), (1.35, 0)])}
+  <g opacity="0.2">
+    {tr("opacity", [(0, 0.2), (6.2, 0.2), (7.2, 0)])}
+    <text x="{CX}" y="176" text-anchor="middle" font-family="{MONO}" font-size="10.5"
+          letter-spacing="6.4" fill="#B9AFC0" fill-opacity="0.7">INTERFACE SYSTEMS · GURUGRAM, INDIA</text>
     <text x="{CX}" y="{NAME_Y}" text-anchor="middle" font-family="{BLACK}" font-size="94"
           letter-spacing="5" fill="{CREAM}">ANUJ PHULERA</text>
+    <rect x="{CX - 230}" y="330" width="460" height="1.6" fill="{VERM_L}" fill-opacity="0.6"/>
+    <text x="{CX}" y="368" text-anchor="middle" font-family="{MONO}" font-size="14"
+          letter-spacing="1.3" fill="{CREAM}" fill-opacity="0.55">I don't chase attention.</text>
+    <text x="{CX}" y="394" text-anchor="middle" font-family="{MONO}" font-size="14"
+          letter-spacing="1.3" fill="{VERM_L}" fill-opacity="0.55">I build things that command it.</text>
   </g>
 
   <!-- ══ ACT I · THE MARK ══════════════════════════════════════════════ -->

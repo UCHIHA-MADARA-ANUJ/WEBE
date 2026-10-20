@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="306" viewBox="0 0 1200 306" fill="none" role="img" aria-label="Right now: DEEP FIELD, VERDE, NIRMAAN">
+  <defs>
+    <radialGradient id="nwGlow" cx="0.5" cy="0" r="0.9">
+      <stop offset="0" stop-color="#C1272D" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#07060A" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="nwGrid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#FFFFFF" stroke-opacity="0.014" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="306" fill="#07060A"/>
+  <rect width="1200" height="306" fill="url(#nwGrid)"/>
+  <rect width="1200" height="306" fill="url(#nwGlow)"/>
+
+  <g>
+    <rect x="10" y="10" width="382" height="262" rx="7" fill="#0E0B11" stroke="#FFFFFF" stroke-opacity="0.07"/>
+    <rect x="10" y="10" width="382" height="262" rx="7" fill="#4FB3D9" fill-opacity="0.018"/>
+
+    <rect x="10" y="10" width="382" height="2" rx="1" fill="#4FB3D9" fill-opacity="0.65"/>
+    <rect x="10" y="10" width="70" height="2" rx="1" fill="#FFFFFF" fill-opacity="0.9">
+      <animateTransform attributeName="transform" type="translate"
+                        values="-70 0;402 0" dur="4.6s" begin="0.0s" repeatCount="indefinite"/>
+      <animate attributeName="fill-opacity" values="0;0.55;0.2;0.5;0" dur="4.6s"
+               begin="0.0s" repeatCount="indefinite"/>
+    </rect>
+
+    <text x="374" y="72" text-anchor="end" font-family="'Arial Black', 'Helvetica Neue', Impact, 'DejaVu Sans', sans-serif" font-size="46"
+          fill="#FFFFFF" fill-opacity="0.045">01</text>
+
+    <circle cx="32" cy="40" r="3.4" fill="#4FB3D9">
+      <animate attributeName="opacity" values="1;0.15;1" dur="1.9s" begin="0.0s" repeatCount="indefinite"/>
+    </circle>
+    <text x="44" y="43.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="9" letter-spacing="3"
+          fill="#4FB3D9" fill-opacity="0.9">BUILDING</text>
+
+    <text x="28" y="96" font-family="'Arial Black', 'Helvetica Neue', Impact, 'DejaVu Sans', sans-serif" font-size="23" letter-spacing="1.2"
+          fill="#F2E8D5">DEEP FIELD</text>
+    <text x="28" y="118" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="9.2" letter-spacing="0.9"
+          fill="#4A4353">a living atlas with no fixed interface</text>
+
+    <line x1="28" y1="140" x2="374" y2="140"
+          stroke="#FFFFFF" stroke-opacity="0.06"/>
+    <text x="28" y="162" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.6" letter-spacing="2.6"
+          fill="#4A4353">ON THE BENCH</text>
+
+    <circle cx="28" cy="186" r="2" fill="#4FB3D9" fill-opacity="0.85"/><text x="38" y="189" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">SIX STRUCTURAL PARADIGMS</text><circle cx="28" cy="208" r="2" fill="#4FB3D9" fill-opacity="0.85"/><text x="38" y="211" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">ELEVEN BEHAVIOURAL SIGNALS</text><circle cx="28" cy="230" r="2" fill="#4FB3D9" fill-opacity="0.85"/><text x="38" y="233" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">NINE-SECOND COOLDOWN</text>
+
+    <line x1="28" y1="238" x2="374" y2="238"
+          stroke="#4FB3D9" stroke-opacity="0.18"/>
+    <text x="28" y="256" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.8" letter-spacing="2.4"
+          fill="#4FB3D9" fill-opacity="0.7">STATUS · LIVE</text>
+    <text x="374" y="256" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.8"
+          letter-spacing="1.8" fill="#4A4353">GURUGRAM</text>
+  </g>
+  <g>
+    <rect x="409" y="10" width="382" height="262" rx="7" fill="#0E0B11" stroke="#FFFFFF" stroke-opacity="0.07"/>
+    <rect x="409" y="10" width="382" height="262" rx="7" fill="#5BD69B" fill-opacity="0.018"/>
+
+    <rect x="409" y="10" width="382" height="2" rx="1" fill="#5BD69B" fill-opacity="0.65"/>
+    <rect x="409" y="10" width="70" height="2" rx="1" fill="#FFFFFF" fill-opacity="0.9">
+      <animateTransform attributeName="transform" type="translate"
+                        values="-70 0;402 0" dur="4.6s" begin="1.4s" repeatCount="indefinite"/>
+      <animate attributeName="fill-opacity" values="0;0.55;0.2;0.5;0" dur="4.6s"
+               begin="1.4s" repeatCount="indefinite"/>
+    </rect>
+
+    <text x="773" y="72" text-anchor="end" font-family="'Arial Black', 'Helvetica Neue', Impact, 'DejaVu Sans', sans-serif" font-size="46"
+          fill="#FFFFFF" fill-opacity="0.045">02</text>
+
+    <circle cx="431" cy="40" r="3.4" fill="#5BD69B">
+      <animate attributeName="opacity" values="1;0.15;1" dur="1.9s" begin="0.3s" repeatCount="indefinite"/>
+    </circle>
+    <text x="443" y="43.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="9" letter-spacing="3"
+          fill="#5BD69B" fill-opacity="0.9">GROWING</text>
+
+    <text x="427" y="96" font-family="'Arial Black', 'Helvetica Neue', Impact, 'DejaVu Sans', sans-serif" font-size="23" letter-spacing="1.2"
+          fill="#F2E8D5">VERDE</text>
+    <text x="427" y="118" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="9.2" letter-spacing="0.9"
+          fill="#4A4353">a vertical farm that waters itself</text>
+
+    <line x1="427" y1="140" x2="773" y2="140"
+          stroke="#FFFFFF" stroke-opacity="0.06"/>
+    <text x="427" y="162" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.6" letter-spacing="2.6"
+          fill="#4A4353">ON THE BENCH</text>
+
+    <circle cx="427" cy="186" r="2" fill="#5BD69B" fill-opacity="0.85"/><text x="437" y="189" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">ESP32 FIRMWARE</text><circle cx="427" cy="208" r="2" fill="#5BD69B" fill-opacity="0.85"/><text x="437" y="211" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">TFLITE DISEASE MODEL</text><circle cx="427" cy="230" r="2" fill="#5BD69B" fill-opacity="0.85"/><text x="437" y="233" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">HINDI / ENGLISH CHANNEL</text>
+
+    <line x1="427" y1="238" x2="773" y2="238"
+          stroke="#5BD69B" stroke-opacity="0.18"/>
+    <text x="427" y="256" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.8" letter-spacing="2.4"
+          fill="#5BD69B" fill-opacity="0.7">STATUS · LIVE</text>
+    <text x="773" y="256" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.8"
+          letter-spacing="1.8" fill="#4A4353">GURUGRAM</text>
+  </g>
+  <g>
+    <rect x="808" y="10" width="382" height="262" rx="7" fill="#0E0B11" stroke="#FFFFFF" stroke-opacity="0.07"/>
+    <rect x="808" y="10" width="382" height="262" rx="7" fill="#C1272D" fill-opacity="0.018"/>
+
+    <rect x="808" y="10" width="382" height="2" rx="1" fill="#C1272D" fill-opacity="0.65"/>
+    <rect x="808" y="10" width="70" height="2" rx="1" fill="#FFFFFF" fill-opacity="0.9">
+      <animateTransform attributeName="transform" type="translate"
+                        values="-70 0;402 0" dur="4.6s" begin="2.8s" repeatCount="indefinite"/>
+      <animate attributeName="fill-opacity" values="0;0.55;0.2;0.5;0" dur="4.6s"
+               begin="2.8s" repeatCount="indefinite"/>
+    </rect>
+
+    <text x="1172" y="72" text-anchor="end" font-family="'Arial Black', 'Helvetica Neue', Impact, 'DejaVu Sans', sans-serif" font-size="46"
+          fill="#FFFFFF" fill-opacity="0.045">03</text>
+
+    <circle cx="830" cy="40" r="3.4" fill="#C1272D">
+      <animate attributeName="opacity" values="1;0.15;1" dur="1.9s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+    <text x="842" y="43.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="9" letter-spacing="3"
+          fill="#C1272D" fill-opacity="0.9">SHIPPING</text>
+
+    <text x="826" y="96" font-family="'Arial Black', 'Helvetica Neue', Impact, 'DejaVu Sans', sans-serif" font-size="23" letter-spacing="1.2"
+          fill="#F2E8D5">NIRMAAN</text>
+    <text x="826" y="118" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="9.2" letter-spacing="0.9"
+          fill="#4A4353">an AI e-waste pickup network for India</text>
+
+    <line x1="826" y1="140" x2="1172" y2="140"
+          stroke="#FFFFFF" stroke-opacity="0.06"/>
+    <text x="826" y="162" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.6" letter-spacing="2.6"
+          fill="#4A4353">ON THE BENCH</text>
+
+    <circle cx="826" cy="186" r="2" fill="#C1272D" fill-opacity="0.85"/><text x="836" y="189" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">THREE ROLES</text><circle cx="826" cy="208" r="2" fill="#C1272D" fill-opacity="0.85"/><text x="836" y="211" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">LIVE ROUTING</text><circle cx="826" cy="230" r="2" fill="#C1272D" fill-opacity="0.85"/><text x="836" y="233" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.6" letter-spacing="1.7" fill="#8A8090">END-TO-END BOOKINGS</text>
+
+    <line x1="826" y1="238" x2="1172" y2="238"
+          stroke="#C1272D" stroke-opacity="0.18"/>
+    <text x="826" y="256" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.8" letter-spacing="2.4"
+          fill="#C1272D" fill-opacity="0.7">STATUS · LIVE</text>
+    <text x="1172" y="256" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="7.8"
+          letter-spacing="1.8" fill="#4A4353">GURUGRAM</text>
+  </g>
+  <text x="600.0" y="302" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="8.5"
+        letter-spacing="3.4" fill="#8A8090" fill-opacity="0.6">THREE FRONTS · ONE OPERATOR</text>
+</svg>
