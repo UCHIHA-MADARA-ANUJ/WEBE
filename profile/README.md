@@ -6,8 +6,9 @@
         YOUR_EMAIL      → your email
      Keep all four .svg files next to this README in the repo root.
 
-     Assets: banner.svg · evolution.svg · bingo.svg · seal.svg
-             sharingan.svg · divider.svg · typing.svg
+     Assets: banner.svg · evolution.svg · bingo.svg · stats.svg
+             arsenal.svg · seal.svg · sharingan.svg · divider.svg
+             typing.svg
      ═══════════════════════════════════════════════════════════════════════ -->
 
 <div align="center">
@@ -163,22 +164,18 @@ cost of trust.*
 
 <img src="./divider.svg" width="100%" alt="" />
 
+## ⦿ Attribute Sheet
+
+<div align="center">
+  <img src="./stats.svg" width="100%" alt="Kekkei Genkai — attribute sheet" />
+</div>
+
+<img src="./divider.svg" width="100%" alt="" />
+
 ## ⦿ Arsenal
 
 <div align="center">
-
-<img src="https://img.shields.io/badge/TypeScript-C1121F?style=for-the-badge&logo=typescript&logoColor=white&labelColor=0B0709" alt="TypeScript" />
-<img src="https://img.shields.io/badge/React-C1121F?style=for-the-badge&logo=react&logoColor=white&labelColor=0B0709" alt="React" />
-<img src="https://img.shields.io/badge/Next.js-C1121F?style=for-the-badge&logo=nextdotjs&logoColor=white&labelColor=0B0709" alt="Next.js" />
-<img src="https://img.shields.io/badge/Three.js-C1121F?style=for-the-badge&logo=threedotjs&logoColor=white&labelColor=0B0709" alt="Three.js" />
-<img src="https://img.shields.io/badge/Tailwind-C1121F?style=for-the-badge&logo=tailwindcss&logoColor=white&labelColor=0B0709" alt="Tailwind" />
-<br/>
-<img src="https://img.shields.io/badge/Firebase-8B0A14?style=for-the-badge&logo=firebase&logoColor=white&labelColor=0B0709" alt="Firebase" />
-<img src="https://img.shields.io/badge/Supabase-8B0A14?style=for-the-badge&logo=supabase&logoColor=white&labelColor=0B0709" alt="Supabase" />
-<img src="https://img.shields.io/badge/ESP32-8B0A14?style=for-the-badge&logo=espressif&logoColor=white&labelColor=0B0709" alt="ESP32" />
-<img src="https://img.shields.io/badge/Gemini-8B0A14?style=for-the-badge&logo=googlegemini&logoColor=white&labelColor=0B0709" alt="Gemini" />
-<img src="https://img.shields.io/badge/Vercel-8B0A14?style=for-the-badge&logo=vercel&logoColor=white&labelColor=0B0709" alt="Vercel" />
-
+  <img src="./arsenal.svg" width="100%" alt="Arsenal" />
 </div>
 
 <img src="./divider.svg" width="100%" alt="" />
