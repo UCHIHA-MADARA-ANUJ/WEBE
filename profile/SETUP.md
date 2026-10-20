@@ -58,10 +58,10 @@ GitHub will say: *"You found a secret! `Anuj-Phulera/Anuj-Phulera` is a special 
 
 ## Step 2 — Drop in the files
 
-Everything you need is in `github-profile-madara.zip`. Unzip it, then either:
+Everything you need is in `github-profile-shinobi.zip`. Unzip it, then either:
 
 **Browser (no git):**
-1. **Add file → Upload files** → drag all **9 SVGs** → Commit
+1. **Add file → Upload files** → drag all **10 SVGs** → Commit
 2. Open `README.md` → ✏️ → select all → delete → paste the new contents → Commit
 
 **Terminal:**
@@ -71,15 +71,15 @@ cd Anuj-Phulera
 cp /path/to/unzipped/*.svg .
 cp /path/to/unzipped/README.md .
 sed -i 's/YOUR_EMAIL/you@example.com/g' README.md
-git add -A && git commit -m "wake up to reality" && git push
+git add -A && git commit -m "the seal is set" && git push
 ```
 
-**All nine SVGs must sit loose in the repo root** — flat, next to README.md.
-The README references them as `./banner.svg`. In a subfolder, they break.
+**All ten SVGs must sit loose in the repo root** — flat, next to README.md.
+The README references them as `./opening.svg`. In a subfolder, they break.
 
-## Step 3 — Pin your six
+## Step 3 — Pin your eight
 
-Profile → **Customize your pins** → pick six.
+Profile → **Customize your pins** → pick the eight project repos.
 
 Order matters — it's read left to right, top row first. Recommended:
 
@@ -136,5 +136,5 @@ Settings → Public profile:
 
 Those badge images are rendered by a third-party service. When it rate-limits —
 and it does — your profile shows a row of broken-image icons, permanently.
-`arsenal.svg` and `stats.svg` are plain SVG files in your own repo, so they
+`projects.svg` and `stats.svg` are plain SVG files in your own repo, so they
 render on GitHub's CDN and can never break.

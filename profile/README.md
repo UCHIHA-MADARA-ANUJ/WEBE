@@ -4,11 +4,11 @@
      -------------------------------------------------------------------
      Nothing left to replace — details are live.
 
-     Keep all six .svg files next to this README in the repo root.
-     Assets: opening.svg · emblem.svg · registry.svg · stats.svg
-             projects.svg · divider.svg · typing.svg
-             (banner.svg and banner-light.svg included if you want a
-              static name-plate instead of the title sequence)
+     Keep every .svg next to this README in the repo root.
+     Used here: opening.svg · registry.svg · emblem.svg · projects.svg
+                stats.svg · divider.svg · credits.svg
+     (banner.svg, banner-light.svg and typing.svg ship in the zip as
+      spares — this README does not reference them)
      ═══════════════════════════════════════════════════════════════════════ -->
 
 <div align="center">
@@ -146,13 +146,17 @@ Open an issue on any repo, or reach me directly — I answer both.
 
 <div align="center">
 
-<img src="./emblem.svg" width="62" alt="" />
+<img src="./emblem.svg" width="52" alt="" />
 
-<br/><br/>
+<br/>
 
-<sub>Gurugram, Haryana · building things that shouldn't fit in a browser tab</sub>
+<img src="./credits.svg" width="100%" alt="End credits" />
 
-<br/><br/>
+</div>
+
+<br/>
+
+<div align="center">
 
 <a href="https://github.com/Anuj-Phulera?tab=repositories"><b>Repositories</b></a> &nbsp;·&nbsp;
 <a href="https://github.com/Anuj-Phulera/WEBE"><b>DEEP FIELD</b></a> &nbsp;·&nbsp;

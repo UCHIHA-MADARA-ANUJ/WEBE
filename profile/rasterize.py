@@ -343,7 +343,7 @@ def render(svg_path, out_path, scale=SS):
                    width=max(1, int(sw * scale)))
             canvas.alpha_composite(layer)
         elif tag == 'text' and paint:
-            txt = ''.join(el.itertext())
+            txt = ' '.join(''.join(el.itertext()).split())
             size = int(float(el.get('font-size', 12)) * scale)
             try:
                 font = ImageFont.load_default(size=size)
@@ -355,6 +355,15 @@ def render(svg_path, out_path, scale=SS):
             px, py = apply(m, x, y)
             col = paint.at(0.35) if isinstance(paint, Gradient) else tuple(paint) + (255,)
             ta = float(el.get('opacity', 1)) * a
+            anchor = el.get('text-anchor', 'start')
+            try:
+                tw = d.textlength(txt, font=font) / scale
+            except Exception:
+                tw = 0.0
+            if anchor == 'middle':
+                px -= tw / 2
+            elif anchor == 'end':
+                px -= tw
             d.text((px * scale, py * scale), txt, font=font, fill=col[:3] + (int(255 * ta),), anchor='ls')
             canvas.alpha_composite(layer)
 

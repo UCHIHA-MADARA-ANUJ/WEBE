@@ -191,6 +191,9 @@ def card(i, name, accent, art):
     <rect x="{x}" y="{y}" width="{CW}" height="{CH}" rx="7" fill="{accent}" fill-opacity="0.022"/>
     {chrome(x, y, CW, accent)}
     {art(x, inner_y, CW, inner_h, accent)}
+    <rect x="{x}" y="{y}" width="{CW}" height="{CH}" rx="7" fill="{accent}" opacity="0">
+      <animate attributeName="opacity" values="0;0.16;0" dur="1.2s" begin="{0.15 + i * 0.11:.2f}s" fill="freeze"/>
+    </rect>
     <line x1="{x}" y1="{y + CH - 30}" x2="{x + CW}" y2="{y + CH - 30}" stroke="#FFFFFF" stroke-opacity="0.06"/>
     <circle cx="{x + 16}" cy="{y + CH - 15}" r="3" fill="{accent}" fill-opacity="0.9"/>
     <text x="{x + 26}" y="{y + CH - 11}" font-family="{MONO}" font-size="8.6" letter-spacing="1.5" fill="{CREAM}" fill-opacity="0.85">{name}</text>
@@ -205,11 +208,22 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewB
       <stop offset="0" stop-color="{VERM}" stop-opacity="0.13"/>
       <stop offset="1" stop-color="{INK}" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="scBeam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.055"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
   </defs>
   <rect width="{W}" height="{H}" fill="{INK}"/>
   <rect width="{W}" height="{H}" fill="url(#scGlow)"/>
 {grid}
-  <text x="{W / 2}" y="{H - 5}" font-family="{MONO}" font-size="8.5" letter-spacing="3.4" fill="{DIM}" text-anchor="middle">EIGHT SEALS · ONE HAND</text>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.02;0.10;0.14;1" dur="16s" repeatCount="indefinite"/>
+    <rect x="0" y="-90" width="{W}" height="90" fill="url(#scBeam)">
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 460" dur="3.2s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+  <text x="{W / 2}" y="{H - 4}" font-family="{MONO}" font-size="8.5" letter-spacing="3.4" fill="{ASH}" fill-opacity="0.62" text-anchor="middle">EIGHT SEALS · ONE HAND</text>
 </svg>
 '''
 

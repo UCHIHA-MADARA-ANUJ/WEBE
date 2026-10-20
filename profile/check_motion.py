@@ -24,8 +24,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 HERE = pathlib.Path(__file__).parent
-SVGS = ["banner.svg", "evolution.svg", "bingo.svg", "stats.svg",
-        "arsenal.svg", "seal.svg", "sharingan.svg", "divider.svg", "typing.svg"]
+SVGS = sorted(p.name for p in HERE.glob("*.svg") if not p.name.startswith("_"))
 
 
 def local(tag):
