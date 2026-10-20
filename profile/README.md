@@ -5,12 +5,16 @@
      Nothing left to replace — details are live.
 
      Keep all six .svg files next to this README in the repo root.
-     Assets: banner.svg · emblem.svg · registry.svg · stats.svg
-             divider.svg · typing.svg
+     Assets: banner.svg · banner-light.svg · emblem.svg · registry.svg
+             stats.svg · projects.svg · divider.svg · typing.svg
      ═══════════════════════════════════════════════════════════════════════ -->
 
 <div align="center">
-  <img src="./banner.svg" alt="Anuj Phulera" width="100%" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./banner.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./banner-light.svg">
+    <img src="./banner.svg" alt="Anuj Phulera" width="100%" />
+  </picture>
 </div>
 
 <br/>
@@ -72,80 +76,26 @@ runtime by watching how you actually read.
 
 ## ⦿ Selected Work
 
-<table>
-<tr>
-<td width="50%" valign="top">
+<div align="center">
+  <img src="./projects.svg" width="100%" alt="Eight projects" usemap="#works" />
+</div>
 
-### <img src="./emblem.svg" width="15" align="top" /> [VERDE PORTFOLIO](https://github.com/Anuj-Phulera/Verde-Portfolio)
-An interactive technical compendium for a closed-loop vertical farm — sensing, deciding, watering, diagnosing, reporting, with no human in the loop.
+<map name="works">
+  <area shape="rect" coords="10,10,290,206"  href="https://github.com/Anuj-Phulera/Verde-Portfolio" alt="Verde Portfolio" />
+  <area shape="rect" coords="310,10,590,206" href="https://github.com/Anuj-Phulera/Verde-APP" alt="Verde App" />
+  <area shape="rect" coords="610,10,890,206" href="https://github.com/Anuj-Phulera/Nirmaan-APP" alt="Nirmaan App" />
+  <area shape="rect" coords="910,10,1190,206" href="https://github.com/Anuj-Phulera/NIrman-Portfolio" alt="Nirman Portfolio" />
+  <area shape="rect" coords="10,226,290,422" href="https://github.com/Anuj-Phulera/Skill-Verse" alt="Skill-Verse" />
+  <area shape="rect" coords="310,226,590,422" href="https://github.com/Anuj-Phulera/Resonate" alt="Resonate" />
+  <area shape="rect" coords="610,226,890,422" href="https://github.com/Anuj-Phulera/Rakshabandhan" alt="Rakshabandhan" />
+  <area shape="rect" coords="910,226,1190,422" href="https://github.com/Anuj-Phulera/Verde-Previous-Portfolio" alt="Verde Previous Portfolio" />
+</map>
 
-`Next 14` `Three.js` `Framer Motion`
-
-</td>
-<td width="50%" valign="top">
-
-### <img src="./emblem.svg" width="15" align="top" /> [VERDE APP](https://github.com/Anuj-Phulera/Verde-APP)
-Mission control for the same farm. Live ESP32 telemetry, AI plant doctor, every API key kept server-side behind five whitelisted routes.
-
-`Next 16` `Firebase` `Gemini` `OpenRouter`
-
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
-### <img src="./emblem.svg" width="15" align="top" /> [NIRMAAN APP](https://github.com/Anuj-Phulera/Nirmaan-APP)
-An AI-powered e-waste pickup network for India. Three role dashboards, Leaflet routing, and a booking pipeline that runs end to end.
-
-`Next 14` `Firebase` `Supabase` `Gemini`
-
-</td>
-<td width="50%" valign="top">
-
-### <img src="./emblem.svg" width="15" align="top" /> [NIRMAN PORTFOLIO](https://github.com/Anuj-Phulera/NIrman-Portfolio)
-The sixteen-act cinematic argument for the platform — Genesis loader, the Graveyard, the Market Matrix, the AI Cortex.
-
-`Next 14` `Framer Motion` `Three.js`
-
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
-### <img src="./emblem.svg" width="15" align="top" /> [SKILL-VERSE](https://github.com/Anuj-Phulera/Skill-Verse)
-Turns screen time into skill time. Thirty-four routes, eight AI analysis pipelines, and a 250-respondent research dataset behind every claim.
-
-`Next 14` `Gemini` `Postgres`
-
-</td>
-<td width="50%" valign="top">
-
-### <img src="./emblem.svg" width="15" align="top" /> [RESONATE](https://github.com/Anuj-Phulera/Resonate)
-A cinematic platform about algorithmic empathy. Custom GLSL shaders, R3F canvases, ~25 pages of scroll-driven narrative.
-
-`React 19` `Three.js` `GSAP`
-
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
-### <img src="./emblem.svg" width="15" align="top" /> [RAKSHABANDHAN](https://github.com/Anuj-Phulera/Rakshabandhan)
-A ten-chapter Raksha Bandhan site for my sister. Gurugram to Pune, 1,450 km, a custom audio engine, and a rakhi you tie by holding a button.
-
-`Next 15` `Web Audio` `Particles`
-
-</td>
-<td width="50%" valign="top">
-
-### <img src="./emblem.svg" width="15" align="top" /> [VERDE PREVIOUS PORTFOLIO](https://github.com/Anuj-Phulera/Verde-Previous-Portfolio)
-The original compendium, kept as history. Same system, earlier interface — superseded by Verde Portfolio.
-
-`Next 14` `Three.js`
-
-</td>
-</tr>
-</table>
+| | | |
+|---|---|---|
+| **[VERDE PORTFOLIO](https://github.com/Anuj-Phulera/Verde-Portfolio)**<br/><sub>closed-loop farm compendium</sub> | **[VERDE APP](https://github.com/Anuj-Phulera/Verde-APP)**<br/><sub>live telemetry mission control</sub> | **[NIRMAAN APP](https://github.com/Anuj-Phulera/Nirmaan-APP)**<br/><sub>e-waste pickup network</sub> |
+| **[NIRMAN PORTFOLIO](https://github.com/Anuj-Phulera/NIrman-Portfolio)**<br/><sub>sixteen-act narrative</sub> | **[SKILL-VERSE](https://github.com/Anuj-Phulera/Skill-Verse)**<br/><sub>skill analytics platform</sub> | **[RESONATE](https://github.com/Anuj-Phulera/Resonate)**<br/><sub>algorithmic empathy</sub> |
+| **[RAKSHABANDHAN](https://github.com/Anuj-Phulera/Rakshabandhan)**<br/><sub>1,450 km, one thread</sub> | **[VERDE PREVIOUS](https://github.com/Anuj-Phulera/Verde-Previous-Portfolio)**<br/><sub>the original build</sub> | <sub>&nbsp;</sub> |
 
 <img src="./divider.svg" width="100%" alt="" />
 
@@ -171,6 +121,32 @@ cost of trust.*
 <div align="center">
   <img src="./stats.svg" width="100%" alt="Attribute sheet" />
 </div>
+
+<img src="./divider.svg" width="100%" alt="" />
+
+## ⦿ Run It
+
+Every repo here runs with the same three commands. No build servers, no Docker, no ceremony.
+
+```bash
+npm install
+cp .env.example .env.local    # VERDE APP and NIRMAAN APP only
+npm run dev                   # → http://localhost:3000
+```
+
+DEEP FIELD and CommitQuest need nothing at all — one is Vite, the other is plain
+files you can open directly.
+
+<img src="./divider.svg" width="100%" alt="" />
+
+## ⦿ Contact
+
+Open an issue on any repo, or reach me directly — I answer both.
+
+<p>
+  <a href="mailto:anuj.phulera.work@gmail.com"><img src="https://img.shields.io/badge/EMAIL-anuj.phulera.work%40gmail.com-C1272D?style=flat-square&labelColor=0C0A10" alt="Email" /></a>
+  <a href="https://discord.com/users/1417462466304016494"><img src="https://img.shields.io/badge/DISCORD-madara._.uchiha_-4FB3D9?style=flat-square&labelColor=0C0A10" alt="Discord" /></a>
+</p>
 
 <img src="./divider.svg" width="100%" alt="" />
 
