@@ -1,89 +1,75 @@
-# Copy-paste descriptions & topics
+# Repo descriptions & topics — Anuj-Phulera
 
 For each repo: **Settings** (gear next to About) → paste description → add topics → set Website.
 
-Topics are lowercase, hyphenated, max 20. They're what makes you appear in GitHub search and topic pages.
+GitHub is case-insensitive in URLs, so `Nirman-Portfolio` and `NIrman-Portfolio` resolve to the same repo — that capital `I` is cosmetic. Same for every name here.
 
 ---
 
-### WEBE
+### Verde-Portfolio
 **Description**
 ```
-A living atlas of the cosmos whose layout, hierarchy and navigation model are rebuilt at runtime around each visitor's behaviour.
+Interactive technical compendium for a closed-loop vertical farm — sensing, deciding, watering, diagnosing and reporting with no human in the loop.
 ```
 **Topics**
 ```
-react vite typescript adaptive-ui generative-interface behavioural-analysis no-framework astronomy data-visualisation
+nextjs typescript threejs framer-motion iot esp32 vertical-farming 3d-web
 ```
-**Website** `https://uchiha-madara-anuj.github.io/WEBE`
 
 ---
 
-### nirmaan-app
+### Verde-APP
 **Description**
 ```
-India's first AI-powered e-waste pickup and recycling network — customer, business and admin dashboards with live routing.
+Mission control for an autonomous vertical farm. Live ESP32 telemetry, AI plant doctor, every API key kept server-side behind whitelisted routes.
 ```
 **Topics**
 ```
-nextjs typescript firebase supabase leaflet gemini tailwindcss e-waste sustainability hackathon
+nextjs typescript iot esp32 firebase gemini openrouter dashboard smart-agriculture
 ```
 
 ---
 
-### S2S
+### Nirmaan-APP
 **Description**
 ```
-SkillVerse — turns screen time into skill time. 34 routes, Gemini analysis pipelines, and a 250-respondent research dataset.
+An AI-powered e-waste pickup and recycling network for India — customer, business and admin dashboards with live routing.
 ```
 **Topics**
 ```
-nextjs typescript gemini supabase data-visualisation research accessibility tailwindcss
+nextjs typescript firebase supabase leaflet gemini tailwindcss e-waste sustainability
 ```
-**Website** `https://skillverse-xi.vercel.app`
 
 ---
 
-### Commit
+### NIrman-Portfolio
 **Description**
 ```
-CommitQuest — scan any GitHub profile, score the balance of your contribution types, and get quests to unlock what's missing. Zero dependencies.
+The sixteen-act cinematic argument for NIRMAAN — Genesis loader, the Graveyard, the Market Matrix, the AI Cortex.
 ```
 **Topics**
 ```
-github-api vanilla-js zero-dependencies developer-tools gamification dashboard no-build-step
+nextjs typescript framer-motion threejs scroll-animation portfolio narrative
 ```
 
 ---
 
-### VERDE-CBSE-APP
+### Skill-Verse
 **Description**
 ```
-VERDE OS — mission control for an autonomous vertical farm. Live ESP32 telemetry, AI plant doctor, every API key kept server-side.
+Turns screen time into skill time. 34 routes, 8 AI analysis pipelines, and a 250-respondent research dataset behind every product claim.
 ```
 **Topics**
 ```
-nextjs typescript iot esp32 firebase gemini openrouter smart-agriculture dashboard
+nextjs typescript gemini supabase data-visualisation research accessibility
 ```
 
 ---
 
-### Verde-CBSE
+### Resonate
 **Description**
 ```
-Project Verde — an interactive technical compendium for a closed-loop, sensor-driven vertical farming system.
-```
-**Topics**
-```
-nextjs typescript threejs framer-motion iot esp32 vertical-farming 3d
-```
-
----
-
-### Resonate-Portfolio
-**Description**
-```
-RESONATE — a cinematic platform about algorithmic empathy. Custom GLSL, R3F and ~25 pages of scroll-driven narrative.
+A cinematic platform about algorithmic empathy. Custom GLSL shaders, R3F canvases, and ~25 pages of scroll-driven narrative.
 ```
 **Topics**
 ```
@@ -92,35 +78,22 @@ react vite typescript glsl threejs react-three-fiber gsap design
 
 ---
 
-### Rakshbandhan
+### Rakshabandhan
 **Description**
 ```
-ek-hi-chaand — a ten-chapter Raksha Bandhan site for my sister. Gurugram to Pune, 1,450 km, custom audio engine.
+A ten-chapter Raksha Bandhan site — Gurugram to Pune, 1,450 km, a custom audio engine, and a rakhi you tie by holding a button.
 ```
 **Topics**
 ```
 nextjs creative-coding web-audio personal narrative generative-design
 ```
-**Website** `https://rakshbandhan-blehh.vercel.app`
 
 ---
 
-### Nirmaan-Portfolio-
+### Verde-Previous-Portfolio
 **Description**
 ```
-NIRMAN — the 16-act cinematic argument for the platform. Genesis loader, the Graveyard, the AI Cortex.
-```
-**Topics**
-```
-nextjs typescript framer-motion three.js scroll-animation portfolio
-```
-
----
-
-### verde-main-portfolio
-**Description**
-```
-Project Verde v1 — the original technical compendium. Superseded by Verde-CBSE.
+The original Verde compendium, kept as history. Same system, earlier interface — superseded by Verde Portfolio.
 ```
 **Topics**
 ```
@@ -129,12 +102,23 @@ nextjs threejs iot vertical-farming archive
 
 ---
 
-## After pasting
+## Also: the profile repo
 
-Every one of these currently has **no description, no topics, and no homepage**. That means:
+Repo name must be **exactly** `Anuj-Phulera` for the README to appear on your profile.
+
+**Description**
+```
+Anuj Phulera — interface engineer. I build interfaces that rebuild themselves around the person using them.
+```
+
+---
+
+## Don't forget
+
+Every one of these currently has **no description, no topics, no homepage**. That means:
 
 - GitHub search can't find any of them
-- The pinned-repo cards on your profile show a bare repo name instead of a sentence
-- The topic pages (`github.com/topics/adaptive-ui`) never surface you
+- Pinned cards on your profile show a bare repo name instead of a sentence
+- Topic pages never surface you
 
 Twenty minutes here moves the profile further than an hour on the README.
