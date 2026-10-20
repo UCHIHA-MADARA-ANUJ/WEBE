@@ -5,23 +5,17 @@
      Nothing left to replace — details are live.
 
      Keep all six .svg files next to this README in the repo root.
-     Assets: banner.svg · banner-light.svg · emblem.svg · registry.svg
-             stats.svg · projects.svg · divider.svg · typing.svg
+     Assets: opening.svg · emblem.svg · registry.svg · stats.svg
+             projects.svg · divider.svg · typing.svg
+             (banner.svg and banner-light.svg included if you want a
+              static name-plate instead of the title sequence)
      ═══════════════════════════════════════════════════════════════════════ -->
 
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./banner.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./banner-light.svg">
-    <img src="./banner.svg" alt="Anuj Phulera" width="100%" />
-  </picture>
+  <img src="./opening.svg" alt="Anuj Phulera — title sequence" width="100%" />
 </div>
 
 <br/>
-
-<div align="center">
-  <img src="./typing.svg" alt="I don't chase attention. I build things that command it." />
-</div>
 
 <div align="center">
   <img src="./emblem.svg" width="96" alt="Uzumaki spiral" />
