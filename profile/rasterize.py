@@ -309,6 +309,17 @@ def render(svg_path, out_path, scale=SS):
             cx, cy = float(el.get('cx', 0)), float(el.get('cy', 0))
             rx, ry = float(el.get('rx', 0)), float(el.get('ry', 0))
             paint_shape(ellipse_pts(cx, cy, rx, ry), paint, a, m)
+        elif tag == 'path' and not paint and el.get('stroke'):
+            pts = [apply(m, x, y) for x, y in flatten_path(el.get('d', ''))]
+            if len(pts) > 1:
+                sw = float(el.get('stroke-width', 1))
+                layer = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+                d = ImageDraw.Draw(layer)
+                c = hex_rgb(el.get('stroke'))
+                sa = float(el.get('stroke-opacity', 1)) * a
+                d.line([(x * scale, y * scale) for x, y in pts], fill=c + (int(255 * sa),),
+                       width=max(1, int(sw * scale)), joint='curve')
+                canvas.alpha_composite(layer)
         elif tag == 'path' and paint:
             paint_shape(flatten_path(el.get('d', '')), paint, a, m)
         elif tag == 'line':
