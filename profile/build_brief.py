@@ -3,8 +3,9 @@
 
 One source of content, two outputs:
 
-    MITALI-BRIEF.md     plain text, readable anywhere
+    MITALI-BRIEF.md     markdown, readable anywhere
     MITALI-BRIEF.docx   printable, fillable Word document
+    MITALI-BRIEF.txt    plain ASCII, opens in Notepad on any Windows
 
 Run: python3 build_brief.py
 """
@@ -355,9 +356,90 @@ def build_docx():
     return out
 
 
+# ── plain text (Notepad-proof) ──────────────────────────────────────────────
+ASCII = {
+    "\u2b25": "*", "\u2605": "*", "\u00b7": "-", "\u2014": "--", "\u2013": "-",
+    "\u2018": "'", "\u2019": "'", "\u201c": '"', "\u201d": '"',
+    "\u2026": "...", "\u25a1": "[ ]", "\u2192": "->", "\u00a0": " ",
+}
+
+
+def ascii_only(text):
+    for bad, good in ASCII.items():
+        text = text.replace(bad, good)
+    return (text.encode("ascii", "replace")).decode("ascii")
+
+
+def wrap(text, width=76, indent=""):
+    words, lines, cur = text.split(), [], ""
+    for w in words:
+        if len(cur) + len(w) + 1 > width:
+            lines.append(cur)
+            cur = w
+        else:
+            cur = (cur + " " + w).strip()
+    if cur:
+        lines.append(cur)
+    return "\n".join(indent + ln for ln in lines)
+
+
+def build_txt():
+    BAR = "=" * 78
+    THIN = "-" * 78
+    out = [
+        BAR,
+        "  PROFILE BRIEF",
+        "  Mitali Chincholikar   github.com/Mitali-Chincholikar",
+        BAR,
+        "",
+        wrap(ascii_only(INTRO)),
+        "",
+        "  A GitHub profile is read in about eleven seconds. These questions are",
+        "  the only thing standing between those eleven seconds and a page that",
+        "  sounds like everybody else.",
+        "",
+        THIN,
+        "  HOW TO USE THIS",
+        THIN,
+        "",
+    ]
+    for head, body in HOW:
+        out += [ascii_only(head), wrap(ascii_only(body), indent="   "), ""]
+
+    out += [THIN, ""]
+    for part, blurb, qs in PARTS:
+        out += [BAR, "  " + ascii_only(part), BAR, ""]
+        out += [wrap(ascii_only(blurb), indent="  "), ""]
+        for i, (q, why) in enumerate(qs, 1):
+            out += [f"  {i:02d}.  " + ascii_only(q)]
+            out += [wrap(ascii_only(why), indent="        ") ]
+            out += ["", "        ANSWER:", ""]
+        out += [""]
+
+    out += [BAR, "  HOW THE ANSWERS TURN INTO THE PAGE", BAR, ""]
+    for a, b in MAPPING:
+        out += [f"  {ascii_only(a)}", wrap(ascii_only(b), indent="      "), ""]
+
+    out += [BAR, "  MUST HAVE -- THE SHORT LIST", BAR, ""]
+    out += ["  If she only answers eight things, it should be these eight:", ""]
+    for m in MUST:
+        out += ["  [ ]  " + ascii_only(m)]
+
+    out += ["", BAR, ""]
+    out += [wrap(ascii_only(CLOSING)), "", BAR, ""]
+    out += ["  BUILT IN THE SAME INK AS YOURS -- NONE OF THE SAME VOCABULARY", ""]
+
+    text = "\n".join(out)
+    text = ascii_only(text)
+    return text.replace("\n", "\r\n")   # CRLF, so Notepad on Windows is happy
+
+
 if __name__ == "__main__":
     md = build_md()
     (HERE / "MITALI-BRIEF.md").write_text(md, encoding="utf-8")
     print(f"wrote MITALI-BRIEF.md    {len(md):6d} bytes")
     p = build_docx()
     print(f"wrote {p.name}  {p.stat().st_size:6d} bytes")
+    t = build_txt()
+    (HERE / "MITALI-BRIEF.txt").write_text(t, encoding="ascii", newline="")
+    print(f"wrote MITALI-BRIEF.txt   {len(t):6d} bytes  (ascii, CRLF)")
