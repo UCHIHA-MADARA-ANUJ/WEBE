@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Preview — your GitHub profile</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#0d1117; --border:#30363d; --muted-border:#21262d;
+    --fg:#e6edf3; --muted:#8b949e; --link:#4493f8; --subtle:#6e7681;
+    --btn:#21262d; --btnb:#363b42; --head:#010409; --code:#161b22; --codefg:#e6edf3;
+    --crimson:#C1272D; --emble:#4FB3D9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif;
+       font-size:14px;line-height:1.5}
+  a{color:var(--link);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  .nav{background:var(--head);border-bottom:1px solid var(--border);padding:14px 24px;
+       display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:10}
+  .mark{width:30px;height:30px;border-radius:50%;background:var(--fg);display:grid;place-items:center;
+        color:var(--head);font-weight:800;font-size:15px}
+  .nav b{font-weight:600}
+  .sp{flex:1}
+  .tag{font-size:11px;letter-spacing:1.4px;color:var(--subtle);border:1px solid var(--border);
+       border-radius:20px;padding:4px 10px;text-transform:uppercase}
+
+  .page{max-width:1240px;margin:0 auto;padding:32px 24px 96px;display:grid;
+        grid-template-columns:290px minmax(0,1fr);gap:44px}
+  @media(max-width:920px){.page{grid-template-columns:1fr;gap:24px}}
+
+  .avatar{width:100%;aspect-ratio:1;border-radius:50%;border:1px solid var(--border);
+          background:radial-gradient(circle at 34% 26%,#3a0a10,#12060a 62%,#08050a);
+          display:grid;place-items:center;overflow:hidden}
+  .avatar img{width:74%;height:74%}
+  .name{font-size:24px;font-weight:600;margin:18px 0 0}
+  .handle{font-size:19px;font-weight:300;color:var(--muted);margin:0 0 14px}
+  .follow{width:100%;background:var(--btn);border:1px solid var(--btnb);color:var(--fg);
+          border-radius:6px;padding:6px 16px;font:inherit;font-weight:500;cursor:pointer;margin-bottom:16px}
+  .bio{margin:0 0 16px;font-size:15px}
+  .social{color:var(--muted);margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .social b{color:var(--fg)}
+  .links{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--muted-border);
+         padding-top:16px}
+  .links span{display:flex;gap:8px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .links svg{flex:none;opacity:.6}
+  .ach{font-weight:600;font-size:16px;margin:26px 0 12px}
+  .badge{width:64px;height:64px;border-radius:50%;border:1px solid #4a1119;
+         background:radial-gradient(circle at 35% 30%,#5c060c,#1a0407);display:grid;place-items:center}
+  .badge img{width:58%;height:58%}
+
+  .card{border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--panel)}
+  .card-head{background:var(--head);border-bottom:1px solid var(--border);padding:10px 16px;
+             font-size:13px;color:var(--muted);
+             display:flex;align-items:center;gap:8px}
+  .card-head b{color:var(--fg);font-weight:600}
+  .card-body{padding:28px 40px 40px}
+  @media(max-width:640px){.card-body{padding:20px}}
+
+  .center{text-align:center}
+  h1{font-size:2.1em;font-weight:700;letter-spacing:.01em;margin:8px 0 10px}
+  h2{font-size:1.5em;font-weight:600;border-bottom:1px solid var(--muted-border);
+     padding-bottom:.3em;margin:28px 0 16px;display:flex;align-items:center;gap:10px}
+  h3{font-size:1.15em;font-weight:600;margin:0 0 8px;display:flex;align-items:center;gap:7px}
+  h3 a{color:var(--link)}
+  p{margin:0 0 14px}
+  code{background:var(--code);padding:.15em .42em;border-radius:6px;font-size:82%;
+       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#ffb4b4}
+  hr{border:0;border-top:1px solid var(--muted-border);margin:28px 0}
+  blockquote{margin:0 0 16px;padding:.2em 0 .2em 1em;border-left:.25em solid var(--crimson);color:var(--muted)}
+  blockquote p{margin:0}
+  table{border-collapse:collapse;width:100%}
+  td{border:1px solid var(--muted-border);padding:16px 18px;vertical-align:top;width:50%}
+  @media(max-width:700px){table,tr,td{display:block;width:100%}td+td{border-top:0}}
+  .detail{border:1px solid var(--border);border-radius:6px;padding:10px 16px;
+          background:var(--code);color:var(--muted)}
+  .detail b{color:var(--fg)}
+  .stack{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+  .stack img{height:28px}
+  .status td{width:auto}
+  .status td:first-child{white-space:nowrap;color:var(--fg);font-weight:600;width:130px}
+  .status td:last-child{color:var(--muted)}
+  .banner-wrap{width:100%;border-radius:6px;overflow:hidden;line-height:0}
+  .banner-wrap img{width:100%;display:block}
+  .kicker{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.18em;
+          color:var(--subtle);display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .kicker code{color:#c9bfc6;background:#160f13}
+  .note{margin-top:26px;padding:12px 16px;border-left:3px solid var(--crimson);
+        background:rgba(193,18,31,.08);border-radius:0 6px 6px 0;font-size:13px;color:var(--muted)}
+  .note b{color:var(--fg)}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="mark">A</div>
+  <span><b>Anuj-Phulera</b></span>
+  <span class="sp"></span>
+  <span class="tag">live preview · animations running</span>
+</div>
+
+<div class="page">
+
+  <aside>
+    <div class="avatar"><img src="./emblem.svg" alt="" /></div>
+    <h2 class="name" style="border:0;padding:0;margin:18px 0 0;display:block">Anuj Phulera</h2>
+    <p class="handle">Anuj-Phulera</p>
+    <button class="follow">Follow</button>
+    <p class="bio">Interface engineer from Gurugram. I don't chase attention — I build things that command it.</p>
+    <div class="social">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5.5 3.5v-1a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1h2.5a1 1 0 0 1 1 1v2h-1.25a1.75 1.75 0 0 0 0 3.5H14v3a1 1 0 0 1-1 1h-2.5v-1.25a1.75 1.75 0 0 0-3.5 0V14H4.5a1 1 0 0 1-1-1V10H2.25a1.75 1.75 0 0 1 0-3.5H3.5V5a1 1 0 0 1 1-1z"/></svg>
+      <b>0</b> followers · <b>0</b> following
+    </div>
+    <div class="links">
+      <span><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0Z"/></svg> github.com/Anuj-Phulera</span>
+      <span><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm0 1.5a.25.25 0 0 0-.25.25v.4l6.5 3.4 6.5-3.4v-.4a.25.25 0 0 0-.25-.25Z"/></svg> anuj.phulera.work@gmail.com</span>
+      <span><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.25.5c1.7.4 2.5.9 3.4 1.5a12.6 12.6 0 0 0-11.1 0c.9-.6 1.8-1.1 3.4-1.5L10.6 3a19.8 19.8 0 0 0-4.9 1.4C2.4 9.1 1.9 13.6 2.1 18c2 1.5 4 2.4 5.9 3l.6-1c-.9-.3-1.7-.7-2.5-1.2l.5-.4a14.2 14.2 0 0 0 12.8 0l.5.4c-.8.5-1.6.9-2.5 1.2l.6 1c1.9-.6 3.9-1.5 5.9-3 .3-5.1-.5-9.5-3.2-14.6ZM8.7 15.3c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Zm6.6 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4c0 1.3-.9 2.4-2.1 2.4Z"/></svg> madara._.uchiha_</span>
+    </div>
+    <div class="ach">Achievements</div>
+    <div class="badge"><img src="./emblem.svg" alt="" /></div>
+  </aside>
+
+  <main>
+    <div class="card">
+      <div class="card-head"><b>Anuj-Phulera</b> / README.md</div>
+      <div class="card-body">
+
+        <div class="banner-wrap"><img id="bnr" src="./opening.svg" alt="Anuj Phulera — title sequence" /></div>
+
+        <div class="center" style="margin-top:10px"><img src="./emblem.svg" width="96" alt="Uzumaki" /></div>
+
+        <h1 class="center">ANUJ PHULERA</h1>
+
+        <p class="center kicker">
+          <code>SEALING CORPS</code><code>INTERFACE ENGINEER</code><code>GURUGRAM, INDIA</code>
+        </p>
+
+        <p class="center" style="margin-top:14px">
+          <a href="#"><b>The Path</b></a> &nbsp;·&nbsp;
+          <a href="#"><b>Work</b></a> &nbsp;·&nbsp;
+          <a href="#"><b>Live Site</b></a> &nbsp;·&nbsp;
+          <a href="#"><b>Email</b></a>
+        </p>
+
+        <div style="margin:26px 0 8px"><img src="./registry.svg" width="100%" alt="Shinobi registration" /></div>
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <h2>⦿ The Seal</h2>
+        <p><b>I don't chase attention. I build things that command it.</b></p>
+        <p style="color:var(--muted)">Every project here starts from the same belief: software should adapt to the person using it, not the other way round. Not a theme switcher — the structure. The layout, the hierarchy, what's available and what's hidden, decided at runtime by watching how you actually read.</p>
+        <blockquote><p><em>A random shuffle is noise. A decided one is a signal.</em></p></blockquote>
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <h2>⦿ Right Now</h2>
+        <img src="./now.svg" width="100%" alt="Right now: DEEP FIELD, VERDE, NIRMAAN" loading="eager" />
+        <p style="color:var(--muted)"><b style="color:var(--fg)">DEEP FIELD</b> is a living atlas of the cosmos with no fixed interface. <b style="color:var(--fg)">VERDE</b> is a vertical farm that waters itself. <b style="color:var(--fg)">NIRMAAN</b> is an AI-powered e-waste pickup network for India — three roles, live routing, bookings that run end to end.</p>
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+                <h2>⦿ Selected Work</h2>
+        <img src="./projects.svg" width="100%" alt="Eight projects" />
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <h2>⦿ The Path</h2>
+        <p style="color:var(--muted)">Interfaces that change shape are easy to make <b style="color:var(--fg)">unusable</b>. Anyone can shuffle a grid. The hard part was never the shuffling.</p>
+        <blockquote><p><b style="color:#ff8a8a">The hard part is earning the right to shuffle.</b></p></blockquote>
+        <p style="color:var(--muted)">So DEEP FIELD only reconstructs itself when the engine has <b style="color:var(--fg)">evidence</b> — a confident read, and a clear margin over the runner-up — and never more than once every nine seconds. It shows you what changed and why. It lets you pin a structure and switch the engine off. It never loses your place.</p>
+        <p style="color:var(--muted)">Every project here is an argument for the same idea: <em>adapt, but never at the cost of trust.</em></p>
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <h2>⦿ Attribute Sheet</h2>
+        <img src="./stats.svg" width="100%" alt="Attribute sheet" />
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <h2>⦿ Arsenal</h2>
+        <img src="./arsenal.svg" width="100%" alt="Arsenal" />
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <h2>⦿ Run It</h2>
+        <p style="color:var(--muted)">Every repo here runs with the same three commands. No build servers, no Docker, no ceremony.</p>
+        <pre style="background:var(--code);padding:16px;border-radius:6px;overflow-x:auto;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.7"><code>npm install
+cp .env.example .env.local    # VERDE APP and NIRMAAN APP only
+npm run dev                   # → http://localhost:3000</code></pre>
+        <p style="color:var(--muted)">DEEP FIELD and CommitQuest need nothing at all — one is Vite, the other is plain files you can open directly.</p>
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <h2>⦿ Contact</h2>
+        <p style="color:var(--muted)">Open an issue on any repo, or reach me directly — I answer both.</p>
+        <p>
+          <a href="mailto:anuj.phulera.work@gmail.com"><img src="https://img.shields.io/badge/EMAIL-anuj.phulera.work%40gmail.com-C1272D?style=flat-square&labelColor=0C0A10" alt="Email" /></a>
+          <a href="https://discord.com/users/1417462466304016494"><img src="https://img.shields.io/badge/DISCORD-madara._.uchiha_-4FB3D9?style=flat-square&labelColor=0C0A10" alt="Discord" /></a>
+        </p>
+
+        <img src="./divider.svg" width="100%" alt="" />
+
+        <div class="center">
+          <img src="./emblem.svg" width="52" alt="" />
+          <img src="./credits.svg" width="100%" alt="End credits" />
+        </div>
+        <p class="center" style="font-size:13px">
+          <a href="https://github.com/Anuj-Phulera?tab=repositories"><b>Repositories</b></a> &nbsp;·&nbsp; <a href="https://github.com/Anuj-Phulera/WEBE"><b>DEEP FIELD</b></a> &nbsp;·&nbsp; <a href="mailto:anuj.phulera.work@gmail.com"><b>Email</b></a> &nbsp;·&nbsp; <a href="https://discord.com/users/1417462466304016494"><b>Discord</b></a>
+        </p>
+
+        <div class="note">
+          <b>This is the real thing, animating.</b> The opening runs twenty-four seconds in three acts —
+          a slash, the name, the seal ring with all eight projects on it, then an iris out. The project grid
+          catches a scan beam, the attribute bars fill on load, and the credits roll. All of it is SMIL
+          inside the SVG files — no JavaScript, no external services, so it keeps moving on GitHub.
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+</div>
+<script>
+  function toggleTheme() {
+    const root = document.documentElement;
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    root.dataset.theme = next;
+    const b = document.getElementById('bnr');
+    if (b) b.src = './opening.svg';
+  }
+</script>
+</body>
+</html>

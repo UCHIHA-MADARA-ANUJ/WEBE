@@ -7,3 +7,7 @@ dist-ssr
 tsconfig.tsbuildinfo
 *.tsbuildinfo
 
+
+# python
+__pycache__/
+*.pyc

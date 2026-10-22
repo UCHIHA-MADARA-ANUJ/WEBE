@@ -1,0 +1,434 @@
+==============================================================================
+  PROFILE BRIEF
+  Mitali Chincholikar   github.com/Mitali-Chincholikar
+==============================================================================
+
+Answer these and I can build the whole page without guessing. Nothing gets
+invented -- if a question goes unanswered, that line simply comes off the
+page. Answer with the numbers, in any order, in any format. Half-answers and
+"idk" are fine and useful.
+
+  A GitHub profile is read in about eleven seconds. These questions are
+  the only thing standing between those eleven seconds and a page that
+  sounds like everybody else.
+
+------------------------------------------------------------------------------
+  HOW TO USE THIS
+------------------------------------------------------------------------------
+
+*  You can skip anything.
+   Every question is optional. Skipping one changes what the page says, never
+   whether it works.
+
+*  "None yet" is a real answer.
+   You are in first year. A page that admits that and then shows what you are
+   reaching for is stronger than one padded with fake projects.
+
+*  The starred questions matter most.
+   They set the structure. Everything else is decoration on top.
+
+*  Answer in your own words.
+   I would rather use a slightly awkward sentence you actually wrote than a
+   smooth one that sounds like every other profile.
+
+------------------------------------------------------------------------------
+
+==============================================================================
+  PART 0 - ALREADY ANSWERED
+==============================================================================
+
+  Confirm or correct these three. Nothing else in this part.
+
+  01.  Your GitHub handle is Mitali-Chincholikar.
+        Confirm -- username changes break every link we build.
+
+        ANSWER:
+
+  02.  Your name is Mitali Chincholikar.
+        Confirm the exact spelling. One wrong letter is a link that 404s.
+
+        ANSWER:
+
+  03.  You are heading toward web / app development.
+        Confirm, or redirect me.
+
+        ANSWER:
+
+
+==============================================================================
+  PART 1 - IDENTITY
+==============================================================================
+
+  The top third of the page. What a stranger reads in ten seconds.
+
+  01.  * Full name, exactly as you want it printed -- capitalisation included.
+        It becomes the biggest text on the page. "MITALI CHINCHOLIKAR" reads very
+        differently from "Mitali".
+
+        ANSWER:
+
+  02.  * One line -- what do you want to be known for? Two to six words.
+        This is the only sentence most visitors will read. It replaces "passionate
+        developer".
+
+        ANSWER:
+
+  03.  Three words you would want a stranger to use about you after ten seconds.
+        Sets the tone of the whole page: calm, sharp, curious, relentless -- each
+        one designs differently.
+
+        ANSWER:
+
+  04.  Do you want your age or year level shown?
+        You do not have to. First-year is a flex in a scene where everyone pretends
+        to be senior.
+
+        ANSWER:
+
+  05.  What do you want the very first frame of the page to be -- your name, or a symbol?
+        The opening plays before anything is read. It decides whether the page feels
+        like a poster or a document.
+
+        ANSWER:
+
+
+==============================================================================
+  PART 2 - COLLEGE
+==============================================================================
+
+  The factual spine. Short answers are perfect.
+
+  01.  * College name, exactly as it is written officially.
+        It appears on the record card. I will not guess at the spelling.
+
+        ANSWER:
+
+  02.  * City.
+        City only -- no address, no hostel, nothing that pinpoints you.
+
+        ANSWER:
+
+  03.  * Branch -- or "undecided" if that is the truth.
+        Undecided is a fine answer and I will write it plainly.
+
+        ANSWER:
+
+  04.  Which semester or year are you in?
+        Used for one line of context, not a countdown.
+
+        ANSWER:
+
+  05.  Any club, society, team or event you are part of?
+        Optional. A club is more interesting than a CGPA.
+
+        ANSWER:
+
+
+==============================================================================
+  PART 3 - SKILLS & BUILDING
+==============================================================================
+
+  What is real right now, and what you are reaching for. This is where most
+  profiles lie; we will not.
+
+  01.  * What do you actually want to learn next -- in order?
+        The page will show this as a live queue. It is honest, it updates, and it
+        reads like momentum.
+
+        ANSWER:
+
+  02.  Languages you have touched, even once -- Python, C, Java, HTML, anything.
+        "Touched" is the honest word. I will present it as exposure, not mastery.
+
+        ANSWER:
+
+  03.  Tools you can open without fear -- VS Code, Git, Figma, Canva, anything.
+        Determines whether the page shows a toolkit strip or stays quiet.
+
+        ANSWER:
+
+  04.  Can you build anything end-to-end right now? If yes, what?
+        If yes, this becomes the one real card on the page.
+
+        ANSWER:
+
+  05.  A project you are planning, even a vague idea.
+        Planned projects can be shown as "on the bench" -- labelled as not built
+        yet. Never as finished work.
+
+        ANSWER:
+
+  06.  Do you want a "currently learning" strip on the page?
+        Yes / no. It is the single most honest element a first-year profile can
+        have.
+
+        ANSWER:
+
+  07.  * Do you want skill meters -- bars with percentages?
+        Only if you will give me real numbers. On a first-year profile they usually
+        read as invented. My advice: no bars, say what you are learning instead.
+
+        ANSWER:
+
+  08.  Which operating system do you use?
+        Tiny detail. Sometimes becomes a line in the footer. Sometimes nothing.
+
+        ANSWER:
+
+
+==============================================================================
+  PART 4 - TASTE
+==============================================================================
+
+  How it looks and moves. The part most people get wrong on their own
+  profiles.
+
+  01.  * Pick a mood: dark and cinematic / clean and light / warm and editorial / loud.
+        This changes every colour, every font and every animation on the page.
+
+        ANSWER:
+
+  02.  * A colour you genuinely like.
+        A name is enough -- "ochre", "deep green", "ice blue". It becomes the
+        accent.
+
+        ANSWER:
+
+  03.  A colour you hate, so I never use it.
+        Seriously. One wrong accent ruins a page.
+
+        ANSWER:
+
+  04.  Serif, sans, or monospace-heavy?
+        Serif reads editorial and expensive. Sans reads modern and quiet. Mono reads
+        technical.
+
+        ANSWER:
+
+  05.  Do you want the page to move -- or sit still and be calm?
+        This one is mine to build, yours to choose. Motion is not always better. A
+        short, confident opening beats a busy page.
+
+        ANSWER:
+
+  06.  Any film, poster, album cover or website whose look you love? A link is enough.
+        The fastest way to get the feel right is a reference I can actually look at.
+
+        ANSWER:
+
+  07.  Should the page have a light version for daytime readers?
+        GitHub supports both. Costs me one extra file. Costs you nothing.
+
+        ANSWER:
+
+  08.  Anything you do NOT want to see -- cartoon, emoji, gradients, glassy cards, anything?
+        Name it and it is banned. This is yours, not mine.
+
+        ANSWER:
+
+
+==============================================================================
+  PART 5 - PRESENCE
+==============================================================================
+
+  What a visitor can click. Every link must lead somewhere real, or it comes
+  off.
+
+  01.  Email -- should it be on the page, and which address?
+        It will be public and scraped by bots. A dedicated address is safer than
+        your personal one.
+
+        ANSWER:
+
+  02.  LinkedIn -- paste the link, or say no.
+        Optional. But it is the one link recruiters actually use.
+
+        ANSWER:
+
+  03.  Instagram, X, or any other handle?
+        Optional. Only if you want it public.
+
+        ANSWER:
+
+  04.  Do you have a personal site or portfolio?
+        If not, we leave the slot out entirely rather than linking to nothing.
+
+        ANSWER:
+
+  05.  Discord username, if you want it shown?
+        Optional.
+
+        ANSWER:
+
+  06.  Should the email be a clickable link or drawn as plain text?
+        Clickable is friendlier. Plain text resists scrapers. Your call.
+
+        ANSWER:
+
+
+==============================================================================
+  PART 6 - VOICE
+==============================================================================
+
+  The words. This is what makes a page sound like a person instead of a
+  template.
+
+  01.  * Finish this sentence: "I am in first year, and I am here to ..."
+        Your ending becomes a line on the page, possibly the best one.
+
+        ANSWER:
+
+  02.  Write one sentence you would actually say out loud about why you want to build things.
+        I will polish it. I will not replace it.
+
+        ANSWER:
+
+  03.  Do you want a quote on the page? Whose?
+        Otherwise we use your own words, which is almost always better.
+
+        ANSWER:
+
+  04.  Any words you hate seeing on profiles -- "passionate", "aspiring", "enthusiast", "go-getter"?
+        Banned list. I take this one personally.
+
+        ANSWER:
+
+  05.  First person ("I build") or third person ("she builds")?
+        First person is warmer. Third person reads like a press release.
+
+        ANSWER:
+
+  06.  How much writing -- one screen, a short scroll, or a long read?
+        Most good profiles are one screen. I will not pad it.
+
+        ANSWER:
+
+
+==============================================================================
+  PART 7 - BOUNDARIES
+==============================================================================
+
+  Short part. Important part.
+
+  01.  * Anything that must NOT appear -- school name, phone number, photos, marks?
+        Hard exclusions. I will build around them.
+
+        ANSWER:
+
+  02.  Are you comfortable with your college and city being public on the page?
+        Yes / no. It is normal, but it is your decision, not mine.
+
+        ANSWER:
+
+  03.  Do you want a photo, an avatar, or an abstract mark instead?
+        A mark is safer and often looks better. A photo makes it personal. Both are
+        valid.
+
+        ANSWER:
+
+  04.  Anything you want to be credited or tagged for?
+        Only if it is real and you would stand behind it.
+
+        ANSWER:
+
+
+==============================================================================
+  PART 8 - RAPID FIRE
+==============================================================================
+
+  One word each. No thinking. These decide the small details -- the footer,
+  the opening frame, the footnote.
+
+  01.  Tea or coffee?
+        Ends up somewhere small and true.
+
+        ANSWER:
+
+  02.  Night or morning?
+        Sets whether the page reads as late-night or early-start.
+
+        ANSWER:
+
+  03.  Headphones or speakers?
+        Soundtrack question -- even though the page is silent.
+
+        ANSWER:
+
+  04.  Dark interface or light interface, when you are the user?
+        Not the same as how your profile should look. Useful to know both.
+
+        ANSWER:
+
+  05.  Tabs or spaces?
+        A joke that costs one line. Only if you find it funny.
+
+        ANSWER:
+
+  06.  One app you could not live without?
+        Often becomes a footnote detail.
+
+        ANSWER:
+
+  07.  One song you would put over a trailer of your life?
+        I will not embed audio, but the mood bleeds into the type and motion.
+
+        ANSWER:
+
+  08.  If your page had a soundtrack, one word for it?
+        Sharp? Warm? Fast? Slow? One word.
+
+        ANSWER:
+
+
+==============================================================================
+  HOW THE ANSWERS TURN INTO THE PAGE
+==============================================================================
+
+  Mood + colour
+      Every palette, font and motion curve on the page.
+
+  The one-line claim
+      The biggest text in the opening frame.
+
+  College + city + branch
+      The record card -- the four-line fact block under the title.
+
+  "Want to learn next"
+      The learning queue: a live, updating list. Only used if you answer it.
+
+  Planned projects
+      An "on the bench" strip, clearly labelled as unbuilt.
+
+  Banned words + banned visuals
+      A strict filter applied to every string I write.
+
+  Finish-the-sentence answer
+      The closing line, in your voice, lightly edited.
+
+  Rapid fire
+      The footer. One or two details, no more.
+
+==============================================================================
+  MUST HAVE -- THE SHORT LIST
+==============================================================================
+
+  If she only answers eight things, it should be these eight:
+
+  [ ]  Full name (exact spelling)
+  [ ]  The one line -- what you want to be known for
+  [ ]  College name and city
+  [ ]  Branch, or "undecided"
+  [ ]  What you want to learn next
+  [ ]  Mood, and one colour you like
+  [ ]  "I am in first year, and I am here to ..."
+  [ ]  Anything that must NOT appear
+
+==============================================================================
+
+That is everything. Send back whatever you have -- numbered or unnumbered,
+typed or photographed. I will build the page from the answers that exist and
+cut the lines that do not.
+
+==============================================================================
+
+  BUILT IN THE SAME INK AS YOURS -- NONE OF THE SAME VOCABULARY
