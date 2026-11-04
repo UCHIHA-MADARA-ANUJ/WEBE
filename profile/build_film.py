@@ -100,17 +100,28 @@ def spiral_centreline(cx, cy, r0, r1, turns, steps=300):
     return "M " + " L ".join("%.2f,%.2f" % p for p in pts)
 
 
-def corona_spikes(cx, cy, r_in, r_out, n, colors, seed=7):
-    """Tapered blades, not hairlines. Each one a filled triangle with a curve."""
+WARM_PALE = {"#E8F6FC", "#A8DEF0", "#F6F0F4"}
+
+
+def corona_spikes(cx, cy, r_in, r_out, n, colors, seed=7, weights=None, tilt=0.0):
+    """Tapered blades, not hairlines. Each one a filled triangle with a curve.
+
+    Blades pointing down are pulled short so the corona never scribbles over
+    the name, and colours are weighted so one family dominates the ring.
+    """
     rng = random.Random(seed)
     out = []
     for i in range(n):
         ang = 2 * math.pi * i / n - math.pi / 2
         ang += rng.uniform(-0.008, 0.008)
         length = r_out * rng.uniform(0.22, 0.62)
+        length *= 1.0 - 0.80 * max(0.0, math.sin(ang)) ** 1.25
         half = rng.uniform(0.012, 0.034)
-        col = rng.choice(colors)
+        col = (rng.choices(colors, weights=weights, k=1)[0]
+               if weights else rng.choice(colors))
         o = rng.uniform(0.14, 0.44)
+        if col in WARM_PALE:
+            o *= 0.55
         a0, a1 = ang - half, ang + half
         tip_off = rng.uniform(-0.05, 0.05)
         p0 = (cx + r_in * math.cos(a0), cy + r_in * math.sin(a0))
@@ -261,10 +272,11 @@ def build_anuj():
             f'stroke-width="{1.4 if major else 0.7}"/>')
     ticks = "".join(ticks)
 
-    PROJ = [("VERDE PORTFOLIO", "#5BD69B"), ("VERDE APP", "#4FB3D9"),
-            ("NIRMAAN APP", "#00E08A"), ("NIRMAN PORTFOLIO", "#C1272D"),
-            ("SKILL-VERSE", "#7C6BF0"), ("RESONATE", "#E0563F"),
-            ("RAKSHABANDHAN", "#E8A33D"), ("VERDE PREVIOUS", "#6E8B7A")]
+    PROJ = [("VERDE PORTFOLIO", VERM_L), ("VERDE APP", VERM_L),
+            ("NIRMAAN APP", VERM_L), ("NIRMAN PORTFOLIO", VERM_L),
+            ("SKILL-VERSE", VERM_L), ("RESONATE", VERM_L),
+            ("RAKSHABANDHAN", VERM_L), ("VERDE PREVIOUS", VERM_L)]
+    NUM = CHAKRA
     CWD, GAPD = 130, 10
     x0 = CX - (len(PROJ) * CWD + (len(PROJ) - 1) * GAPD) / 2
 
@@ -282,7 +294,7 @@ def build_anuj():
                 f'<text x="{cx + 14:.1f}" y="{CHIP_Y + 21}" font-family="{MONO}" font-size="7.4" '
                 f'letter-spacing="0.8" fill="{CREAM}" fill-opacity="0.88">{name}</text>'
                 f'<text x="{cx + CWD - 9:.1f}" y="{CHIP_Y + 21}" text-anchor="end" font-family="{MONO}" '
-                f'font-size="6.4" fill="{col}" fill-opacity="0.55">0{i+1}</text>'
+                f'font-size="6.4" fill="{NUM}" fill-opacity="0.62">0{i+1}</text>'
                 f'</g>')
         return "".join(out)
 
@@ -342,80 +354,72 @@ def build_anuj():
     <text x="{CX}" y="{CHIP_Y + 50}" text-anchor="middle" font-family="{MONO}" font-size="8"
           letter-spacing="4" fill="{DIM}">EIGHT SEALS · ONE HAND</text>
 
-    <rect x="-240" y="{NAME_Y - 96}" width="240" height="124" fill="url(#saSweep)">
-      <animateTransform attributeName="transform" type="translate"
-                        values="0 0;0 0;1700 0;1700 0" keyTimes="0;0.30;0.62;1"
-                        dur="15s" repeatCount="indefinite"/>
-    </rect>
   </g>'''
 
-    scrim = (f'<rect x="0" y="0" width="{W}" height="{H}" fill="#040306" opacity="0">'
-             + track("opacity", [(0, 0), (0.5, 0), (1.1, 1), (21.6, 1), (22.4, 0)], CYCLE)
-             + '</rect>')
-
     film = f'''
-  <!-- ══ LAYER 2 · THE SCRIM ═════════════════════════════════════════════ -->
-  {scrim}
+  <!-- ══ THE FILM · accents only, never a scrim ══════════════════════════
+       Every frame stays composed: the mark, the name, the rule, the claim and
+       the eight chips are present from t=0 to t=26. The timeline adds light,
+       never removes the picture. -->
 
-  <!-- ══ LAYER 3 · THE FILM ══════════════════════════════════════════════ -->
-  <g transform="translate({CX},{MARK_CY})"
-     opacity="0">{track("opacity", [(0, 0), (1.1, 0), (1.5, 1), (21.6, 1), (22.1, 0)], CYCLE)}
-    <circle r="{R}" fill="none" stroke="url(#saRing)" stroke-width="2.8"
-            stroke-dasharray="{2*math.pi*R:.1f}" stroke-dashoffset="{2*math.pi*R:.1f}">
-      {track("stroke-dashoffset", [(0, 2*math.pi*R), (1.3, 2*math.pi*R), (4.4, 0), (CYCLE, 0)], CYCLE)}
+  <!-- ignition: a ring of light escaping the mark -->
+  <g transform="translate({CX},{MARK_CY})" opacity="0">
+    {track("opacity", [(0, 0), (0.9, 0), (1.15, 0.95), (2.3, 0)], CYCLE)}
+    <circle r="{R}" fill="none" stroke="{VERM_L}" stroke-width="3"
+            stroke-dasharray="{2*math.pi*R:.1f}">
+      {track("r", [(0, R * 0.35), (1.15, R), (2.3, R + 180)], CYCLE)}
+      {track("stroke-width", [(0, 14), (1.15, 4), (2.3, 0.6)], CYCLE)}
+      {track("stroke-dasharray", [(0, "2 6"), (2.3, "0.4 22")], CYCLE)}
     </circle>
-    <circle r="{R - 7}" fill="none" stroke="{VERM_L}" stroke-opacity="0.30" stroke-width="1"
-            stroke-dasharray="{2*math.pi*(R-7):.1f}" stroke-dashoffset="{2*math.pi*(R-7):.1f}">
-      {track("stroke-dashoffset", [(0, 2*math.pi*(R-7)), (2.1, 2*math.pi*(R-7)), (5.2, 0), (CYCLE, 0)], CYCLE)}
-    </circle>
+  </g>
+
+  <!-- the rim breathes brighter than the poster's baseline -->
+  <g transform="translate({CX},{MARK_CY})" opacity="0">
+    {track("opacity", [(0, 0), (1.0, 0), (1.6, 1), (3.4, 0.55), (5.0, 0.9),
+                       (7.0, 0.4), (9.0, 0.85), (21.0, 0.5), (22.0, 0.2), (CYCLE, 0.0)], CYCLE)}
+    <circle r="{R + 5}" fill="none" stroke="url(#saRing)" stroke-width="5" stroke-opacity="0.45"/>
+    <circle r="{R + 16}" fill="none" stroke="{VERM_L}" stroke-width="16" stroke-opacity="0.10"/>
+  </g>
+
+  <!-- the spiral re-traces itself, once, as if re-inked -->
+  <g transform="translate({CX},{MARK_CY})">
     <g>
       <animateTransform attributeName="transform" type="rotate" from="0" to="360"
                         dur="90s" repeatCount="indefinite"/>
-      <path d="{ribbon}" fill="url(#saRibbon)" opacity="0">
-        {track("opacity", [(0, 0), (3.6, 0), (4.4, 1), (21.4, 1), (22.0, 0)], CYCLE)}
-        <animateTransform attributeName="transform" type="scale"
-                          values="0.86;0.86;1;1" keyTimes="0;{kf(3.6, CYCLE)};{kf(4.9, CYCLE)};1"
-                          dur="{CYCLE}s" repeatCount="indefinite" additive="sum"/>
+      <path d="{ribbon}" fill="none" stroke="#FFB4A6" stroke-width="2.4"
+            stroke-opacity="0" stroke-linecap="round"
+            stroke-dasharray="{2*math.pi*(R-16)*2.7:.0f}">
+        {track("stroke-opacity", [(0, 0), (2.6, 0), (2.9, 0.85), (5.2, 0.0), (CYCLE, 0)], CYCLE)}
       </path>
     </g>
-    <circle r="7" fill="#FFFDF6" opacity="0">
-      {track("opacity", [(0, 0), (5.0, 0), (5.5, 1), (21.4, 1), (22.0, 0)], CYCLE)}
-      {track("r", [(0, 0), (5.0, 0), (5.4, 26), (5.9, 7), (CYCLE, 7)], CYCLE)}
-    </circle>
   </g>
 
-  <g opacity="0">
-    {track("opacity", [(0, 0), (7.3, 0), (7.42, 1), (7.9, 1), (8.5, 0)], CYCLE)}
-    <rect x="0" y="{NAME_Y - 30}" width="{W}" height="3" fill="url(#saSweep2)"/>
-    <rect x="0" y="{NAME_Y - 32}" width="{W}" height="7" fill="url(#saSweep2)" opacity="0.4"/>
-  </g>
+  <!-- the core ignites, then settles -->
+  <circle cx="{CX}" cy="{MARK_CY}" r="6.5" fill="#FFFDF6" opacity="0">
+    {track("opacity", [(0, 0), (1.1, 0), (1.6, 1), (2.6, 0.35), (CYCLE, 0)], CYCLE)}
+    {track("r", [(0, 0), (1.1, 0), (1.5, 30), (1.9, 9), (2.6, 0), (CYCLE, 0)], CYCLE)}
+  </circle>
 
-  <g clip-path="url(#saWipe)">
-    <text x="{CX}" y="{NAME_Y}" text-anchor="middle" font-family="{BLACK}" font-size="88"
-          letter-spacing="3" fill="url(#saName)">
-      <animate attributeName="opacity" values="0;0;1;1;0;0"
-               keyTimes="0;{kf(7.4, CYCLE)};{kf(7.7, CYCLE)};{kf(21.4, CYCLE)};{kf(21.9, CYCLE)};1"
-               dur="{CYCLE}s" repeatCount="indefinite"/>ANUJ PHULERA</text>
-  </g>
+  <!-- a light crosses the name once per loop -->
+  <ellipse cx="-210" cy="{NAME_Y - 40}" rx="160" ry="104" fill="url(#saSweep)">
+    <animateTransform attributeName="transform" type="translate"
+                      values="0 0;0 0;1720 0;1720 0" keyTimes="0;0.34;0.52;1"
+                      dur="{CYCLE}s" repeatCount="indefinite"/>
+  </ellipse>
 
-  <rect x="{CX - 268}" y="{RULE_Y}" width="536" height="1.4" fill="url(#saRule)" opacity="0">
-    {track("opacity", [(0, 0), (8.9, 0), (9.1, 1), (21.2, 1), (21.7, 0)], CYCLE)}
-    {track("width", [(0, 0), (8.9, 0), (10.1, 536), (CYCLE, 536)], CYCLE)}
+  <!-- the rule strikes, left to right, at t=9 -->
+  <rect x="{CX - 268}" y="{RULE_Y - 1.2}" width="536" height="3.4" fill="url(#saRule)" opacity="0">
+    {track("opacity", [(0, 0), (8.9, 0), (9.0, 0.9), (9.6, 0), (CYCLE, 0)], CYCLE)}
+    <animateTransform attributeName="transform" type="scale"
+                      values="0 1;0 1;1 1;1 1"
+                      keyTimes="0;{kf(8.9, CYCLE)};{kf(9.6, CYCLE)};1"
+                      dur="{CYCLE}s" repeatCount="indefinite" additive="sum"
+                      transform-origin="{CX} {RULE_Y}"/>
   </rect>
 
-  <text x="{CX}" y="{RULE_Y + 34}" text-anchor="middle" font-family="{MONO}" font-size="15.5"
-        letter-spacing="0.6" fill="{CREAM}" opacity="0">
-    {track("opacity", [(0, 0), (9.5, 0), (9.9, 0.96), (21.2, 0.96), (21.7, 0)], CYCLE)}
-    I don't chase attention.</text>
-  <text x="{CX}" y="{RULE_Y + 59}" text-anchor="middle" font-family="{MONO}" font-size="15.5"
-        letter-spacing="0.6" fill="{VERM_L}" opacity="0">
-    {track("opacity", [(0, 0), (10.0, 0), (10.4, 1), (21.2, 1), (21.7, 0)], CYCLE)}
-    I build things that command it.</text>
-
-  <g>{chips(11.2)}</g>
-
+  <!-- the stamp -->
   <g opacity="0">
-    {track("opacity", [(0, 0), (13.2, 0), (13.6, 1), (20.8, 1), (21.4, 0)], CYCLE)}
+    {track("opacity", [(0, 0), (12.6, 0), (13.1, 1), (20.6, 1), (21.4, 0)], CYCLE)}
     <rect x="46" y="{H - BAR - 86}" width="276" height="32" fill="none" stroke="{VERM}" stroke-opacity="0.55"/>
     <text x="62" y="{H - BAR - 65}" font-family="{MONO}" font-size="9.5" letter-spacing="2.8"
           fill="{VERM_L}">CHAPTER 001 · THE SEAL</text>
@@ -462,11 +466,11 @@ def build_anuj():
       <stop offset="0.84" stop-color="{VERM_L}" stop-opacity="0.9"/>
       <stop offset="1" stop-color="{VERM}" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="saSweep" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="{VERM_L}" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="{CREAM}" stop-opacity="0.30"/>
+    <radialGradient id="saSweep" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="{CREAM}" stop-opacity="0.22"/>
+      <stop offset="0.40" stop-color="{VERM_L}" stop-opacity="0.13"/>
       <stop offset="1" stop-color="{VERM_L}" stop-opacity="0"/>
-    </linearGradient>
+    </radialGradient>
     <linearGradient id="saSweep2" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="{VERM}" stop-opacity="0"/>
       <stop offset="0.5" stop-color="#FFD8CE" stop-opacity="0.95"/>
@@ -511,8 +515,9 @@ def build_mitali():
     MARK_CY, R = 316, 146
     NAME_Y, RULE_Y, CHIP_Y = 528, 560, 636
 
-    spikes = corona_spikes(CX, MARK_CY, R + 6, R + 96, 112,
-                           [CORAL, CHERRY_L, CORAL, CELESTE, AQUA, ICE], seed=11)
+    spikes = corona_spikes(CX, MARK_CY, R + 6, R + 78, 124,
+                           [CORAL, CHERRY_L, ICE, CELESTE], seed=11,
+                           weights=[0.54, 0.28, 0.13, 0.05])
 
     stars = []
     rng = random.Random(5)
@@ -530,7 +535,8 @@ def build_mitali():
     stars = "".join(stars)
 
     ITEMS = ["ADVANCED PYTHON", "C", "UI / UX", "SQL", "C++", "NODE.JS", "JAVA"]
-    COLS = [AQUA, CELESTE, CORAL, AQUA, CELESTE, CORAL, AQUA]
+    COLS = [CHERRY_L] * 7
+    NUM = CELESTE
     CWD, GAPD = 136, 10
     x0 = CX - (len(ITEMS) * CWD + (len(ITEMS) - 1) * GAPD) / 2
 
@@ -548,7 +554,7 @@ def build_mitali():
                 f'<text x="{cx + 14:.1f}" y="{CHIP_Y + 21}" font-family="{MONO}" font-size="7.4" '
                 f'letter-spacing="0.8" fill="{CREAM}" fill-opacity="0.88">{label}</text>'
                 f'<text x="{cx + CWD - 9:.1f}" y="{CHIP_Y + 21}" text-anchor="end" font-family="{MONO}" '
-                f'font-size="6.4" fill="{col}" fill-opacity="0.55">0{i+1}</text>'
+                f'font-size="6.4" fill="{NUM}" fill-opacity="0.62">0{i+1}</text>'
                 f'</g>')
         return "".join(out)
 
@@ -565,7 +571,13 @@ def build_mitali():
       {anamorphic(MARK_CY, 820, color=CHERRY_L, op=0.30)}
     </g>
 
-    <g mask="url(#mlSpikeFade)">{spikes}</g>
+    <g mask="url(#mlSpikeFade)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0 {CX} {MARK_CY}"
+                          to="360 {CX} {MARK_CY}" dur="140s" repeatCount="indefinite"/>
+        {spikes}
+      </g>
+    </g>
 
     <circle cx="{CX}" cy="{MARK_CY}" r="{R + 20}" fill="none" stroke="{CORAL}" stroke-opacity="0.09" stroke-width="22"/>
     <circle cx="{CX}" cy="{MARK_CY}" r="{R + 4}" fill="url(#mlRimGlow)"/>
@@ -578,8 +590,8 @@ def build_mitali():
       <g>
         <animateTransform attributeName="transform" type="rotate" from="0" to="-360"
                           dur="150s" repeatCount="indefinite"/>
-        <circle cx="{R + 24}" r="10" fill="{ICE}" fill-opacity="0.22"/>
-        <circle cx="{R + 24}" r="10" fill="none" stroke="{ICE}" stroke-opacity="0.40" stroke-width="0.8"/>
+        <circle cx="{R + 108}" r="8.5" fill="{ICE}" fill-opacity="0.10"/>
+        <circle cx="{R + 108}" r="2.6" fill="{ICE}" fill-opacity="0.85"/>
       </g>
     </g>
 
@@ -611,95 +623,89 @@ def build_mitali():
     <text x="{CX}" y="{CHIP_Y + 50}" text-anchor="middle" font-family="{MONO}" font-size="8"
           letter-spacing="4" fill="{DIM}">SEVEN ON THE QUEUE · NONE OF THEM LEARNED YET</text>
 
-    <rect x="-220" y="{NAME_Y - 86}" width="220" height="112" fill="url(#mlSweep)">
-      <animateTransform attributeName="transform" type="translate"
-                        values="0 0;0 0;1680 0;1680 0" keyTimes="0;0.28;0.60;1"
-                        dur="14s" repeatCount="indefinite"/>
-    </rect>
   </g>'''
 
-    scrim = (f'<rect x="0" y="0" width="{W}" height="{H}" fill="#040308" opacity="0">'
-             + track("opacity", [(0, 0), (0.5, 0), (1.1, 1), (21.4, 1), (22.2, 0)], CYCLE)
-             + '</rect>')
-
     film = f'''
-  <!-- ══ LAYER 2 · THE SCRIM ═════════════════════════════════════════════ -->
-  {scrim}
+  <!-- ══ THE FILM · accents only ═════════════════════════════════════════ -->
 
-  <!-- ══ LAYER 3 · THE FILM ══════════════════════════════════════════════ -->
-
-  <!-- the sun ignites -->
-  <circle cx="{CX}" cy="{MARK_CY}" r="{R}" fill="url(#mlSun)" opacity="0">
-    {track("opacity", [(0, 0), (1.0, 0), (1.7, 1), (3.4, 1), (4.6, 0.10), (21.0, 0.10), (21.6, 0)], CYCLE)}
-    {track("r", [(0, R * 0.55), (1.7, R), (CYCLE, R)], CYCLE)}
-  </circle>
-  <circle cx="{CX}" cy="{MARK_CY}" r="{R + 110}" fill="{CORAL}" fill-opacity="0.08" opacity="0">
-    {track("opacity", [(0, 0), (1.3, 0), (2.0, 1), (21.0, 1), (21.6, 0)], CYCLE)}
-    {track("r", [(0, R), (2.0, R + 150), (5.4, R + 110), (CYCLE, R + 110)], CYCLE)}
-  </circle>
-
-  <!-- the moon: totality -->
+  <!-- ignition ring -->
   <g transform="translate({CX},{MARK_CY})" opacity="0">
-    {track("opacity", [(0, 0), (2.7, 0), (2.9, 1), (21.1, 1), (21.6, 0)], CYCLE)}
+    {track("opacity", [(0, 0), (0.85, 0), (1.10, 0.95), (2.2, 0)], CYCLE)}
+    <circle r="{R}" fill="none" stroke="{CHERRY_L}" stroke-width="12"
+            stroke-dasharray="2 6">
+      {track("r", [(0, R * 0.30), (1.10, R), (2.2, R + 200)], CYCLE)}
+      {track("stroke-width", [(0, 16), (1.10, 5), (2.2, 0.6)], CYCLE)}
+      {track("stroke-dasharray", [(0, "2 6"), (2.2, "0.3 26")], CYCLE)}
+    </circle>
+  </g>
+
+  <!-- the sun burning behind the disc -->
+  <circle cx="{CX}" cy="{MARK_CY}" r="{R}" fill="url(#mlSun)" opacity="0">
+    {track("opacity", [(0, 0), (1.0, 0), (1.5, 0.85), (2.6, 0.30), (3.2, 0.06), (CYCLE, 0)], CYCLE)}
+  </circle>
+
+  <!-- the moon crosses: totality, then it lets go -->
+  <g transform="translate({CX},{MARK_CY})" opacity="0">
+    {track("opacity", [(0, 0), (2.70, 0), (2.90, 1), (20.9, 1), (21.5, 0)], CYCLE)}
     <g>
       <animateTransform attributeName="transform" type="translate"
-                        values="-900 0;-900 0;0 0;0 0;900 0;900 0"
-                        keyTimes="0;{kf(1.3, CYCLE)};{kf(3.2, CYCLE)};{kf(6.8, CYCLE)};{kf(8.2, CYCLE)};1"
+                        values="-980 0;-980 0;0 0;0 0;980 0;980 0"
+                        keyTimes="0;{kf(1.20, CYCLE)};{kf(3.10, CYCLE)};{kf(6.90, CYCLE)};{kf(8.40, CYCLE)};1"
                         dur="{CYCLE}s" repeatCount="indefinite"/>
-      <circle r="{R + 2}" fill="url(#mlVoid)"/>
-      <circle r="{R + 2}" fill="none" stroke="#FFB4A4" stroke-opacity="0.25" stroke-width="3"/>
+      <circle r="{R + 3}" fill="url(#mlVoid)"/>
+      <circle r="{R + 3}" fill="none" stroke="#FFC0B0" stroke-opacity="0.30" stroke-width="3"/>
     </g>
   </g>
 
-  <!-- corona flares at totality -->
+  <!-- corona breathes up at totality, settles after -->
   <g opacity="0">
-    {track("opacity", [(0, 0), (2.95, 0), (3.2, 1), (4.6, 0.9), (21.0, 0.9), (21.6, 0)], CYCLE)}
-    <g mask="url(#mlSpikeFade)">{spikes}</g>
-    <circle cx="{CX}" cy="{MARK_CY}" r="{R + 5}" fill="none" stroke="url(#mlCorona)" stroke-width="4"/>
+    {track("opacity", [(0, 0), (2.90, 0), (3.20, 0.85), (4.60, 0.55), (8.40, 0.20),
+                       (21.0, 0.12), (21.6, 0), (CYCLE, 0)], CYCLE)}
+    <circle cx="{CX}" cy="{MARK_CY}" r="{R + 6}" fill="none" stroke="url(#mlCorona)" stroke-width="5"/>
   </g>
 
-  <!-- diamond ring -->
+  <!-- diamond ring at both contacts -->
   <g opacity="0">
-    {track("opacity", [(0, 0), (2.88, 0), (3.02, 1), (3.26, 0),
-                       (6.62, 0), (6.76, 0.92), (7.00, 0)], CYCLE)}
-    <circle cx="{CX - R}" cy="{MARK_CY}" r="9" fill="#FFFFFF"/>
-    <circle cx="{CX - R}" cy="{MARK_CY}" r="32" fill="{CORAL}" fill-opacity="0.26"/>
-    <line x1="{CX - R - 110}" y1="{MARK_CY}" x2="{CX - R - 18}" y2="{MARK_CY}"
-          stroke="{ICE}" stroke-width="1.8" stroke-opacity="0.9"/>
-    <line x1="{CX - R + 18}" y1="{MARK_CY}" x2="{CX - R + 110}" y2="{MARK_CY}"
-          stroke="{ICE}" stroke-width="1.8" stroke-opacity="0.9"/>
+    {track("opacity", [(0, 0), (2.86, 0), (3.00, 1), (3.24, 0),
+                       (6.64, 0), (6.78, 0.92), (7.02, 0)], CYCLE)}
+    <circle cx="{CX - R}" cy="{MARK_CY}" r="10" fill="#FFFFFF"/>
+    <circle cx="{CX - R}" cy="{MARK_CY}" r="36" fill="{CORAL}" fill-opacity="0.28"/>
+    <line x1="{CX - R - 130}" y1="{MARK_CY}" x2="{CX - R - 20}" y2="{MARK_CY}"
+          stroke="{ICE}" stroke-width="2" stroke-opacity="0.92"/>
+    <line x1="{CX - R + 20}" y1="{MARK_CY}" x2="{CX - R + 130}" y2="{MARK_CY}"
+          stroke="{ICE}" stroke-width="2" stroke-opacity="0.92"/>
   </g>
 
-  <!-- light corridor before the name -->
-  <rect x="-80" y="{BAR}" width="46" height="{H - BAR*2}" fill="url(#mlSweep)" opacity="0">
-    {track("opacity", [(0, 0), (8.3, 0), (8.4, 0.95), (9.1, 0.95), (9.2, 0)], CYCLE)}
+  <!-- the mark's rim breathes -->
+  <g opacity="0">
+    {track("opacity", [(0, 0), (1.0, 0), (1.6, 1), (3.2, 0.5), (4.8, 0.9), (7.0, 0.4),
+                       (9.0, 0.8), (21.0, 0.45), (22.0, 0.15), (CYCLE, 0)], CYCLE)}
+    <circle cx="{CX}" cy="{MARK_CY}" r="{R + 5}" fill="none" stroke="url(#mlCorona)"
+            stroke-width="6" stroke-opacity="0.45"/>
+    <circle cx="{CX}" cy="{MARK_CY}" r="{R + 20}" fill="none" stroke="{CORAL}"
+            stroke-width="22" stroke-opacity="0.10"/>
+  </g>
+
+  <!-- a light crosses the name -->
+  <ellipse cx="-200" cy="{NAME_Y - 42}" rx="152" ry="96" fill="url(#mlSweep)">
     <animateTransform attributeName="transform" type="translate"
-                      values="0 0;0 0;1280 0;1280 0" keyTimes="0;{kf(8.3, CYCLE)};{kf(9.2, CYCLE)};1"
+                      values="0 0;0 0;1700 0;1700 0" keyTimes="0;0.32;0.50;1"
                       dur="{CYCLE}s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- the rule strikes at t=9.4 -->
+  <rect x="{CX - 290}" y="{RULE_Y - 1.2}" width="580" height="3.4" fill="url(#mlRule)" opacity="0">
+    {track("opacity", [(0, 0), (9.35, 0), (9.45, 0.9), (10.05, 0), (CYCLE, 0)], CYCLE)}
+    <animateTransform attributeName="transform" type="scale"
+                      values="0 1;0 1;1 1;1 1"
+                      keyTimes="0;{kf(9.35, CYCLE)};{kf(10.05, CYCLE)};1"
+                      dur="{CYCLE}s" repeatCount="indefinite" additive="sum"
+                      transform-origin="{CX} {RULE_Y}"/>
   </rect>
 
-  <g clip-path="url(#mlWipe)">
-    <text x="{CX}" y="{NAME_Y}" text-anchor="middle" font-family="{SANS}" font-size="76"
-          font-weight="300" letter-spacing="11" fill="url(#mlName)">
-      <animate attributeName="opacity" values="0;0;1;1;0;0"
-               keyTimes="0;{kf(8.5, CYCLE)};{kf(8.8, CYCLE)};{kf(21.0, CYCLE)};{kf(21.5, CYCLE)};1"
-               dur="{CYCLE}s" repeatCount="indefinite"/>MITALI CHINCHOLIKAR</text>
-  </g>
-
-  <rect x="{CX - 290}" y="{RULE_Y}" width="580" height="1.4" fill="url(#mlRule)" opacity="0">
-    {track("opacity", [(0, 0), (9.5, 0), (9.7, 1), (20.8, 1), (21.3, 0)], CYCLE)}
-    {track("width", [(0, 0), (9.5, 0), (10.8, 580), (CYCLE, 580)], CYCLE)}
-  </rect>
-
-  <text x="{CX}" y="{RULE_Y + 36}" text-anchor="middle" font-family="{SANS}" font-size="20"
-        font-style="italic" font-weight="300" letter-spacing="0.8" fill="{CREAM}" opacity="0">
-    {track("opacity", [(0, 0), (10.2, 0), (10.7, 1), (20.8, 1), (21.3, 0)], CYCLE)}
-    I don't wait to be senior to build.</text>
-
-  <g>{chips(11.8)}</g>
-
+  <!-- the stamp -->
   <g opacity="0">
-    {track("opacity", [(0, 0), (13.6, 0), (14.0, 1), (20.6, 1), (21.2, 0)], CYCLE)}
+    {track("opacity", [(0, 0), (13.2, 0), (13.7, 1), (20.6, 1), (21.4, 0)], CYCLE)}
     <rect x="46" y="{H - BAR - 86}" width="286" height="32" fill="none" stroke="{CHERRY}" stroke-opacity="0.6"/>
     <text x="62" y="{H - BAR - 65}" font-family="{MONO}" font-size="9.5" letter-spacing="2.8"
           fill="{CHERRY_L}">CHAPTER 001 · THE ECLIPSE</text>
@@ -749,11 +755,11 @@ def build_mitali():
       <stop offset="0.82" stop-color="{CHERRY_L}" stop-opacity="0.85"/>
       <stop offset="1" stop-color="{CHERRY}" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="mlSweep" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="{CORAL}" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="{ICE}" stop-opacity="0.40"/>
+    <radialGradient id="mlSweep" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="{ICE}" stop-opacity="0.26"/>
+      <stop offset="0.38" stop-color="{CORAL}" stop-opacity="0.13"/>
       <stop offset="1" stop-color="{CORAL}" stop-opacity="0"/>
-    </linearGradient>
+    </radialGradient>
     <radialGradient id="mlFade" cx="0.5" cy="0.5" r="0.5">
       <stop offset="0" stop-color="#FFFFFF" stop-opacity="1"/>
       <stop offset="0.52" stop-color="#FFFFFF" stop-opacity="0.85"/>

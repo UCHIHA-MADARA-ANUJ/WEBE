@@ -76,10 +76,12 @@ def hex_rgb(h):
 
 
 class Gradient:
-    def __init__(self, kind, stops, cx=0.5, cy=0.5, x1=0, x2=1):
+    def __init__(self, kind, stops, cx=0.5, cy=0.5, r=0.5,
+                 x1=0.0, y1=0.0, x2=1.0, y2=0.0, spread=None):
         self.kind, self.stops = kind, stops
-        self.cx, self.cy = cx, cy
-        self.x1, self.x2 = x1, x2
+        self.cx, self.cy, self.r = cx, cy, (r if r else 0.5)
+        self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2
+        self.spread = spread
 
     def at(self, u):
         u = max(0.0, min(1.0, u))
@@ -92,6 +94,53 @@ class Gradient:
                 return c + (a0 + (a1 - a0) * t,)
         o, c, a = self.stops[-1]
         return c + (a,)
+
+    def image(self, size, box, scale):
+        """Rasterise this gradient at device size `size`, bbox-normalised.
+
+        SVG objectBoundingBox semantics: the unit square is stretched to the
+        shape's box, so a radial gradient becomes an ellipse, never a circle.
+        Getting this wrong paints phantom dark blobs, so it is done properly.
+        """
+        w, h = max(1, int(size[0])), max(1, int(size[1]))
+        at = self.at
+        if self.kind == 'radial':
+            k = max(2, min(160, max(w, h)))
+            small = Image.new('RGBA', (k, k))
+            px = small.load()
+            cx, cy, r = self.cx, self.cy, self.r
+            for j in range(k):
+                v = j / (k - 1)
+                dy = (v - cy) / r
+                row = []
+                for i in range(k):
+                    u = (i / (k - 1) - cx) / r
+                    c = at(math.hypot(u, dy))
+                    row.append((c[0], c[1], c[2], int(c[3])))
+                for i, c in enumerate(row):
+                    px[i, j] = c
+            return small.resize((w, h), Image.BICUBIC)
+        dx, dy = self.x2 - self.x1, self.y2 - self.y1
+        den = dx * dx + dy * dy
+        if abs(dy) < 1e-6 and den > 0:
+            k = max(2, min(160, w))
+            strip = Image.new('RGBA', (k, 1))
+            px = strip.load()
+            for i in range(k):
+                c = at(((i / (k - 1)) - self.x1) / dx)
+                px[i, 0] = (c[0], c[1], c[2], int(c[3]))
+            return strip.resize((w, h), Image.BILINEAR)
+        k = max(2, min(160, max(w, h)))
+        small = Image.new('RGBA', (k, k))
+        px = small.load()
+        for j in range(k):
+            v = j / (k - 1)
+            for i in range(k):
+                u = i / (k - 1)
+                t = (((u - self.x1) * dx) + ((v - self.y1) * dy)) / den
+                c = at(t)
+                px[i, j] = (c[0], c[1], c[2], int(c[3]))
+        return small.resize((w, h), Image.BICUBIC)
 
     def sample(self, x, y, box):
         bx, by, bw, bh = box
@@ -254,6 +303,10 @@ def render(svg_path, out_path, scale=SS):
                 'radial' if tag == 'radialGradient' else 'linear',
                 stops,
                 float(el.get('cx', 0.5)), float(el.get('cy', 0.5)),
+                float(el.get('r', 0.5)),
+                float(el.get('x1', 0)), float(el.get('y1', 0)),
+                float(el.get('x2', 1)), float(el.get('y2', 0)),
+                el.get('spreadMethod'),
             )
         elif tag == 'clipPath':
             clips[el.get('id')] = el
@@ -269,12 +322,23 @@ def render(svg_path, out_path, scale=SS):
         d = ImageDraw.Draw(layer)
         sp = [(x * scale, y * scale) for x, y in tp]
         if isinstance(paint, Gradient):
-            # coarse: fill by horizontal/radial bands
-            cx = box[0] + box[2] / 2
-            cy = box[1] + box[3] / 2
-            col = paint.sample(cx, cy, box)
-            rgba = col[:3] + (int(col[3] * alpha),)
-            d.polygon(sp, fill=rgba)
+            bx, by, bw, bh = box
+            x0 = max(0, int(bx * scale)); y0 = max(0, int(by * scale))
+            x1 = min(canvas.size[0], int((bx + bw) * scale) + 2)
+            y1 = min(canvas.size[1], int((by + bh) * scale) + 2)
+            if x1 <= x0 or y1 <= y0:
+                return
+            gimg = paint.image((x1 - x0, y1 - y0), box, scale)
+            mask = Image.new('L', (x1 - x0, y1 - y0), 0)
+            ImageDraw.Draw(mask).polygon(
+                [(x * scale - x0, y * scale - y0) for x, y in tp], fill=255)
+            if alpha < 0.999:
+                a = gimg.getchannel('A').point(lambda v: int(v * alpha))
+                gimg.putalpha(a)
+            layer = Image.new('RGBA', (x1 - x0, y1 - y0), (0, 0, 0, 0))
+            layer.paste(gimg, (0, 0), mask)
+            canvas.alpha_composite(layer, (x0, y0))
+            return
         else:
             d.polygon(sp, fill=tuple(paint) + (int(255 * alpha),))
         canvas.alpha_composite(layer)
