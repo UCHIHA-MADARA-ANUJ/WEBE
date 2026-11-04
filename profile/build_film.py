@@ -140,6 +140,35 @@ def anamorphic(cy, w, spread=560, color="#FFFFFF", op=0.5):
             f'opacity="{op * 0.9}"/>')
 
 
+def brackets(inset=14, arm=22, color="#FFFFFF", op=0.16):
+    """Four corner marks. The cheapest way to make a frame look framed."""
+    x0, y0 = inset, BAR + inset
+    x1, y1 = W - inset, H - BAR - inset
+    return "".join([
+        f'<path d="M {x0},{y0+arm} L {x0},{y0} L {x0+arm},{y0}" fill="none" stroke="{color}" stroke-opacity="{op}" stroke-width="1.2"/>',
+        f'<path d="M {x1-arm},{y0} L {x1},{y0} L {x1},{y0+arm}" fill="none" stroke="{color}" stroke-opacity="{op}" stroke-width="1.2"/>',
+        f'<path d="M {x0},{y1-arm} L {x0},{y1} L {x0+arm},{y1}" fill="none" stroke="{color}" stroke-opacity="{op}" stroke-width="1.2"/>',
+        f'<path d="M {x1-arm},{y1} L {x1},{y1} L {x1},{y1-arm}" fill="none" stroke="{color}" stroke-opacity="{op}" stroke-width="1.2"/>',
+    ])
+
+
+def light_arcs(cx, cy, radii, color, op=0.34):
+    """Long-exposure trails — arcs that never quite close."""
+    out = []
+    for r, start, sweep, o in radii:
+        end = start + sweep
+        large = 1 if sweep > 180 else 0
+        sx = cx + r * math.cos(math.radians(start))
+        sy = cy + r * math.sin(math.radians(start))
+        ex = cx + r * math.cos(math.radians(end))
+        ey = cy + r * math.sin(math.radians(end))
+        out.append(
+            f'<path d="M {sx:.1f},{sy:.1f} A {r},{r} 0 {large} 1 {ex:.1f},{ey:.1f}" '
+            f'fill="none" stroke="{color}" stroke-opacity="{o*op:.3f}" stroke-width="1.1" '
+            f'stroke-linecap="round"/>')
+    return "".join(out)
+
+
 def vignette(w, h):
     return f'<rect width="{w}" height="{h}" fill="url(#vign)"/>'
 
@@ -246,20 +275,25 @@ def build_anuj():
             begin = f' begin="{t0 + i * 0.10:.2f}s"' if t0 is not None else ""
             out.append(
                 f'<g>'
-                f'<rect x="{cx:.1f}" y="{CHIP_Y}" width="{CWD}" height="30" rx="2" '
-                f'fill="{col}" fill-opacity="0.055" stroke="{col}" stroke-opacity="0.30"/>'
-                f'<rect x="{cx:.1f}" y="{CHIP_Y}" width="{CWD}" height="1.6" fill="{col}" fill-opacity="0.85">'
-                f'<animate attributeName="fill-opacity" values="0.4;1;0.4" dur="4.4s"{begin} repeatCount="indefinite"/></rect>'
-                f'<circle cx="{cx + 12:.1f}" cy="{CHIP_Y + 15.5}" r="2.2" fill="{col}">'
-                f'<animate attributeName="fill-opacity" values="0.35;1;0.35" dur="3.6s"{begin} repeatCount="indefinite"/>'
-                f'</circle>'
-                f'<text x="{cx + 22:.1f}" y="{CHIP_Y + 19}" font-family="{MONO}" font-size="6.5" '
-                f'letter-spacing="0.6" fill="{CREAM}" fill-opacity="0.82">{name}</text>'
+                f'<rect x="{cx:.1f}" y="{CHIP_Y}" width="{CWD}" height="34" rx="2" '
+                f'fill="{col}" fill-opacity="0.05" stroke="{col}" stroke-opacity="0.26"/>'
+                f'<rect x="{cx:.1f}" y="{CHIP_Y}" width="2.2" height="34" fill="{col}">'
+                f'<animate attributeName="fill-opacity" values="0.55;1;0.55" dur="4.4s"{begin} repeatCount="indefinite"/></rect>'
+                f'<text x="{cx + 14:.1f}" y="{CHIP_Y + 21}" font-family="{MONO}" font-size="7.4" '
+                f'letter-spacing="0.8" fill="{CREAM}" fill-opacity="0.88">{name}</text>'
+                f'<text x="{cx + CWD - 9:.1f}" y="{CHIP_Y + 21}" text-anchor="end" font-family="{MONO}" '
+                f'font-size="6.4" fill="{col}" fill-opacity="0.55">0{i+1}</text>'
                 f'</g>')
         return "".join(out)
 
     mark = f'''
     <circle cx="{CX}" cy="{MARK_CY}" r="{R + 118}" fill="url(#saHalo)"/>
+    <g>
+      {light_arcs(CX, MARK_CY, [(R + 62, 200, 108, 0.9), (R + 92, 24, 92, 0.6),
+                                (R + 150, 140, 64, 0.35)], VERM_L)}
+      <animateTransform attributeName="transform" type="rotate" from="0 {CX} {MARK_CY}"
+                        to="360 {CX} {MARK_CY}" dur="170s" repeatCount="indefinite"/>
+    </g>
     <g clip-path="url(#saFlareClip)">
       {anamorphic(MARK_CY, 780, color=VERM_L, op=0.28)}
     </g>
@@ -455,6 +489,7 @@ def build_anuj():
 {poster}
 {film}
     {vignette(W, H)}
+    {brackets(14, 22, CREAM, 0.22)}
   </g>
 {hud("SEALING CORPS", "CHAPTER 001 · THE SEAL", "GURUGRAM · HARYANA · INDIA",
      "GENIN · CLASS 10 · INTERFACE SYSTEMS", "00:00:26", VERM_L, ASH, DIM)}
@@ -506,24 +541,26 @@ def build_mitali():
             begin = f' begin="{t0 + i * 0.12:.2f}s"' if t0 is not None else ""
             out.append(
                 f'<g>'
-                f'<rect x="{cx:.1f}" y="{CHIP_Y}" width="{CWD}" height="30" rx="2" '
-                f'fill="{col}" fill-opacity="0.055" stroke="{col}" stroke-opacity="0.30"/>'
-                f'<rect x="{cx:.1f}" y="{CHIP_Y}" width="{CWD}" height="1.6" fill="{col}" fill-opacity="0.85">'
-                f'<animate attributeName="fill-opacity" values="0.4;1;0.4" dur="4.6s"{begin} repeatCount="indefinite"/></rect>'
-                f'<circle cx="{cx + 12:.1f}" cy="{CHIP_Y + 15.5}" r="2.2" fill="{col}">'
-                f'<animate attributeName="fill-opacity" values="0.35;1;0.35" dur="3.5s"{begin} repeatCount="indefinite"/>'
-                f'</circle>'
-                f'<text x="{cx + 22:.1f}" y="{CHIP_Y + 19}" font-family="{MONO}" font-size="6.6" '
-                f'letter-spacing="0.6" fill="{CREAM}" fill-opacity="0.84">{label}</text>'
-                f'<text x="{cx + CWD - 10:.1f}" y="{CHIP_Y + 19}" text-anchor="end" font-family="{MONO}" '
-                f'font-size="6.2" fill="{DIM}">0{i+1}</text>'
+                f'<rect x="{cx:.1f}" y="{CHIP_Y}" width="{CWD}" height="34" rx="2" '
+                f'fill="{col}" fill-opacity="0.05" stroke="{col}" stroke-opacity="0.26"/>'
+                f'<rect x="{cx:.1f}" y="{CHIP_Y}" width="2.2" height="34" fill="{col}">'
+                f'<animate attributeName="fill-opacity" values="0.55;1;0.55" dur="4.6s"{begin} repeatCount="indefinite"/></rect>'
+                f'<text x="{cx + 14:.1f}" y="{CHIP_Y + 21}" font-family="{MONO}" font-size="7.4" '
+                f'letter-spacing="0.8" fill="{CREAM}" fill-opacity="0.88">{label}</text>'
+                f'<text x="{cx + CWD - 9:.1f}" y="{CHIP_Y + 21}" text-anchor="end" font-family="{MONO}" '
+                f'font-size="6.4" fill="{col}" fill-opacity="0.55">0{i+1}</text>'
                 f'</g>')
         return "".join(out)
 
     mark = f'''
     <circle cx="{CX}" cy="{MARK_CY}" r="{R + 190}" fill="url(#mlHalo)"/>
     {stars}
-
+    <g>
+      {light_arcs(CX, MARK_CY, [(R + 66, 208, 104, 0.9), (R + 100, 16, 88, 0.55),
+                                (R + 158, 130, 70, 0.32)], CORAL)}
+      <animateTransform attributeName="transform" type="rotate" from="360 {CX} {MARK_CY}"
+                        to="0 {CX} {MARK_CY}" dur="190s" repeatCount="indefinite"/>
+    </g>
     <g clip-path="url(#mlFlareClip)">
       {anamorphic(MARK_CY, 820, color=CHERRY_L, op=0.30)}
     </g>
@@ -746,6 +783,7 @@ def build_mitali():
 {poster}
 {film}
     {vignette(W, H)}
+    {brackets(14, 22, CREAM, 0.22)}
   </g>
 {hud("MITALI CHINCHOLIKAR", "CHAPTER 001 · THE ECLIPSE", "PUNE · MAHARASHTRA · INDIA",
      "CSE · FIRST YEAR · AI / ML FROM YEAR 2", "00:00:26", CHERRY_L, ASH, DIM)}
