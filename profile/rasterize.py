@@ -31,6 +31,16 @@ def mul(a, b):
 IDENT = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
 
+def stroke_color(raw, grads):
+    """Resolve a stroke paint to an RGB tuple, tolerating url(#gradient)."""
+    mg = re.match(r'url\(#(.+?)\)', raw or '')
+    if mg and mg.group(1) in grads:
+        return grads[mg.group(1)].at(0.35)[:3]
+    if raw and raw.startswith('#'):
+        return hex_rgb(raw)
+    return (255, 255, 255)
+
+
 def apply(m, x, y):
     return (m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5])
 
@@ -322,7 +332,7 @@ def render(svg_path, out_path, scale=SS):
                 sw = float(el.get('stroke-width', 1))
                 layer = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
                 d = ImageDraw.Draw(layer)
-                c = hex_rgb(el.get('stroke'))
+                c = stroke_color(el.get('stroke'), grads)
                 sa = float(el.get('stroke-opacity', 1)) * a
                 d.line([(x * scale, y * scale) for x, y in pts], fill=c + (int(255 * sa),),
                        width=max(1, int(sw * scale)), joint='curve')
