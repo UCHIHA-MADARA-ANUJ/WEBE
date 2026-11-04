@@ -295,7 +295,14 @@ def render(svg_path, out_path, scale=SS):
             sw = float(el.get('stroke-width', 1))
             layer = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
             d = ImageDraw.Draw(layer)
-            c = hex_rgb(el.get('stroke'))
+            raw = el.get('stroke')
+            mg = re.match(r'url\(#(.+?)\)', raw or '')
+            if mg and mg.group(1) in grads:
+                c = grads[mg.group(1)].at(0.35)[:3]
+            elif raw and raw.startswith('#'):
+                c = hex_rgb(raw)
+            else:
+                c = (255, 255, 255)
             sa = float(el.get('stroke-opacity', 1)) * a
             px, py = apply(m, cx, cy)
             rr = r * (abs(m[0]) if m[0] else 1)
