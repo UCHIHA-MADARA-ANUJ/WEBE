@@ -12,7 +12,7 @@
      ═══════════════════════════════════════════════════════════════════════ -->
 
 <div align="center">
-  <img src="./opening.svg" alt="Anuj Phulera — title sequence" width="100%" loading="eager" />
+  <img src="./opening.svg" alt="Anuj Phulera — the seal" width="100%" loading="eager" />
 </div>
 
 <br/>
