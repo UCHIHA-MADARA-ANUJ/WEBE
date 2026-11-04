@@ -11,3 +11,4 @@ tsconfig.tsbuildinfo
 # python
 __pycache__/
 *.pyc
+profile/proof/
