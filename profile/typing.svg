@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="50" viewBox="0 0 760 50" fill="none" role="img" aria-label="I don't chase attention. I build things that command it.">
+  <defs>
+    <clipPath id="reveal"><rect x="0" y="0" width="0" height="50">
+      <animate attributeName="width" from="0" to="463" dur="2.6s" begin="0.4s" fill="freeze"/>
+    </rect></clipPath>
+  </defs>
+  <text x="152" y="33" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13.6" letter-spacing="0.9"
+        fill="#F2E8D5" clip-path="url(#reveal)">I don&#39;t chase attention. I build things that command it.</text>
+  <rect x="152" y="18" width="7" height="18" fill="#E8453F" opacity="0">
+    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.05;0.95;1;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+</svg>
