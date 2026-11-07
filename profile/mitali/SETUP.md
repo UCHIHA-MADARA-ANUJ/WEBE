@@ -7,15 +7,21 @@ Flat files. No build step to run, no dependencies to install, nothing to host.
 | File | What it is |
 |---|---|
 | `README.md` | the profile page |
-| `hero-{light,dark}.svg` | portrait and identity |
-| `currently-{light,dark}.svg` | what she is studying |
-| `stack-{light,dark}.svg` | eight languages and her daily tools |
+| `hero-{light,dark}.svg` | portrait bleeding left, name, place, three facts |
+| `stats-{light,dark}.svg` | four headline numbers on a wash |
+| `about-{light,dark}.svg` | five lines, first person |
+| `currently-{light,dark}.svg` | three study directions with status tags |
+| `education-{light,dark}.svg` | a timeline: now, year two, ongoing |
+| `stack-{light,dark}.svg` | eight languages, a note each, daily tools |
+| `beyond-{light,dark}.svg` | club, badminton, tug of war |
+| `hire-{light,dark}.svg` | what she brings, and what she is open to |
 | `contact-{light,dark}.svg` | email, wired to `mailto:` |
-| `footer-{light,dark}.svg` | closing rule |
-| `avatar.png` | 560 × 560, circular, same artwork |
+| `footer-{light,dark}.svg` | closing rule in four colours |
+| `avatar.png` | 640 x 640, circular, same artwork |
+| `portrait.jpg` | the crop embedded inside the hero |
 
-Eleven files plus the README. `source/` is the original upload and is **not**
-needed on GitHub.
+Twenty-four files. `source/` is the original upload and is **not** needed on
+GitHub.
 
 ## Upload
 
