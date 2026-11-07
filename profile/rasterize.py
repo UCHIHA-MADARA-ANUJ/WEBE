@@ -12,7 +12,7 @@ import math
 import re
 import sys
 import xml.etree.ElementTree as ET
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 SS = 2  # supersample
 BACKDROP = '#0B0A10'
@@ -231,12 +231,27 @@ def arc_points(p0, rx, ry, phi_deg, large, sweep, p1, steps=24):
     return pts
 
 
-def flatten_path(d):
+def flatten_subpaths(d):
+    """Flatten `d` into a list of closed polygons, one per subpath.
+
+    A glyph run is a single <path> with one subpath per contour: the outside
+    of an O and its hole, every letter in a word. Treating the whole thing as
+    one polygon welds the letters together, so the split is not optional.
+    """
     toks = []
     for cmd, num in TOKEN.findall(d):
         toks.append(cmd if cmd else float(num))
-    pts, cur, start, cmd = [], None, None, None
+    polys, pts = [], []
+    cur = start = None
+    cmd = None
     i = 0
+
+    def flush():
+        nonlocal pts
+        if len(pts) >= 3:
+            polys.append(pts)
+        pts = []
+
     while i < len(toks):
         t = toks[i]
         if isinstance(t, str):
@@ -245,14 +260,15 @@ def flatten_path(d):
             if cmd in 'Zz':
                 if start:
                     pts.append(start)
-                cur = start
+                flush()
+                cur = start = None
             continue
         if cmd in 'Mm':
             x, y = toks[i], toks[i + 1]
             i += 2
-            cur = (x, y)
-            start = cur
-            pts.append(cur)
+            flush()
+            cur = start = (x, y)
+            pts = [cur]
             cmd = 'L' if cmd == 'M' else 'l'
         elif cmd in 'Ll':
             x, y = toks[i], toks[i + 1]
@@ -263,21 +279,21 @@ def flatten_path(d):
             x1, y1, x2, y2, x, y = toks[i:i + 6]
             i += 6
             p0 = cur
-            for s in range(1, 17):
-                u = s / 16
+            for k in range(1, 17):
+                u = k / 16
                 v = 1 - u
-                px = v**3*p0[0] + 3*v*v*u*x1 + 3*v*u*u*x2 + u**3*x
-                py = v**3*p0[1] + 3*v*v*u*y1 + 3*v*u*u*y2 + u**3*y
-                pts.append((px, py))
+                pts.append((v**3*p0[0] + 3*v*v*u*x1 + 3*v*u*u*x2 + u**3*x,
+                            v**3*p0[1] + 3*v*v*u*y1 + 3*v*u*u*y2 + u**3*y))
             cur = (x, y)
         elif cmd in 'Qq':
             x1, y1, x, y = toks[i:i + 4]
             i += 4
             p0 = cur
-            for s in range(1, 13):
-                u = s / 12
+            for k in range(1, 13):
+                u = k / 12
                 v = 1 - u
-                pts.append((v*v*p0[0] + 2*v*u*x1 + u*u*x, v*v*p0[1] + 2*v*u*y1 + u*u*y))
+                pts.append((v*v*p0[0] + 2*v*u*x1 + u*u*x,
+                            v*v*p0[1] + 2*v*u*y1 + u*u*y))
             cur = (x, y)
         elif cmd in 'Aa':
             rx, ry, rot, large, sweep, x, y = toks[i:i + 7]
@@ -286,7 +302,57 @@ def flatten_path(d):
             cur = (x, y)
         else:
             i += 1
-    return pts
+    flush()
+    return polys
+
+
+def flatten_path(d):
+    """Every point of every subpath, in order. Kept for stroke rendering."""
+    out = []
+    for poly in flatten_subpaths(d):
+        out.extend(poly)
+    return out
+
+
+def _signed_area(poly):
+    a = 0.0
+    for i in range(len(poly)):
+        x1, y1 = poly[i]
+        x2, y2 = poly[(i + 1) % len(poly)]
+        a += x1 * y2 - x2 * y1
+    return a / 2.0
+
+
+def _point_in_poly(pt, poly):
+    """Standard ray cast."""
+    x, y = pt
+    inside = False
+    n = len(poly)
+    for i in range(n):
+        x1, y1 = poly[i]
+        x2, y2 = poly[(i + 1) % n]
+        if (y1 > y) != (y2 > y):
+            xin = (x2 - x1) * (y - y1) / (y2 - y1 + 1e-12) + x1
+            if x < xin:
+                inside = not inside
+    return inside
+
+
+def _inside_point(poly):
+    """A point that is very likely inside the contour, not on its edge."""
+    n = len(poly)
+    if n < 3:
+        return poly[0]
+    cx = sum(p[0] for p in poly) / n
+    cy = sum(p[1] for p in poly) / n
+    if _point_in_poly((cx, cy), poly):
+        return (cx, cy)
+    # concave shape: nudge toward each vertex, take the first hit
+    for p in poly:
+        q = ((p[0] + cx) / 2, (p[1] + cy) / 2)
+        if _point_in_poly(q, poly):
+            return q
+    return (cx, cy)
 
 
 def ellipse_pts(cx, cy, rx, ry, n=96):
@@ -328,15 +394,24 @@ def render(svg_path, out_path, scale=SS):
             clips[el.get('id')] = el
 
     def paint_shape(poly, paint, alpha, m):
-        if not poly:
+        """Fill one or more polygons as a single shape, even-odd.
+
+        Passing a list means the polygons belong to one <path>: the outer
+        contour of an O and the hole inside it. Drawing them independently
+        fills the hole in, which is how you end up with a word full of
+        solid blobs. Here they are combined with XOR, which is exactly what
+        the even-odd fill rule does.
+        """
+        polys = poly if isinstance(poly, list) and poly and isinstance(poly[0], list) else [poly]
+        polys = [p for p in polys if p and len(p) >= 3]
+        if not polys:
             return
-        tp = [apply(m, x, y) for x, y in poly]
-        xs = [p[0] for p in tp]
-        ys = [p[1] for p in tp]
-        box = (min(xs), min(ys), max(max(xs) - min(xs), .001), max(max(ys) - min(ys), .001))
-        layer = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
-        d = ImageDraw.Draw(layer)
-        sp = [(x * scale, y * scale) for x, y in tp]
+        allp = [apply(m, x, y) for p in polys for x, y in p]
+        xs = [p[0] for p in allp]
+        ys = [p[1] for p in allp]
+        box = (min(xs), min(ys),
+               max(max(xs) - min(xs), .001), max(max(ys) - min(ys), .001))
+
         if isinstance(paint, Gradient):
             bx, by, bw, bh = box
             x0 = max(0, int(bx * scale)); y0 = max(0, int(by * scale))
@@ -345,19 +420,47 @@ def render(svg_path, out_path, scale=SS):
             if x1 <= x0 or y1 <= y0:
                 return
             gimg = paint.image((x1 - x0, y1 - y0), box, scale)
-            mask = Image.new('L', (x1 - x0, y1 - y0), 0)
-            ImageDraw.Draw(mask).polygon(
-                [(x * scale - x0, y * scale - y0) for x, y in tp], fill=255)
-            if alpha < 0.999:
-                a = gimg.getchannel('A').point(lambda v: int(v * alpha))
-                gimg.putalpha(a)
-            layer = Image.new('RGBA', (x1 - x0, y1 - y0), (0, 0, 0, 0))
-            layer.paste(gimg, (0, 0), mask)
-            canvas.alpha_composite(layer, (x0, y0))
-            return
         else:
-            d.polygon(sp, fill=tuple(paint) + (int(255 * alpha),))
-        canvas.alpha_composite(layer)
+            x0 = max(0, int(box[0] * scale)); y0 = max(0, int(box[1] * scale))
+            x1 = min(canvas.size[0], int((box[0] + box[2]) * scale) + 2)
+            y1 = min(canvas.size[1], int((box[1] + box[3]) * scale) + 2)
+            if x1 <= x0 or y1 <= y0:
+                return
+            gimg = Image.new('RGBA', (x1 - x0, y1 - y0),
+                             tuple(paint) + (255,))
+
+        # Contours carry their own meaning in the direction they are wound.
+        # An outer contour goes one way, the counter inside an 'o' goes the
+        # other. Overlapping contours — the stem of a 't' and its crossbar —
+        # are wound the SAME way and both belong to the glyph, so they union.
+        # Classifying by orientation gets all three cases right; classifying
+        # by nesting depth, or by XOR, mangles the overlap.
+        tpolys = [[(px * scale - x0, py * scale - y0)
+                   for px, py in (apply(m, qx, qy) for qx, qy in p)]
+                  for p in polys]
+        areas = [abs(_signed_area(p)) for p in tpolys]
+        paint_sign = 1
+        if areas:
+            big = tpolys[areas.index(max(areas))]
+            paint_sign = 1 if _signed_area(big) >= 0 else -1
+
+        mask = Image.new('L', (x1 - x0, y1 - y0), 0)
+        holes = Image.new('L', (x1 - x0, y1 - y0), 0)
+        for p in tpolys:
+            a = _signed_area(p)
+            same = (a >= 0) == (paint_sign >= 0)
+            ImageDraw.Draw(mask if same else holes).polygon(p, fill=255)
+        if holes.getbbox():
+            mask = ImageChops.subtract(mask, holes)
+        if alpha < 0.999:
+            ga = gimg.getchannel('A').point(lambda v: int(v * alpha))
+            gimg.putalpha(ga)
+        ga = gimg.getchannel('A')
+        gimg.putalpha(ImageChops.multiply(ga, mask))
+
+        layer = Image.new('RGBA', (x1 - x0, y1 - y0), (0, 0, 0, 0))
+        layer.paste(gimg, (0, 0))
+        canvas.alpha_composite(layer, (x0, y0))
 
     def walk(el, m, alpha, inh_fill=None, inh_stroke=None):
         tag = el.tag.split('}')[-1]
@@ -376,7 +479,26 @@ def render(svg_path, out_path, scale=SS):
             paint = parse_paint(el, grads)
         stroke_in = el.get('stroke') or inh_stroke
 
-        if tag == 'rect' and paint:
+        if tag == 'image':
+            href = el.get('href') or el.get('{http://www.w3.org/1999/xlink}href') or ''
+            if href.startswith('data:'):
+                import base64, io
+                head, b64 = href.split(',', 1)
+                img = Image.open(io.BytesIO(base64.b64decode(b64))).convert('RGBA')
+                iw = float(el.get('width', img.width))
+                ih = float(el.get('height', img.height))
+                ix = float(el.get('x', 0))
+                iy = float(el.get('y', 0))
+                px, py = apply(m, ix, iy)
+                sx, sy = abs(m[0]), abs(m[3])
+                tw, th = max(1, int(iw * sx * scale)), max(1, int(ih * sy * scale))
+                img = img.resize((tw, th), Image.LANCZOS)
+                if a < 0.999:
+                    img.putalpha(img.getchannel('A').point(lambda v: int(v * a)))
+                layer = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+                layer.paste(img, (int(px * scale), int(py * scale)), img)
+                canvas.alpha_composite(layer)
+        elif tag == 'rect' and paint:
             x, y = float(el.get('x', 0)), float(el.get('y', 0))
             w, h = float(el.get('width', 0)), float(el.get('height', 0))
             paint_shape([(x, y), (x + w, y), (x + w, y + h), (x, y + h)], paint, a, m)
@@ -418,7 +540,7 @@ def render(svg_path, out_path, scale=SS):
                        width=max(1, int(sw * scale)), joint='curve')
                 canvas.alpha_composite(layer)
         elif tag == 'path' and paint:
-            paint_shape(flatten_path(el.get('d', '')), paint, a, m)
+            paint_shape(flatten_subpaths(el.get('d', '')), paint, a, m)
         elif tag == 'line':
             x1, y1 = float(el.get('x1', 0)), float(el.get('y1', 0))
             x2, y2 = float(el.get('x2', 0)), float(el.get('y2', 0))
