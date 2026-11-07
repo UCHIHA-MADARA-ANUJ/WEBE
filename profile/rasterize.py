@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 from PIL import Image, ImageDraw, ImageFont
 
 SS = 2  # supersample
+BACKDROP = '#0B0A10'
 
 
 # ── matrices ────────────────────────────────────────────────────────────────
@@ -29,6 +30,21 @@ def mul(a, b):
 
 
 IDENT = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+
+
+FONT_BOLD = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+FONT_REG = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+
+
+def load_font(size, bold=False):
+    path = FONT_BOLD if bold else FONT_REG
+    try:
+        return ImageFont.truetype(path, max(4, int(size)))
+    except Exception:
+        try:
+            return ImageFont.load_default(size=max(4, int(size)))
+        except Exception:
+            return ImageFont.load_default()
 
 
 def stroke_color(raw, grads):
@@ -426,10 +442,9 @@ def render(svg_path, out_path, scale=SS):
         elif tag == 'text' and paint:
             txt = ' '.join(''.join(el.itertext()).split())
             size = int(float(el.get('font-size', 12)) * scale)
-            try:
-                font = ImageFont.load_default(size=size)
-            except Exception:
-                font = ImageFont.load_default()
+            bold = int(float(el.get('font-weight', 400) or 400)) >= 600
+            font = load_font(size, bold)
+            ls = float(el.get('letter-spacing', 0) or 0) * scale
             x, y = float(el.get('x', 0)), float(el.get('y', 0))
             layer = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
             d = ImageDraw.Draw(layer)
@@ -437,15 +452,16 @@ def render(svg_path, out_path, scale=SS):
             col = paint.at(0.35) if isinstance(paint, Gradient) else tuple(paint) + (255,)
             ta = float(el.get('opacity', 1)) * a
             anchor = el.get('text-anchor', 'start')
-            try:
-                tw = d.textlength(txt, font=font) / scale
-            except Exception:
-                tw = 0.0
+            advances = [d.textlength(ch, font=font) for ch in txt]
+            tw = (sum(advances) + ls * max(0, len(txt) - 1)) / scale
             if anchor == 'middle':
                 px -= tw / 2
             elif anchor == 'end':
                 px -= tw
-            d.text((px * scale, py * scale), txt, font=font, fill=col[:3] + (int(255 * ta),), anchor='ls')
+            cur = px * scale
+            for ch, adv in zip(txt, advances):
+                d.text((cur, py * scale), ch, font=font, fill=col[:3] + (int(255 * ta),), anchor='ls')
+                cur += adv + ls
             canvas.alpha_composite(layer)
 
         for child in el:
@@ -454,11 +470,15 @@ def render(svg_path, out_path, scale=SS):
     walk(root, IDENT, 1.0)
 
     final = canvas.resize((W, H), Image.LANCZOS)
-    bg = Image.new('RGBA', final.size, hex_rgb('#0B0A10') + (255,))
+    bg = Image.new('RGBA', final.size, hex_rgb(BACKDROP) + (255,))
     bg.alpha_composite(final)
     bg.convert('RGB').save(out_path)
     print(f'{out_path}  {W}x{H}')
 
 
 if __name__ == '__main__':
-    render(sys.argv[1], sys.argv[2])
+    import sys as _s
+    if '--bg' in _s.argv:
+        BACKDROP = _s.argv[_s.argv.index('--bg') + 1]
+        del _s.argv[_s.argv.index('--bg'):_s.argv.index('--bg') + 2]
+    render(_s.argv[1], _s.argv[2])

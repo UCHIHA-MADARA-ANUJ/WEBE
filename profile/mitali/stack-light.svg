@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="214" viewBox="0 0 1200 214" role="img" aria-label="Working with">
+    <text x="72" y="44" font-size="10.5" font-weight="600" fill="#5C5C68" letter-spacing="3.2">WORKING WITH</text>
+  <line x1="72" y1="62" x2="1128" y2="62" stroke="#E3E3E9" stroke-width="1" opacity="1.0"/>
+  <text x="72" y="104" font-size="15.5" font-weight="400" fill="#16161C">Python</text>
+  <text x="330" y="104" font-size="15.5" font-weight="400" fill="#16161C">C</text>
+  <text x="588" y="104" font-size="15.5" font-weight="400" fill="#16161C">C++</text>
+  <text x="846" y="104" font-size="15.5" font-weight="400" fill="#16161C">Java</text>
+  <text x="72" y="142" font-size="15.5" font-weight="400" fill="#16161C">SQL</text>
+  <text x="330" y="142" font-size="15.5" font-weight="400" fill="#16161C">HTML / CSS</text>
+  <text x="588" y="142" font-size="15.5" font-weight="400" fill="#16161C">JavaScript</text>
+  <text x="846" y="142" font-size="15.5" font-weight="400" fill="#16161C">Node.js</text>
+  <line x1="72" y1="168" x2="1128" y2="168" stroke="#E3E3E9" stroke-width="1" opacity="0.7"/>
+  <text x="72" y="196" font-size="12" font-weight="400" fill="#9696A2">Day to day</text>
+  <text x="168" y="196" font-size="12.5" font-weight="400" fill="#5C5C68">VS Code · Windows</text>
+</svg>

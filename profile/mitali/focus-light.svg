@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="206" viewBox="0 0 1200 206" role="img" aria-label="Currently">
+    <text x="72" y="44" font-size="10.5" font-weight="600" fill="#5C5C68" letter-spacing="3.2">CURRENTLY</text>
+  <line x1="72" y1="62" x2="1128" y2="62" stroke="#E3E3E9" stroke-width="1" opacity="1.0"/>
+  <text x="72" y="106" font-size="10.5" font-weight="600" fill="#B0132F" letter-spacing="1.6">01</text>
+  <text x="124" y="106" font-size="16.5" font-weight="400" fill="#16161C">Computer Science, first year</text>
+  <text x="1128" y="106" font-size="12" font-weight="400" fill="#9696A2" text-anchor="end">Dnyan Prasad Global University</text>
+  <text x="72" y="150" font-size="10.5" font-weight="600" fill="#B0132F" letter-spacing="1.6">02</text>
+  <text x="124" y="150" font-size="16.5" font-weight="400" fill="#16161C">Artificial intelligence and machine learning</text>
+  <text x="1128" y="150" font-size="12" font-weight="400" fill="#9696A2" text-anchor="end">from year two</text>
+  <text x="72" y="194" font-size="10.5" font-weight="600" fill="#B0132F" letter-spacing="1.6">03</text>
+  <text x="124" y="194" font-size="16.5" font-weight="400" fill="#16161C">Cybersecurity</text>
+  <text x="1128" y="194" font-size="12" font-weight="400" fill="#9696A2" text-anchor="end">course in progress</text>
+</svg>

@@ -1,134 +1,113 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<!doctype html>
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Mitali Chincholikar — profile preview</title>
+<title>Mitali Chincholikar — profile kit</title>
 <style>
-  :root{
-    --bg:#0A090D; --panel:#0F0D13; --border:#232028; --fg:#F4EEF2; --muted:#9A93A1;
-    --link:#FF8A7A; --chip:#15121A; --code:#15121A; --head:#06060A;
-    --cherry:#D01731; --coral:#FF8A7A; --aqua:#5FE3C0;
+  :root {
+    --bg: #ffffff;
+    --fg: #16161c;
+    --soft: #5c5c68;
+    --rule: #e3e3e9;
+    --accent: #b0132f;
   }
-  :root[data-theme="light"]{
-    --bg:#FBFAF8; --panel:#FFFFFF; --border:#E7E1E4; --fg:#141118; --muted:#6A626F;
-    --link:#B0122A; --chip:#F4F0F2; --code:#F4F0F2; --head:#FFFFFF;
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117;
+      --fg: #f3f3f5;
+      --soft: #a2a2ae;
+      --rule: #2b2b35;
+      --accent: #e8576c;
+    }
   }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--fg);
-       font-family:'Work Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-       font-weight:300;font-size:15px;line-height:1.62}
-  a{color:var(--link);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .nav{background:var(--head);border-bottom:1px solid var(--border);padding:13px 24px;
-       display:flex;align-items:center;gap:13px;position:sticky;top:0;z-index:10}
-  .mark{width:28px;height:28px;border-radius:50%;background:var(--fg);display:grid;place-items:center;
-        color:var(--head);font-weight:600;font-size:14px}
-  .nav b{font-weight:500}
-  .sp{flex:1}
-  .btn{background:var(--chip);border:1px solid var(--border);color:var(--fg);border-radius:6px;
-       padding:5px 11px;font-size:12.5px;cursor:pointer;font-family:inherit}
-  .page{max-width:1180px;margin:0 auto;padding:30px 24px 90px;display:grid;
-        grid-template-columns:296px 1fr;gap:26px;align-items:start}
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:18px}
-  .avatar{width:100%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:1px solid var(--border);
-          background:#06060A}
-  .avatar img{width:100%;display:block}
-  h2{font-size:19px;font-weight:400;letter-spacing:.2px;margin:34px 0 12px;
-     padding-bottom:8px;border-bottom:1px solid var(--border)}
-  h2:first-child{margin-top:0}
-  h1{font-size:30px;font-weight:300;letter-spacing:2.4px;margin:6px 0 2px;text-align:center}
-  .sub{text-align:center;color:var(--muted);font-size:12px;letter-spacing:2px;
-       font-family:ui-monospace,Menlo,Consolas,monospace}
-  .center{text-align:center}
-  blockquote{margin:18px 0;padding:2px 0 2px 18px;border-left:3px solid var(--cherry);
-             color:var(--fg);font-size:17px;font-style:italic}
-  img.full{width:100%;display:block;border-radius:6px}
-  .muted{color:var(--muted)}
-  code{background:var(--code);padding:2px 7px;border-radius:4px;font-size:12.5px;
-       font-family:ui-monospace,Menlo,Consolas,monospace}
-  .note{margin-top:26px;border:1px dashed var(--border);border-radius:8px;padding:14px 16px;
-        color:var(--muted);font-size:13px}
-  @media(max-width:880px){.page{grid-template-columns:1fr}}
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 56px 28px 96px; }
+  .avatar {
+    width: 148px; height: 148px; border-radius: 50%;
+    display: block; margin: 0 auto 40px;
+  }
+  picture img { display: block; width: 100%; height: auto; margin-bottom: 34px; }
+  .theme {
+    display: flex; gap: 10px; align-items: center;
+    margin: 0 0 34px; font-size: 12px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--soft);
+  }
+  .theme button {
+    font: inherit; letter-spacing: .06em; text-transform: uppercase;
+    padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    background: transparent; color: var(--soft);
+    border: 1px solid var(--rule);
+  }
+  .theme button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+  .note {
+    margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--rule);
+    color: var(--soft); font-size: 13px; line-height: 1.7;
+  }
+  .note b { color: var(--fg); font-weight: 600; }
+  /* force-theme preview */
+  body[data-theme="light"] { --bg: #ffffff; --fg: #16161c; --soft: #5c5c68; --rule: #e3e3e9; --accent: #b0132f; }
+  body[data-theme="dark"]  { --bg: #0d1117; --fg: #f3f3f5; --soft: #a2a2ae; --rule: #2b2b35; --accent: #e8576c; }
+  body[data-theme="light"] .only-dark, body[data-theme="dark"] .only-light { display: none; }
 </style>
 </head>
 <body>
-<div class="nav">
-  <div class="mark">M</div>
-  <b>Mitali Chincholikar</b>
-  <span class="sp"></span>
-  <span class="sub" style="letter-spacing:1.4px">PREVIEW</span>
-  <button class="btn" onclick="toggleTheme()">Theme</button>
+<div class="wrap">
+
+  <img class="avatar" src="avatar.png" alt="Mitali Chincholikar" />
+
+  <div class="theme">
+    <span>Theme</span>
+    <button id="b-light" aria-pressed="false">Light</button>
+    <button id="b-dark" aria-pressed="false">Dark</button>
+  </div>
+
+  <img class="only-light" src="header-light.svg"  alt="Mitali Chincholikar" />
+  <img class="only-dark"  src="header-dark.svg"   alt="Mitali Chincholikar" />
+
+  <img class="only-light" src="focus-light.svg"   alt="Currently" />
+  <img class="only-dark"  src="focus-dark.svg"    alt="Currently" />
+
+  <img class="only-light" src="stack-light.svg"   alt="Working with" />
+  <img class="only-dark"  src="stack-dark.svg"    alt="Working with" />
+
+  <a href="mailto:chincholikarmitali@gmail.com">
+    <img class="only-light" src="contact-light.svg" alt="Reach" />
+    <img class="only-dark"  src="contact-dark.svg"  alt="Reach" />
+  </a>
+
+  <img class="only-light" src="divider-light.svg" alt="" />
+  <img class="only-dark"  src="divider-dark.svg"  alt="" />
+
+  <p class="note">
+    <b>Twelve files, no animation.</b> Each panel exists twice — once for
+    light, once for dark — and the README switches between them with
+    <code>&lt;picture&gt;</code>. Nothing here moves, loops, or resets, so a
+    screenshot is always the whole design.<br />
+    Upload to a public repo named <code>Mitali-Chincholikar</code>, flat in the
+    root. See <b>SETUP.md</b>.
+  </p>
+
 </div>
-
-<div class="page">
-  <aside>
-    <div class="card">
-      <div class="avatar"><img src="./emblem.svg" alt="" /></div>
-      <h1>MITALI<br/>CHINCHOLIKAR</h1>
-      <p class="sub">CSE · YEAR 1</p>
-      <p class="muted center" style="font-size:13px;margin-top:10px">
-        Pune, Maharashtra · first year<br/>building in public
-      </p>
-    </div>
-    <div class="card" style="margin-top:16px">
-      <p style="margin:0;font-size:13px" class="muted">
-        <b style="color:var(--fg);font-weight:400">CHAPTER 001</b><br/>The Eclipse
-      </p>
-    </div>
-  </aside>
-
-  <main>
-    <img id="bnr" class="full" src="./opening.svg" alt="Opening" style="border:1px solid var(--border)" />
-
-    <h2>⦿ The Line</h2>
-    <blockquote>I'm in my first year, and I'm here to turn ambition into reality.</blockquote>
-    <p class="muted">Nobody hands you permission to build. You just start, and the work
-      either earns the room or it doesn't.</p>
-
-    <h2>⦿ The Record</h2>
-    <img class="full" src="./record.svg" alt="The record" />
-
-    <h2>⦿ The Queue</h2>
-    <img class="full" src="./queue.svg" alt="Learning queue" />
-    <p class="muted">Not a skill list. A queue — in the order I'm actually going to get through it.
-      Everything on it is something I can't do yet.</p>
-
-    <h2>⦿ The Bench</h2>
-    <img class="full" src="./bench.svg" alt="Meditrace and AskX" />
-    <p class="muted"><b style="color:var(--fg);font-weight:400">Meditrace</b> is a student health
-      platform I haven't built yet. <b style="color:var(--fg);font-weight:400">AskX</b> is real —
-      a college project students actually use, and it still needs work.</p>
-
-    <h2>⦿ What I Can Actually Do</h2>
-    <p>I can build a page. HTML and CSS I'm fine with — a form-filling site and a
-      restaurant billing site, both by hand. JavaScript is where it gets hard. It doesn't
-      click yet. That's the next thing on the queue.</p>
-
-    <h2>⦿ Contact</h2>
-    <p>
-      <a href="mailto:chincholikarmitali@gmail.com">chincholikarmitali@gmail.com</a> ·
-      <span class="muted">Discord</span> <code>lunar._.uchiha_</code> ·
-      <a href="https://instagram.com/uknow.mitali">Instagram</a>
-    </p>
-
-    <div class="center" style="margin-top:30px">
-      <img src="./credits.svg" class="full" alt="End credits" />
-    </div>
-
-    <div class="note">
-      <b style="color:var(--fg)">All of this is one SVG each.</b> The opening runs sixteen
-      seconds in three scenes — the eclipse, the queue, the end card — and the credits roll
-      underneath it. No JavaScript, no external services. It keeps playing on GitHub.
-    </div>
-  </main>
-</div>
-
 <script>
-  function toggleTheme() {
-    const root = document.documentElement;
-    root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+  const body = document.body;
+  const bl = document.getElementById('b-light');
+  const bd = document.getElementById('b-dark');
+  function set(t) {
+    if (t) body.dataset.theme = t; else delete body.dataset.theme;
+    bl.setAttribute('aria-pressed', String(t === 'light'));
+    bd.setAttribute('aria-pressed', String(t === 'dark'));
   }
+  bl.onclick = () => set(body.dataset.theme === 'light' ? null : 'light');
+  bd.onclick = () => set(body.dataset.theme === 'dark' ? null : 'dark');
 </script>
 </body>
 </html>
