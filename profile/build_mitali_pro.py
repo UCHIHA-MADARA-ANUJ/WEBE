@@ -28,12 +28,12 @@ RIGHT = W - PAD
 
 # ── the four accents, one per section ──────────────────────────────────────
 LIGHT = dict(
-    ink="#111116", mid="#4A4A56", soft="#7C7C8A", faint="#A6A6B2",
+    ink="#111116", mid="#4A4A56", soft="#7C7C8A", faint="#8E8E9C",
     rule="#E5E5EB", wash="#F7F7F9",
     crimson="#A30D28", ember="#B4442C", rose="#A63A5E", indigo="#44577F",
 )
 DARK = dict(
-    ink="#F5F5F7", mid="#BDBDC8", soft="#84848F", faint="#5C5C68",
+    ink="#F5F5F7", mid="#BDBDC8", soft="#84848F", faint="#7E7E8C",
     rule="#282830", wash="#15151B",
     crimson="#F0637A", ember="#F08A6E", rose="#E86F94", indigo="#7C93C4",
 )
@@ -73,10 +73,10 @@ def rect(x, y, w, h, fill, opacity=None, rx=0):
 
 
 def eyebrow(text, x, y, c, accent, rule_to=None):
-    out = [M(text.upper(), x, y, 10.5, accent, weight=600, tracking=3.6),
-           rect(x, y + 13, 34, 2, accent)]
+    out = [M(text.upper(), x, y, 12, accent, weight=600, tracking=3.2),
+           rect(x, y + 15, 36, 2, accent)]
     if rule_to is not None:
-        out.append(hr(x + 48, y + 14, rule_to, c["rule"]))
+        out.append(hr(x + 50, y + 16, rule_to, c["rule"]))
     return "\n".join(out)
 
 
@@ -135,7 +135,7 @@ def stats(c):
     b = [rect(0, 0, W, H, c["wash"])]
     items = [("08", "languages in use", c["crimson"]),
              ("03", "study directions", c["ember"]),
-             ("Y2", "AI and ML begin", c["rose"]),
+             ("Y2", "AI / ML start", c["rose"]),
              ("01", "club leadership role", c["indigo"])]
     span = W / len(items)
     for i, (num, label, col) in enumerate(items):
@@ -168,49 +168,85 @@ def about(c):
     return doc(H, "\n".join(b), "About Mitali")
 
 
-# ══ 4 · CURRENTLY ══════════════════════════════════════════════════════════
-def currently(c):
-    H = 300
-    b = [eyebrow("Currently", PAD, 62, c, c["crimson"], rule_to=RIGHT)]
-    cards = [
-        ("01", "Computer Science", "First year \u00b7 Dnyan Prasad Global University",
+# ══ 4 · STUDYING (currently + education, merged) ══════════════════════════
+def studying(c):
+    """One section, not two.
+
+    The old 'currently' and 'education' panels listed the same three things in
+    different words. A reader notices repetition before they notice detail,
+    so the two are merged into a single timeline that says each thing once,
+    with the date on the left where a timeline puts it.
+    """
+    H = 372
+    b = [eyebrow("Studying", PAD, 62, c, c["crimson"], rule_to=RIGHT)]
+
+    rows = [
+        ("Now", "Computer Science", "First year · Dnyan Prasad Global University",
          "Enrolled", c["crimson"]),
-        ("02", "Artificial intelligence", "and machine learning \u00b7 begins in year two",
+        ("Year 2", "Artificial intelligence", "and machine learning · specialisation begins",
          "Upcoming", c["ember"]),
-        ("03", "Cybersecurity", "course in progress", "Now", c["indigo"]),
+        ("Ongoing", "Cybersecurity", "certification alongside the degree",
+         "In progress", c["indigo"]),
     ]
+    spine = PAD + 118
+    b.append(vr(spine, 132, 348, c["rule"]))
+    for i, (when, title, sub, tag, col) in enumerate(rows):
+        y = 150 + i * 88
+        b.append(M(when.upper(), PAD, y - 2, 10, col, weight=600, tracking=2.0))
+        b.append(rect(spine - 6, y - 11, 12, 12, col, rx=6))
+        b.append(T(title, spine + 40, y + 6, 30, c["ink"], weight=500, tracking=-0.9))
+        b.append(T(sub, spine + 40, y + 34, 14.5, c["soft"], weight=400))
+        b.append(M(tag.upper(), RIGHT, y + 6, 9.5, col, weight=600,
+                   tracking=2.2, anchor="end"))
+        if i < 2:
+            b.append(hr(spine + 40, y + 58, RIGHT, c["rule"], 0.6))
+    return doc(H, "\n".join(b), "Studying")
+
+
+# ══ 5 · BEYOND ════════════════════════════════════════════════════════════
+def beyond(c):
+    H = 236
+    b = [eyebrow("Beyond the course", PAD, 62, c, c["rose"], rule_to=RIGHT)]
+    items = [("Event manager", "Swarang, her college club", c["rose"]),
+             ("Badminton", "a game she actually plays", c["crimson"]),
+             ("Tug of war", "team, not solo", c["ember"])]
     gap = 30
     cw = (RIGHT - PAD - gap * 2) / 3
-    for i, (num, title, sub, tag, col) in enumerate(cards):
+    for i, (title, sub, col) in enumerate(items):
         x = PAD + i * (cw + gap)
-        b.append(rect(x, 114, cw, 148, col, 0.05))
-        b.append(rect(x, 114, cw, 2, col))
-        b.append(M(num, x + 22, 152, 10, col, weight=600, tracking=2.4))
-        b.append(M(tag.upper(), x + cw - 22, 152, 9, col, weight=600,
-                   tracking=2.4, anchor="end"))
-        b.append(T(title, x + 22, 200, 24, c["ink"], weight=500, tracking=-0.7))
-        b.append(T(sub, x + 22, 228, 13.5, c["soft"], weight=400))
-    return doc(H, "\n".join(b), "Currently")
+        b.append(rect(x, 116, cw, 96, col, 0.055))
+        b.append(rect(x, 116, 3, 96, col))
+        b.append(T(title, x + 24, 160, 23, c["ink"], weight=500, tracking=-0.7))
+        b.append(T(sub, x + 24, 186, 13.5, c["soft"], weight=400))
+    return doc(H, "\n".join(b), "Beyond the course")
 
 
-# ══ 5 · EDUCATION ══════════════════════════════════════════════════════════
-def education(c):
-    H = 336
-    b = [eyebrow("Education", PAD, 62, c, c["indigo"], rule_to=RIGHT)]
-    rows = [
-        ("Now", "B.Tech / B.Sc. Computer Science", "Dnyan Prasad Global University \u00b7 School of Technology and Research", c["crimson"]),
-        ("Year 2", "Artificial intelligence and machine learning", "specialisation begins", c["ember"]),
-        ("Ongoing", "Cybersecurity", "certification course alongside the degree", c["indigo"]),
-    ]
-    x_line = PAD + 108
-    b.append(vr(x_line, 120, 120 + 3 * 74, c["rule"]))
-    for i, (when, title, sub, col) in enumerate(rows):
-        y = 138 + i * 74
-        b.append(M(when.upper(), PAD, y, 9.5, col, weight=600, tracking=2.0))
-        b.append(rect(x_line - 5, y - 8, 10, 10, col, rx=5))
-        b.append(T(title, x_line + 30, y, 19, c["ink"], weight=500, tracking=-0.4))
-        b.append(T(sub, x_line + 30, y + 22, 13, c["soft"], weight=400))
-    return doc(H, "\n".join(b), "Education")
+# ══ 6 · HIRE ═══════════════════════════════════════════════════════════════
+def hire(c):
+    H = 300
+    b = [rect(0, 0, W, H, c["wash"]),
+         eyebrow("What she brings", PAD, 62, c, c["crimson"])]
+
+    b.append(T("Three directions, one first year.", PAD, 142, 42, c["ink"],
+               weight=600, tracking=-1.5))
+
+    points = [("Ships across five languages", c["crimson"]),
+              ("Studies AI and security together", c["ember"]),
+              ("Already runs events for a club", c["indigo"])]
+    for i, (txt, col) in enumerate(points):
+        y = 194 + i * 34
+        b.append(rect(PAD, y - 9, 9, 9, col))
+        b.append(T(txt, PAD + 24, y, 17, c["mid"], weight=400, tracking=-0.2))
+
+    b.append(rect(RIGHT - 284, 116, 284, 116, c["crimson"], 0.07))
+    b.append(rect(RIGHT - 284, 116, 3, 116, c["crimson"]))
+    b.append(M("AVAILABLE FOR", RIGHT - 258, 154, 9.5, c["crimson"],
+               weight=600, tracking=2.2))
+    b.append(T("Internships", RIGHT - 258, 192, 27, c["ink"], weight=600,
+               tracking=-0.8))
+    b.append(T("and first projects", RIGHT - 258, 214, 16, c["mid"],
+               weight=400))
+    return doc(H, "\n".join(b), "What she brings")
 
 
 # ══ 6 · WORKING WITH ═══════════════════════════════════════════════════════
@@ -229,11 +265,11 @@ def stack(c):
         y = 152 + row * 88
         b.append(rect(x, y - 34, 26, 3, col))
         b.append(T(name, x, y, 27, c["ink"], weight=500, tracking=-0.8))
-        b.append(M(note.upper(), x, y + 26, 8.5, col, weight=600, tracking=1.9))
+        b.append(M(note.upper(), x, y + 26, 10, col, weight=600, tracking=1.8))
         if row == 0:
             b.append(hr(x, y + 52, x + cw - 10, c["rule"], 0.8))
 
-    b.append(hr(PAD, 296, RIGHT, c["rule"], 0.7))
+    b.append(hr(PAD, 292, RIGHT, c["rule"], 0.7))
     b.append(M("DAY TO DAY", PAD, 324, 9, c["faint"], weight=500, tracking=2.4))
     for i, t in enumerate(["VS Code", "Windows", "Git"]):
         b.append(T(t, PAD + 128 + i * 136, 324, 15, c["mid"], weight=400))
@@ -241,23 +277,6 @@ def stack(c):
 
 
 # ══ 7 · BEYOND ═════════════════════════════════════════════════════════════
-def beyond(c):
-    H = 260
-    b = [eyebrow("Beyond the course", PAD, 62, c, c["rose"], rule_to=RIGHT)]
-    items = [("Event manager", "Swarang, her college club", c["rose"]),
-             ("Badminton", "a game she actually plays", c["crimson"]),
-             ("Tug of war", "team, not solo", c["ember"])]
-    gap = 30
-    cw = (RIGHT - PAD - gap * 2) / 3
-    for i, (title, sub, col) in enumerate(items):
-        x = PAD + i * (cw + gap)
-        b.append(rect(x, 118, cw, 108, col, 0.05))
-        b.append(rect(x, 118, 3, 108, col))
-        b.append(T(title, x + 24, 168, 22, c["ink"], weight=500, tracking=-0.6))
-        b.append(T(sub, x + 24, 196, 13.5, c["soft"], weight=400))
-    return doc(H, "\n".join(b), "Beyond the course")
-
-
 # ══ 8 · HIRE ═══════════════════════════════════════════════════════════════
 def hire(c):
     H = 320
@@ -315,9 +334,9 @@ def footer(c):
     return doc(H, "\n".join(b), "")
 
 
-PANELS = dict(hero=hero, stats=stats, about=about, currently=currently,
-              education=education, stack=stack, beyond=beyond, hire=hire,
-              contact=contact, footer=footer)
+PANELS = dict(hero=hero, stats=stats, about=about, studying=studying,
+              stack=stack, beyond=beyond, hire=hire, contact=contact,
+              footer=footer)
 
 
 def main():

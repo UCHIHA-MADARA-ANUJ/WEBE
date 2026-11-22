@@ -4,7 +4,7 @@
   Upload the whole folder flat into a public repo named
   Mitali-Chincholikar, and GitHub renders this on her profile.
 
-  Ten panels. Type is outlined, not requested from the reader's machine, so
+  Nine panels. Type is outlined, not requested from the reader's machine, so
   this renders identically on macOS, Windows, Linux and Android. Every panel
   ships as a light/dark pair and is switched with <picture>.
 
@@ -27,13 +27,8 @@
 </picture>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./currently-dark.svg" />
-  <img src="./currently-light.svg" alt="Currently: Computer Science, first year at Dnyan Prasad Global University, enrolled. Artificial intelligence and machine learning, begins year two. Cybersecurity, course in progress." width="100%" />
-</picture>
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./education-dark.svg" />
-  <img src="./education-light.svg" alt="Education: Computer Science at Dnyan Prasad Global University, School of Technology and Research. Artificial intelligence and machine learning specialisation begins year two. Cybersecurity certification alongside the degree." width="100%" />
+  <source media="(prefers-color-scheme: dark)" srcset="./studying-dark.svg" />
+  <img src="./studying-light.svg" alt="Studying: Computer Science, first year at Dnyan Prasad Global University, enrolled. Artificial intelligence and machine learning, specialisation begins year two. Cybersecurity certification alongside the degree." width="100%" />
 </picture>
 
 <picture>

@@ -10,8 +10,7 @@ Flat files. No build step to run, no dependencies to install, nothing to host.
 | `hero-{light,dark}.svg` | portrait bleeding left, name, place, three facts |
 | `stats-{light,dark}.svg` | four headline numbers on a wash |
 | `about-{light,dark}.svg` | five lines, first person |
-| `currently-{light,dark}.svg` | three study directions with status tags |
-| `education-{light,dark}.svg` | a timeline: now, year two, ongoing |
+| `studying-{light,dark}.svg` | one timeline: now, year two, ongoing |
 | `stack-{light,dark}.svg` | eight languages, a note each, daily tools |
 | `beyond-{light,dark}.svg` | club, badminton, tug of war |
 | `hire-{light,dark}.svg` | what she brings, and what she is open to |
@@ -20,8 +19,12 @@ Flat files. No build step to run, no dependencies to install, nothing to host.
 | `avatar.png` | 640 x 640, circular, same artwork |
 | `portrait.jpg` | the crop embedded inside the hero |
 
-Twenty-four files. `source/` is the original upload and is **not** needed on
+Twenty-two files. `source/` is the original upload and is **not** needed on
 GitHub.
+
+`studying` replaced two earlier panels, `currently` and `education`, which
+listed the same three things twice. If you have an older copy, delete
+`currently-*` and `education-*` before uploading.
 
 ## Upload
 
