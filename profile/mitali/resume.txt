@@ -1,45 +1,38 @@
 MITALI CHINCHOLIKAR
-Computer Science Student | First Year
+Computer Science Student
+First year | artificial intelligence and cybersecurity alongside the degree
 Pune, Maharashtra, India  |  chincholikarmitali@gmail.com
-==========================================================================
+============================================================================
 
-PROFILE
---------------------------------------------------------------------------
-First-year Computer Science student at Dnyan Prasad Global University,
-studying computer science alongside artificial intelligence and
-cybersecurity. Works across eight languages, from C and C++ to JavaScript
-and Node.js. Runs events for her college club and plays badminton and tug
-of war.
+OBJECTIVE
+----------------------------------------------------------------------------
+First-year Computer Science student at Dnyan Prasad Global University.
+Studies computer science alongside artificial intelligence and
+cybersecurity, and works across eight languages, from C and C++ to
+JavaScript and Node.js. Runs events for her college club.
 
 EDUCATION
---------------------------------------------------------------------------
-2026 - present
-  Dnyan Prasad Global University
+----------------------------------------------------------------------------
+Dnyan Prasad Global University  (2026 - present)
   B.Tech / B.Sc. Computer Science | School of Technology and Research
     - First year, enrolled
     - Artificial intelligence and machine learning from year two
 
-In progress
-  Cybersecurity
-  Certification course alongside the degree
+Cybersecurity  (2025 - present)
+  Certification course | Alongside the degree
 
 TECHNICAL SKILLS
---------------------------------------------------------------------------
-Languages:
-    Python, C, C++, Java, SQL, JavaScript
-Web:
-    HTML, CSS, Node.js
-Tools:
-    VS Code, Git, Windows
+----------------------------------------------------------------------------
+Languages: Python, C, C++, Java, SQL
+Web: HTML, CSS, JavaScript, Node.js
+Tools: VS Code, Windows
 
-ACTIVITIES
---------------------------------------------------------------------------
-Event Manager  |  Swarang | college club
-    Organises and runs club events.
-Badminton
-    Plays competitively.
-Tug of war
-    Team sport; represents her college.
+EXTRACURRICULAR ACTIVITIES
+----------------------------------------------------------------------------
+- Event manager, Swarang - her college club. Organises and runs club
+  events.
+- Badminton - plays competitively.
+- Tug of war - college team.
 
-==========================================================================
+============================================================================
 Pune, Maharashtra, India | chincholikarmitali@gmail.com

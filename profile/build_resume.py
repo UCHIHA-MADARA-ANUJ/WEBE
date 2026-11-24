@@ -1,216 +1,310 @@
 #!/usr/bin/env python3
 """Mitali Chincholikar — résumé.
 
-One content block, three files:
+Section order follows the standard fresher CV that was sent as reference:
+Objective, Education, Skills, Certifications, Internships, Projects,
+Extracurricular. Sections with no confirmed content are skipped in the real
+file and shown greyed in the draft, so nothing is ever invented.
 
-  resume.pdf   print, A4, the one to attach
-  resume.docx  editable in Word, Google Docs and LibreOffice
+One content block, four outputs:
+  resume.pdf   A4, embedded fonts, selectable text, ATS-safe single column
+  resume.docx  editable, real Word XML
   resume.txt   pure ASCII, CRLF, opens in Notepad
-
-They are generated from the same source so they cannot drift apart. Edit
-CONTENT below and rerun; never edit the outputs.
-
-Every line is a fact she gave us. If something is not in here, it is because
-nobody has confirmed it yet.
+  resume-draft.pdf  the same layout with empty sections marked
 
     python3 build_resume.py
 """
 import pathlib
-import sys
+import textwrap
 
 HERE = pathlib.Path(__file__).parent
 FONTS = HERE / "fonts"
 OUT = HERE / "mitali"
 
 # ── content ────────────────────────────────────────────────────────────────
+#  Only facts she has given us. Anything still unconfirmed lives in PENDING
+#  and is excluded from the shipped file.
 CONTENT = dict(
     name="Mitali Chincholikar",
-    role="Computer Science Student \u00b7 First Year",
-    place="Pune, Maharashtra, India",
+    role="Computer Science Student",
+    tagline="First year \u00b7 artificial intelligence and cybersecurity "
+            "alongside the degree",
+    location="Pune, Maharashtra, India",
     email="chincholikarmitali@gmail.com",
-    summary=(
-        "First-year Computer Science student at Dnyan Prasad Global "
-        "University, studying computer science alongside artificial "
-        "intelligence and cybersecurity. Works across eight languages, "
-        "from C and C++ to JavaScript and Node.js. Runs events for her "
-        "college club and plays badminton and tug of war."
+
+    objective=(
+        "First-year Computer Science student at Dnyan Prasad Global University. "
+        "Studies computer science alongside artificial intelligence and "
+        "cybersecurity, and works across eight languages, from C and C++ to "
+        "JavaScript and Node.js. Runs events for her college club."
     ),
+
     education=[
-        ("2026 \u2014 present", "Dnyan Prasad Global University",
-         "B.Tech / B.Sc. Computer Science \u00b7 School of Technology and Research",
-         ["First year, enrolled",
-          "Artificial intelligence and machine learning from year two"]),
-        ("In progress", "Cybersecurity",
-         "Certification course alongside the degree", []),
+        dict(when="2026 \u2014 present",
+             school="Dnyan Prasad Global University",
+             program="B.Tech / B.Sc. Computer Science",
+             detail="School of Technology and Research",
+             score=None,
+             notes=["First year, enrolled",
+                    "Artificial intelligence and machine learning from year two"]),
+        dict(when="2025 \u2014 present",
+             school="Cybersecurity",
+             program="Certification course",
+             detail="Alongside the degree",
+             score=None,
+             notes=[]),
     ],
+
     skills=[
-        ("Languages", "Python, C, C++, Java, SQL, JavaScript"),
-        ("Web", "HTML, CSS, Node.js"),
-        ("Tools", "VS Code, Git, Windows"),
+        ("Languages", "Python, C, C++, Java, SQL"),
+        ("Web", "HTML, CSS, JavaScript, Node.js"),
+        ("Tools", "VS Code, Windows"),
     ],
-    activity=[
-        ("Event Manager", "Swarang \u00b7 college club",
-         "Organises and runs club events."),
-        ("Badminton", "", "Plays competitively."),
-        ("Tug of war", "", "Team sport; represents her college."),
+
+    # ── awaiting her answers; empty lists are skipped in the real file ─────
+    certifications=[],
+    internships=[],
+    projects=[],
+
+    activities=[
+        "Event manager, Swarang \u2014 her college club. Organises and runs club events.",
+        "Badminton \u2014 plays competitively.",
+        "Tug of war \u2014 college team.",
     ],
-    footer="Pune, Maharashtra, India \u00b7 chincholikarmitali@gmail.com",
 )
 
-SECTION_ORDER = ["summary", "education", "skills", "activity"]
-TITLES = {"summary": "Profile", "education": "Education",
-          "skills": "Technical skills", "activity": "Activities"}
+#  What is missing, and the exact shape each answer needs. Shown in the draft
+#  and written out to RESUME-QUESTIONS.md.
+PENDING = [
+    ("Academic projects", "One to three. For each: a name, the year, what it "
+     "does in one sentence, and what you built it with."),
+    ("Internships", "Any, including short or unpaid ones. Role, company, "
+     "dates, and two bullet points on what you actually did."),
+    ("Certifications", "Any completed course with a certificate, plus the "
+     "issuer and the year. The cybersecurity course goes here once finished."),
+    ("CGPA or percentage", "Current CGPA, or the Class 12 and Class 10 "
+     "percentages. Any one of these strengthens the education block."),
+    ("Links", "GitHub, LinkedIn, or a portfolio, if she has them."),
+    ("Objective", "The current paragraph is factual. If she is actively "
+     "looking for an internship, say so and it changes to a targeted line."),
+]
 
 ACCENT = "#A30D28"
 ACCENT_SOFT = "#C9646F"
 INK = "#111116"
 MID = "#4A4A56"
 SOFT = "#6E6E7C"
+FAINT = "#9A9AA6"
 RULE = "#DCDCE2"
 
 
 # ══ PDF ════════════════════════════════════════════════════════════════════
-def build_pdf(path):
+def build_pdf(path, draft=False):
     from reportlab.pdfgen import canvas
     from reportlab.lib.pagesizes import A4
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
 
     for name, f in (("Inter", "Inter-400.ttf"), ("InterMed", "Inter-500.ttf"),
-                    ("InterBold", "Inter-600.ttf"),
-                    ("Mono", "JBMono-500.ttf"), ("MonoBold", "JBMono-700.ttf")):
-        pdfmetrics.registerFont(TTFont(name, str(FONTS / f)))
+                    ("InterBold", "Inter-600.ttf"), ("Mono", "JBMono-500.ttf"),
+                    ("MonoBold", "JBMono-700.ttf")):
+        if name not in pdfmetrics.getRegisteredFontNames():
+            pdfmetrics.registerFont(TTFont(name, str(FONTS / f)))
 
     W, H = A4
-    M = 52                      # 18mm margin
+    M = 51
     RIGHT = W - M
+    BODY = M + 92          # everything indented under the date column
+
     c = canvas.Canvas(str(path), pagesize=A4)
-    c.setTitle("Mitali Chincholikar \u2014 Curriculum Vitae")
+    c.setTitle("Mitali Chincholikar \u2014 Curriculum Vitae"
+               + (" (draft)" if draft else ""))
     c.setAuthor("Mitali Chincholikar")
-    c.setSubject("Computer Science student, first year")
+
+    def sw(t, f, s):
+        return pdfmetrics.stringWidth(t, f, s)
+
+    def wrap(text, font, size, width):
+        out, cur = [], ""
+        for word in text.split():
+            t = (cur + " " + word).strip()
+            if sw(t, font, size) <= width:
+                cur = t
+            else:
+                if cur:
+                    out.append(cur)
+                cur = word
+        if cur:
+            out.append(cur)
+        return out
 
     y = H - M
 
-    # ── header
+    # ── header: name left, contact right, one baseline
     c.setFillColor(INK)
-    c.setFont("InterBold", 27)
-    c.drawString(M, y - 26, CONTENT["name"])
+    c.setFont("InterBold", 25)
+    c.drawString(M, y - 22, CONTENT["name"])
 
-    y -= 26 + 20
+    c.setFont("Mono", 7.4)
     c.setFillColor(MID)
-    c.setFont("Inter", 11)
-    c.drawString(M, y, CONTENT["role"])
-
-    y -= 17
+    c.drawRightString(RIGHT, y - 12, CONTENT["email"])
     c.setFillColor(SOFT)
-    c.setFont("Mono", 7.6)
-    line = f"{CONTENT['place'].upper()}   \u00b7   {CONTENT['email']}"
-    c.drawString(M, y, line)
+    c.drawRightString(RIGHT, y - 23, CONTENT["location"])
 
-    y -= 16
+    y -= 38
+    c.setFillColor(ACCENT)
+    c.setFont("InterMed", 10.2)
+    c.drawString(M, y, CONTENT["role"])
+    c.setFillColor(SOFT)
+    c.setFont("Inter", 9.2)
+    c.drawString(M + sw(CONTENT["role"], "InterMed", 10.2) + 10, y,
+                 "\u00b7  " + CONTENT["tagline"])
+
+    y -= 22
     c.setStrokeColor(ACCENT)
-    c.setLineWidth(2)
-    c.line(M, y, M + 46, y)
+    c.setLineWidth(1.6)
+    c.line(M, y, M + 44, y)
     c.setStrokeColor(RULE)
-    c.setLineWidth(0.8)
-    c.line(M + 52, y + 1, RIGHT, y + 1)
+    c.setLineWidth(0.7)
+    c.line(M + 50, y + 0.5, RIGHT, y + 0.5)
 
-    # ── body
-    TEXT_W = RIGHT - M
-
-    def wrap(text, font, size, width):
-        words, lines, cur = text.split(), [], ""
-        for w in words:
-            t = (cur + " " + w).strip()
-            if pdfmetrics.stringWidth(t, font, size) <= width:
-                cur = t
-            else:
-                lines.append(cur)
-                cur = w
-        if cur:
-            lines.append(cur)
-        return lines
-
-    def section(key, y):
-        head_h = 30
+    # ── section heading
+    def section(title, y):
         c.setFillColor(ACCENT)
-        c.setFont("MonoBold", 7.4)
-        c.drawString(M, y, TITLES[key].upper())
-        tw = pdfmetrics.stringWidth(TITLES[key].upper(), "MonoBold", 7.4)
+        c.setFont("MonoBold", 7.2)
+        t = title.upper()
+        c.drawString(M, y, t)
+        tw = sw(t, "MonoBold", 7.2)
         c.setStrokeColor(ACCENT_SOFT)
-        c.setLineWidth(1.4)
-        c.line(M, y - 5, M + tw + 2, y - 5)
+        c.setLineWidth(1.3)
+        c.line(M, y - 4.5, M + tw + 1, y - 4.5)
         c.setStrokeColor(RULE)
-        c.setLineWidth(0.8)
-        c.line(M + tw + 12, y - 4.5, RIGHT, y - 4.5)
-        return y - head_h
+        c.setLineWidth(0.7)
+        c.line(M + tw + 10, y - 4, RIGHT, y - 4)
+        return y - 21
 
-    def para(text, y, size=9.4, font="Inter", lead=14.4, color=MID, indent=0):
+    def body(text, y, size=9.1, lead=13.4, color=MID, font="Inter",
+             indent=0, width=None):
         c.setFillColor(color)
         c.setFont(font, size)
-        for ln in wrap(text, font, size, TEXT_W - indent):
+        for ln in wrap(text, font, size, (width or RIGHT - M) - indent):
             c.drawString(M + indent, y, ln)
             y -= lead
         return y
 
-    y = section("summary", y)
-    y = para(CONTENT["summary"], y, lead=15.4) - 12
+    def bullets(items, y, indent=92, size=8.9):
+        for it in items:
+            c.setFillColor(ACCENT_SOFT)
+            c.setFont("Inter", size)
+            c.drawString(M + indent, y, "\u2013")
+            c.setFillColor(MID)
+            for ln in wrap(it, "Inter", size, RIGHT - (M + indent) - 12):
+                c.drawString(M + indent + 11, y, ln)
+                y -= 12.6
+            y -= 1.6
+        return y
 
-    y = section("education", y)
-    for when, org, title, notes in CONTENT["education"]:
+    def entry(when, title, sub=None, notes=None, bullets_=None, y=None):
         c.setFillColor(SOFT)
-        c.setFont("Mono", 7.4)
+        c.setFont("Mono", 7.2)
         c.drawString(M, y, when.upper())
         c.setFillColor(INK)
-        c.setFont("InterMed", 10.4)
-        c.drawString(M + 96, y, org)
-        y -= 13.5
-        c.setFillColor(MID)
-        c.setFont("Inter", 9.2)
-        c.drawString(M + 96, y, title)
-        y -= 12.5
-        for n in notes:
-            c.setFillColor(SOFT)
-            c.setFont("Inter", 8.6)
-            c.drawString(M + 96, y, "\u2013  " + n)
-            y -= 11.6
-        y -= 14
+        c.setFont("InterMed", 10.2)
+        c.drawString(M + 92, y, title)
+        if sub:
+            y -= 12.6
+            c.setFillColor(MID)
+            c.setFont("Inter", 9.0)
+            c.drawString(M + 92, y, sub)
+        if notes:
+            y -= 1.4
+            for n in notes:
+                y -= 11.8
+                c.setFillColor(SOFT)
+                c.setFont("Inter", 8.5)
+                c.drawString(M + 92, y, "\u2014  " + n)
+        if bullets_:
+            y -= 13
+            y = bullets(bullets_, y)
+        return y - 15
 
-    y = section("skills", y)
+    def empty(label, y):
+        if not draft:
+            return y
+        c.setFillColor(FAINT)
+        c.setFont("Inter", 8.8)
+        c.drawString(M + 92, y, f"\u2014  {label}")
+        return y - 11
+
+    # ── OBJECTIVE
+    y = section("Objective", y - 30)
+    y = body(CONTENT["objective"], y) - 8
+
+    # ── EDUCATION
+    y = section("Education", y - 2)
+    for e in CONTENT["education"]:
+        y = entry(e["when"], e["school"], e["program"] + " \u00b7 " + e["detail"],
+                  e["notes"], y=y)
+    y += 4
+
+    # ── SKILLS
+    y = section("Technical Skills", y - 2)
     for label, value in CONTENT["skills"]:
         c.setFillColor(INK)
-        c.setFont("InterMed", 9.4)
+        c.setFont("InterMed", 9.1)
         c.drawString(M, y, label)
         c.setFillColor(MID)
-        c.setFont("Inter", 9.4)
-        c.drawString(M + 96, y, value)
-        y -= 17
-    y -= 12
+        c.setFont("Inter", 9.1)
+        for i, ln in enumerate(wrap(value, "Inter", 9.1, RIGHT - (M + 92))):
+            c.drawString(M + 92, y, ln)
+            if i == 0:
+                y -= 13.2
+        y -= 3
+    y -= 8
 
-    y = section("activity", y)
-    for role, org, note in CONTENT["activity"]:
-        c.setFillColor(INK)
-        c.setFont("InterMed", 10)
-        c.drawString(M, y, role)
-        x = M + 96
-        if org:
-            c.setFillColor(SOFT)
-            c.setFont("Inter", 9)
-            c.drawString(x, y, org)
-            x += pdfmetrics.stringWidth(org, "Inter", 9) + 10
-        c.setFillColor(MID)
-        c.setFont("Inter", 9)
-        c.drawString(x, y, "\u2014  " + note)
-        y -= 17
+    # ── CERTIFICATIONS
+    if CONTENT["certifications"] or draft:
+        y = section("Certifications", y)
+        for name_, issuer, when in CONTENT["certifications"]:
+            y = entry(when, name_, issuer, y=y)
+        if not CONTENT["certifications"]:
+            y = empty("no confirmed certifications yet", y)
+        y -= 4
+
+    # ── INTERNSHIPS
+    if CONTENT["internships"] or draft:
+        y = section("Internships", y)
+        for it in CONTENT["internships"]:
+            y = entry(it["when"], it["role"], it["org"], bullets_=it["bullets"], y=y)
+        if not CONTENT["internships"]:
+            y = empty("no internships yet", y)
+        y -= 4
+
+    # ── PROJECTS
+    if CONTENT["projects"] or draft:
+        y = section("Academic Projects", y)
+        for p in CONTENT["projects"]:
+            y = entry(p["when"], p["name"], p.get("stack"), bullets_=p["bullets"], y=y)
+        if not CONTENT["projects"]:
+            y = empty("project details to be supplied", y)
+        y -= 4
+
+    # ── ACTIVITIES
+    y = section("Extracurricular Activities", y - 2)
+    y = bullets(CONTENT["activities"], y, indent=0)
 
     # ── footer
     c.setStrokeColor(RULE)
-    c.setLineWidth(0.8)
-    c.line(M, M + 22, RIGHT, M + 22)
+    c.setLineWidth(0.7)
+    c.line(M, M + 18, RIGHT, M + 18)
     c.setFillColor(SOFT)
-    c.setFont("Mono", 7)
-    c.drawString(M, M + 10, CONTENT["footer"])
-    c.drawRightString(RIGHT, M + 10, "1 / 1")
+    c.setFont("Mono", 6.8)
+    c.drawString(M, M + 7, f"{CONTENT['location']}  \u00b7  {CONTENT['email']}")
+    c.drawRightString(RIGHT, M + 7, "Mitali Chincholikar")
+
+    # clickable email
+    c.linkURL("mailto:" + CONTENT["email"],
+              (M, H - M - 30, M + 220, H - M - 16), relative=0)
 
     c.showPage()
     c.save()
@@ -218,10 +312,10 @@ def build_pdf(path):
 
 
 # ══ DOCX ═══════════════════════════════════════════════════════════════════
-def build_docx(path):
+def build_docx(path, draft=False):
     from docx import Document
     from docx.shared import Pt, RGBColor, Cm
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.enum.text import WD_TAB_ALIGNMENT
     from docx.oxml.ns import qn
     from docx.oxml import OxmlElement
 
@@ -237,89 +331,148 @@ def build_docx(path):
 
     st = d.styles["Normal"]
     st.font.name = "Inter"
-    st.font.size = Pt(9.5)
+    st.font.size = Pt(9.2)
     st.font.color.rgb = rgb(MID)
     st.paragraph_format.space_after = Pt(0)
-    st.paragraph_format.line_spacing = 1.25
+    st.paragraph_format.line_spacing = 1.22
     st.element.rPr.rFonts.set(qn("w:eastAsia"), "Inter")
 
-    def para(text, size=9.5, color=MID, bold=False, before=0, after=0,
-             spacing=1.25, font="Inter"):
+    def para(text="", size=9.2, color=MID, bold=False, before=0, after=0,
+             font="Inter", spacing=1.22):
         p = d.add_paragraph()
         p.paragraph_format.space_before = Pt(before)
         p.paragraph_format.space_after = Pt(after)
         p.paragraph_format.line_spacing = spacing
-        r = p.add_run(text)
-        r.font.size = Pt(size)
-        r.font.color.rgb = rgb(color)
-        r.font.bold = bold
-        r.font.name = font
+        if text:
+            r = p.add_run(text)
+            r.font.size = Pt(size)
+            r.font.color.rgb = rgb(color)
+            r.font.bold = bold
+            r.font.name = font
         return p
 
-    def rule(color=RULE, size=6):
+    def rule(color=RULE, sz=6, before=1):
         p = d.add_paragraph()
-        p.paragraph_format.space_before = Pt(2)
+        p.paragraph_format.space_before = Pt(before)
         p.paragraph_format.space_after = Pt(0)
         pPr = p._p.get_or_add_pPr()
-        pbdr = OxmlElement("w:pBdr")
-        bottom = OxmlElement("w:bottom")
-        bottom.set(qn("w:val"), "single")
-        bottom.set(qn("w:sz"), str(size))
-        bottom.set(qn("w:space"), "1")
-        bottom.set(qn("w:color"), color.lstrip("#"))
-        pbdr.append(bottom)
-        pPr.append(pbdr)
+        b = OxmlElement("w:pBdr")
+        bo = OxmlElement("w:bottom")
+        bo.set(qn("w:val"), "single")
+        bo.set(qn("w:sz"), str(sz))
+        bo.set(qn("w:space"), "1")
+        bo.set(qn("w:color"), color.lstrip("#"))
+        b.append(bo)
+        pPr.append(b)
 
     def heading(text):
-        para(text.upper(), size=7.6, color=ACCENT, bold=True, before=14,
-             after=5, font="Courier New")
+        para(text.upper(), size=7.4, color=ACCENT, bold=True, before=11,
+             after=3, font="Courier New")
         rule()
 
-    para(CONTENT["name"], size=26, color=INK, bold=True, after=2)
-    para(CONTENT["role"], size=11.5, color=MID, after=4)
-    para(f"{CONTENT['place'].upper()}   \u00b7   {CONTENT['email']}",
-         size=8, color=SOFT, font="Courier New", after=6)
-    rule(ACCENT, 12)
+    def row(left, right, size=10.2, bold=True, color=INK):
+        p = d.add_paragraph()
+        p.paragraph_format.space_before = Pt(4)
+        p.paragraph_format.space_after = Pt(0)
+        p.paragraph_format.tab_stops.add_tab_stop(Cm(17.4),
+                                                  WD_TAB_ALIGNMENT.RIGHT)
+        r = p.add_run(left + "\t")
+        r.font.size = Pt(size)
+        r.font.bold = bold
+        r.font.color.rgb = rgb(color)
+        r2 = p.add_run(right.upper())
+        r2.font.size = Pt(7.2)
+        r2.font.name = "Courier New"
+        r2.font.color.rgb = rgb(SOFT)
+        return p
 
-    heading(TITLES["summary"])
-    para(CONTENT["summary"], after=2)
+    def bullet(text, indent=Cm(0)):
+        p = d.add_paragraph()
+        p.paragraph_format.left_indent = Cm(0.42) + indent
+        p.paragraph_format.first_line_indent = Cm(-0.42)
+        p.paragraph_format.space_after = Pt(2)
+        r = p.add_run("\u2013  ")
+        r.font.color.rgb = rgb(ACCENT_SOFT)
+        r.font.size = Pt(8.9)
+        r2 = p.add_run(text)
+        r2.font.size = Pt(8.9)
+        r2.font.color.rgb = rgb(MID)
 
-    heading(TITLES["education"])
-    for when, org, title, notes in CONTENT["education"]:
-        para(when.upper(), size=7.6, color=SOFT, font="Courier New",
-             before=4)
-        para(org, size=10.5, color=INK, bold=True)
-        para(title, size=9.2, color=MID)
-        for n in notes:
-            para("\u2013  " + n, size=9, color=SOFT)
+    # header
+    para(CONTENT["name"], size=23, color=INK, bold=True, after=1)
+    p = d.add_paragraph()
+    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.tab_stops.add_tab_stop(Cm(17.4), WD_TAB_ALIGNMENT.RIGHT)
+    r = p.add_run(CONTENT["role"])
+    r.font.size = Pt(10.2)
+    r.font.bold = True
+    r.font.color.rgb = rgb(ACCENT)
+    r2 = p.add_run("\t" + CONTENT["email"])
+    r2.font.size = Pt(7.6)
+    r2.font.name = "Courier New"
+    r2.font.color.rgb = rgb(MID)
+    para(CONTENT["tagline"] + "\t" + CONTENT["location"])
+    rule(ACCENT, 12, before=5)
 
-    heading(TITLES["skills"])
+    heading("Objective")
+    para(CONTENT["objective"], after=2)
+
+    heading("Education")
+    for e in CONTENT["education"]:
+        row(e["school"], e["when"])
+        para(e["program"] + " \u00b7 " + e["detail"], size=9, color=MID)
+        for n in e["notes"]:
+            para("\u2014  " + n, size=8.6, color=SOFT)
+
+    heading("Technical Skills")
     for label, value in CONTENT["skills"]:
         p = d.add_paragraph()
         p.paragraph_format.space_after = Pt(2)
-        r = p.add_run(f"{label}   ")
+        r = p.add_run(f"{label}\t")
         r.font.bold = True
-        r.font.size = Pt(9.5)
+        r.font.size = Pt(9.2)
         r.font.color.rgb = rgb(INK)
         r2 = p.add_run(value)
-        r2.font.size = Pt(9.5)
+        r2.font.size = Pt(9.2)
         r2.font.color.rgb = rgb(MID)
 
-    heading(TITLES["activity"])
-    for role, org, note in CONTENT["activity"]:
-        p = d.add_paragraph()
-        p.paragraph_format.space_after = Pt(3)
-        r = p.add_run(role)
-        r.font.bold = True
-        r.font.size = Pt(10)
-        r.font.color.rgb = rgb(INK)
-        rest = "   " + (org + "   " if org else "") + "\u2014  " + note
-        r2 = p.add_run(rest)
-        r2.font.size = Pt(9)
-        r2.font.color.rgb = rgb(MID)
+    if CONTENT["certifications"] or draft:
+        heading("Certifications")
+        for name_, issuer, when in CONTENT["certifications"]:
+            row(name_, when)
+            para(issuer, size=9, color=MID)
+        if not CONTENT["certifications"]:
+            para("\u2014  no confirmed certifications yet", size=8.8,
+                 color=FAINT)
 
-    para(CONTENT["footer"], size=7.5, color=SOFT, before=16,
-         font="Courier New")
+    if CONTENT["internships"] or draft:
+        heading("Internships")
+        for it in CONTENT["internships"]:
+            row(it["role"], it["when"])
+            para(it["org"], size=9, color=MID)
+            for b in it["bullets"]:
+                bullet(b)
+        if not CONTENT["internships"]:
+            para("\u2014  no internships yet", size=8.8, color=FAINT)
+
+    if CONTENT["projects"] or draft:
+        heading("Academic Projects")
+        for pr in CONTENT["projects"]:
+            row(pr["name"], pr["when"])
+            if pr.get("stack"):
+                para(pr["stack"], size=9, color=MID)
+            for b in pr["bullets"]:
+                bullet(b)
+        if not CONTENT["projects"]:
+            para("\u2014  project details to be supplied", size=8.8,
+                 color=FAINT)
+
+    heading("Extracurricular Activities")
+    for a in CONTENT["activities"]:
+        bullet(a)
+
+    para(f"{CONTENT['location']}  \u00b7  {CONTENT['email']}", size=7.4,
+         color=SOFT, before=14, font="Courier New")
 
     d.core_properties.title = "Mitali Chincholikar \u2014 Curriculum Vitae"
     d.core_properties.author = "Mitali Chincholikar"
@@ -328,69 +481,121 @@ def build_docx(path):
 
 
 # ══ TXT ════════════════════════════════════════════════════════════════════
-def build_txt(path):
-    def rule(ch="=", n=74):
-        return ch * n
-
+def build_txt(path, draft=False):
     L = []
     a = L.append
+
+    def rule(ch="=", n=76):
+        a(ch * n)
+
     a(CONTENT["name"].upper())
     a(CONTENT["role"])
-    a(f"{CONTENT['place']}  |  {CONTENT['email']}")
-    a(rule("="))
+    a(CONTENT["tagline"])
+    a(f"{CONTENT['location']}  |  {CONTENT['email']}")
+    rule()
     a("")
 
-    a(TITLES["summary"].upper())
-    a(rule("-"))
-    import textwrap
-    for line in textwrap.wrap(CONTENT["summary"], 74):
-        a(line)
+    a("OBJECTIVE")
+    rule("-")
+    for ln in textwrap.wrap(CONTENT["objective"], 76):
+        a(ln)
     a("")
 
-    a(TITLES["education"].upper())
-    a(rule("-"))
-    for when, org, title, notes in CONTENT["education"]:
-        a(f"{when}")
-        a(f"  {org}")
-        a(f"  {title}")
-        for n in notes:
+    a("EDUCATION")
+    rule("-")
+    for e in CONTENT["education"]:
+        a(f"{e['school']}  ({e['when']})")
+        a(f"  {e['program']} | {e['detail']}")
+        for n in e["notes"]:
             a(f"    - {n}")
         a("")
 
-    a(TITLES["skills"].upper())
-    a(rule("-"))
+    a("TECHNICAL SKILLS")
+    rule("-")
     for label, value in CONTENT["skills"]:
-        a(f"{label}:")
-        for line in textwrap.wrap(value, 68):
-            a(f"    {line}")
+        a(f"{label}: {value}")
     a("")
 
-    a(TITLES["activity"].upper())
-    a(rule("-"))
-    for role, org, note in CONTENT["activity"]:
-        head = role + (f"  |  {org}" if org else "")
-        a(head)
-        a(f"    {note}")
+    def block(title, rows, empty_note):
+        if not rows:
+            if not draft:
+                return
+            a(title.upper())
+            rule("-")
+            a(f"  - {empty_note}")
+            a("")
+            return
+        a(title.upper())
+        rule("-")
+        for r in rows:
+            a(r)
+        a("")
+
+    block("Certifications",
+          [f"{n} - {i} ({w})" for n, i, w in CONTENT["certifications"]],
+          "no confirmed certifications yet")
+
+    block("Internships",
+          [f"{it['role']} | {it['org']} ({it['when']})"
+           for it in CONTENT["internships"]],
+          "no internships yet")
+
+    block("Academic Projects",
+          [f"{p['name']} ({p['when']})" for p in CONTENT["projects"]],
+          "project details to be supplied")
+
+    a("EXTRACURRICULAR ACTIVITIES")
+    rule("-")
+    for x in CONTENT["activities"]:
+        for i, ln in enumerate(textwrap.wrap(x, 72)):
+            a(("- " if i == 0 else "  ") + ln)
     a("")
-    a(rule("="))
-    a(CONTENT["footer"])
+    rule()
+    a(f"{CONTENT['location']} | {CONTENT['email']}")
 
     text = "\n".join(L)
-    # pure ASCII, CRLF, so Notepad on any Windows box shows it correctly
-    ascii_text = (text.replace("\u2014", "-").replace("\u00b7", "|")
-                      .replace("\u2019", "'").replace("\u2013", "-"))
-    ascii_text = ascii_text.encode("ascii", "replace").decode("ascii")
-    path.write_bytes(ascii_text.replace("\n", "\r\n").encode("ascii"))
+    text = text.replace("\u2014", "-").replace("\u00b7", "|")
+    text = text.replace("\u2019", "'").replace("\u2013", "-")
+    text = text.encode("ascii", "replace").decode("ascii")
+    path.write_bytes(text.replace("\n", "\r\n").encode("ascii"))
+    return path
+
+
+# ══ QUESTIONS ══════════════════════════════════════════════════════════════
+def build_questions(path):
+    L = ["# What to ask her", "",
+         "The résumé is built and shipping. These are the only things missing, "
+         "in the order that would help most.", "",
+         "Send the answers in any format. Loose notes are fine.", ""]
+    for i, (topic, detail) in enumerate(PENDING, 1):
+        L += [f"## {i}. {topic}", "", detail, ""]
+    L += ["---", "",
+          "## Already on the résumé, confirm these", "",
+          "- **Dnyan Prasad Global University** — she typed *PRASAC*; the "
+          "résumé currently says **PRASAD**.",
+          "- **Enrolled 2026** — confirm the start year.",
+          "- **Git** is not listed under tools because she has not mentioned "
+          "it. Say the word and it goes in.", "",
+          "## Deliberately left out", "",
+          "No CGPA, no projects, no internships, no awards, and no claim that "
+          "she is looking for work. Every one of those would be a guess.", "",
+          "Once the answers arrive, edit `CONTENT` at the top of "
+          "`build_resume.py` and run it again. The sections appear on their "
+          "own.", ""]
+    path.write_text("\n".join(L), encoding="utf-8")
     return path
 
 
 def main():
     OUT.mkdir(exist_ok=True)
-    for name, fn in (("resume.pdf", build_pdf),
-                     ("resume.docx", build_docx),
-                     ("resume.txt", build_txt)):
+    jobs = [("resume.pdf", lambda p: build_pdf(p)),
+            ("resume.docx", lambda p: build_docx(p)),
+            ("resume.txt", lambda p: build_txt(p)),
+            ("resume-draft.pdf", lambda p: build_pdf(p, draft=True)),
+            ("RESUME-QUESTIONS.md", build_questions)]
+    for name, fn in jobs:
         p = fn(OUT / name)
-        print(f"  {name:<14}{p.stat().st_size / 1024:7.1f} KB")
+        print(f"  {name:<24}{p.stat().st_size / 1024:8.1f} KB")
 
 
 if __name__ == "__main__":
