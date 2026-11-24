@@ -80,6 +80,11 @@ def eyebrow(text, x, y, c, accent, rule_to=None):
     return "\n".join(out)
 
 
+def panel(h, body):
+    """A panel returns its height and its body, so pages can stack it."""
+    return h, body
+
+
 def doc(h, body, title):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{h}" '
             f'viewBox="0 0 {W} {h}" role="img" aria-label="{esc(title)}">\n'
@@ -125,8 +130,7 @@ def hero(c):
         b.append(M(k.upper(), x + 12, y, 9, c["faint"], weight=500, tracking=2.4))
         b.append(T(v, x, y + 32, 18, c["ink"], weight=500, tracking=-0.2))
 
-    return doc(H, "\n".join(b),
-               "Mitali Chincholikar, Computer Science, first year, Pune, India")
+    return panel(H, "\n".join(b))
 
 
 # ══ 2 · STATS ══════════════════════════════════════════════════════════════
@@ -145,7 +149,7 @@ def stats(c):
                    tracking=2.2))
         if i:
             b.append(hr(x - 36, 58, x - 36, c["rule"]))
-    return doc(H, "\n".join(b), "Eight languages, three directions")
+    return panel(H, "\n".join(b))
 
 
 # ══ 3 · ABOUT ══════════════════════════════════════════════════════════════
@@ -165,7 +169,7 @@ def about(c):
     for ln in lines:
         b.append(T(ln, x, y, 26, c["ink"], weight=400, tracking=-0.5))
         y += 38
-    return doc(H, "\n".join(b), "About Mitali")
+    return panel(H, "\n".join(b))
 
 
 # ══ 4 · STUDYING (currently + education, merged) ══════════════════════════
@@ -200,7 +204,7 @@ def studying(c):
                    tracking=2.2, anchor="end"))
         if i < 2:
             b.append(hr(spine + 40, y + 58, RIGHT, c["rule"], 0.6))
-    return doc(H, "\n".join(b), "Studying")
+    return panel(H, "\n".join(b))
 
 
 # ══ 5 · BEYOND ════════════════════════════════════════════════════════════
@@ -218,7 +222,7 @@ def beyond(c):
         b.append(rect(x, 116, 3, 96, col))
         b.append(T(title, x + 24, 160, 23, c["ink"], weight=500, tracking=-0.7))
         b.append(T(sub, x + 24, 186, 13.5, c["soft"], weight=400))
-    return doc(H, "\n".join(b), "Beyond the course")
+    return panel(H, "\n".join(b))
 
 
 # ══ 6 · HIRE ═══════════════════════════════════════════════════════════════
@@ -246,7 +250,7 @@ def hire(c):
                tracking=-0.8))
     b.append(T("and first projects", RIGHT - 258, 214, 16, c["mid"],
                weight=400))
-    return doc(H, "\n".join(b), "What she brings")
+    return panel(H, "\n".join(b))
 
 
 # ══ 6 · WORKING WITH ═══════════════════════════════════════════════════════
@@ -273,7 +277,7 @@ def stack(c):
     b.append(M("DAY TO DAY", PAD, 324, 9, c["faint"], weight=500, tracking=2.4))
     for i, t in enumerate(["VS Code", "Windows", "Git"]):
         b.append(T(t, PAD + 128 + i * 136, 324, 15, c["mid"], weight=400))
-    return doc(H, "\n".join(b), "Working with")
+    return panel(H, "\n".join(b))
 
 
 # ══ 7 · BEYOND ═════════════════════════════════════════════════════════════
@@ -303,7 +307,7 @@ def hire(c):
                tracking=-0.8))
     b.append(T("and first projects", RIGHT - 272, 236, 17, c["mid"],
                weight=400))
-    return doc(H, "\n".join(b), "What she brings")
+    return panel(H, "\n".join(b))
 
 
 # ══ 9 · REACH ══════════════════════════════════════════════════════════════
@@ -320,7 +324,7 @@ def contact(c):
                tracking=2.4, anchor="end"))
     b.append(T("lunar._.uchiha_", RIGHT, 226, 15, c["mid"], weight=400,
                anchor="end"))
-    return doc(H, "\n".join(b), "Reach")
+    return panel(H, "\n".join(b))
 
 
 # ══ 10 · FOOTER ════════════════════════════════════════════════════════════
@@ -331,7 +335,7 @@ def footer(c):
         b.append(rect(PAD + i * 20, 37, 20, 3, col))
     b.append(M("PUNE \u00b7 MAHARASHTRA \u00b7 INDIA", RIGHT, 44, 9,
                c["faint"], weight=500, tracking=2.4, anchor="end"))
-    return doc(H, "\n".join(b), "")
+    return panel(H, "\n".join(b))
 
 
 PANELS = dict(hero=hero, stats=stats, about=about, studying=studying,
@@ -339,20 +343,57 @@ PANELS = dict(hero=hero, stats=stats, about=about, studying=studying,
               footer=footer)
 
 
+# ── page composition ───────────────────────────────────────────────────────
+#  A README of nine separate <img> tags is nine strips with the host's gaps
+#  between them. That reads as nine files, not one profile. GitHub allows
+#  base64 rasters inside an SVG (it strips external URLs only), so the whole
+#  page can be a single artefact: one image, one rhythm, no seams.
+PAGE = ["hero", "stats", "about", "studying", "stack", "beyond", "hire",
+        "contact", "footer"]
+
+
+def compose(order, c, gap=0):
+    parts, y = [], 0
+    for name in order:
+        h, body = PANELS[name](c)
+        parts.append(f'<g transform="translate(0,{y})">\n{body}\n</g>')
+        y += h + gap
+    return y, "\n".join(parts)
+
+
+def write_page(theme, c, y, body):
+    title = ("Mitali Chincholikar \u2014 Computer Science, first year, "
+             "Pune, India")
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{y}" '
+           f'viewBox="0 0 {W} {y}" role="img" aria-label="{esc(title)}">\n'
+           f'{body}\n</svg>\n')
+    p = OUT / f"page-{theme}.svg"
+    p.write_text(svg, encoding="utf-8")
+    return p, len(svg.encode())
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     if not PORTRAIT.exists():
         raise SystemExit("missing mitali/portrait.jpg")
+
     total = 0
     for name, fn in PANELS.items():
         for theme, c in (("light", LIGHT), ("dark", DARK)):
+            h, body = fn(c)
             p = OUT / f"{name}-{theme}.svg"
-            body = fn(c)
-            p.write_text(body, encoding="utf-8")
-            kb = len(body.encode()) / 1024
-            total += kb
-            print(f"  {p.name:<24}{kb:8.1f} KB")
-    print(f"\n  {len(PANELS) * 2} panels, {total:.0f} KB")
+            p.write_text(doc(h, body, name), encoding="utf-8")
+            total += p.stat().st_size
+            print(f"  {p.name:<24}{p.stat().st_size / 1024:8.1f} KB")
+
+    print()
+    for theme, c in (("light", LIGHT), ("dark", DARK)):
+        y, body = compose(PAGE, c)
+        p, n = write_page(theme, c, y, body)
+        total += n
+        print(f"  {p.name:<24}{n / 1024:8.1f} KB   {W} x {y}")
+
+    print(f"\n  {len(PANELS) * 2} panels + 2 pages, {total / 1024:.0f} KB")
 
 
 if __name__ == "__main__":

@@ -4,27 +4,31 @@ Flat files. No build step to run, no dependencies to install, nothing to host.
 
 ## What goes up
 
+**Two files plus the avatar.** That is the whole upload.
+
 | File | What it is |
 |---|---|
 | `README.md` | the profile page |
-| `hero-{light,dark}.svg` | portrait bleeding left, name, place, three facts |
-| `stats-{light,dark}.svg` | four headline numbers on a wash |
-| `about-{light,dark}.svg` | five lines, first person |
-| `studying-{light,dark}.svg` | one timeline: now, year two, ongoing |
-| `stack-{light,dark}.svg` | eight languages, a note each, daily tools |
-| `beyond-{light,dark}.svg` | club, badminton, tug of war |
-| `hire-{light,dark}.svg` | what she brings, and what she is open to |
-| `contact-{light,dark}.svg` | email, wired to `mailto:` |
-| `footer-{light,dark}.svg` | closing rule in four colours |
-| `avatar.png` | 640 x 640, circular, same artwork |
-| `portrait.jpg` | the crop embedded inside the hero |
+| `page-light.svg` | the entire page, light theme, 1200 × 2752 |
+| `page-dark.svg` | the entire page, dark theme |
+| `avatar.png` | 640 × 640, circular, same artwork |
 
-Twenty-two files. `source/` is the original upload and is **not** needed on
-GitHub.
+The nine `*-light.svg` / `*-dark.svg` pairs are the source panels the page is
+composed from. You do **not** need to upload them — they are here so a single
+section can be used on its own, in a CV, a slide, or a repo README.
 
-`studying` replaced two earlier panels, `currently` and `education`, which
-listed the same three things twice. If you have an older copy, delete
-`currently-*` and `education-*` before uploading.
+Thirteen files if you upload the panels too. `portrait.jpg` and `source/` are
+build inputs and are not needed on GitHub.
+
+## Why one image instead of nine
+
+GitHub puts its own margin between consecutive images. Nine panels therefore
+arrive as nine strips with white gaps, which reads as nine files rather than
+one profile. Composing the whole page into a single SVG removes the seams and
+lets the section rhythm be designed rather than inherited from the host.
+
+The trade-off: a single 2752px-tall image. That is still well under GitHub's
+limits, and it is the only way to control the gaps.
 
 ## Upload
 
@@ -50,6 +54,13 @@ Each panel is therefore drawn twice, and the README picks with `<picture>`:
 Upload both files of every pair. If one is missing, the other theme shows the
 wrong-coloured panel — readable, but wrong.
 
+## Why the portrait is inside the file
+
+GitHub strips external URLs from inside an SVG — a linked
+`<image href="portrait.jpg">` renders as nothing. Base64 data URIs are allowed,
+so the portrait travels inside the hero. That is why `page-light.svg` is
+roughly 800 KB; the artwork accounts for most of it.
+
 ## Why the text is outlines
 
 The type is Inter and JetBrains Mono, converted to vector paths by
@@ -68,7 +79,7 @@ and for search, so nothing is lost on the page.
 python3 ../build_mitali_pro.py
 ```
 
-That rewrites all ten panels. Text and colours live in that one file: the two
+That rewrites the panels and both composed pages. Text and colours live in that one file: the two
 palettes at the top, and the strings inside each panel function.
 
 ## A note on embedding

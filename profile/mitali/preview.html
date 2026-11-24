@@ -48,6 +48,12 @@
     border: 1px solid var(--rule);
   }
   .theme button[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+  .split {
+    display: flex; align-items: center; gap: 14px;
+    margin: 46px 0 30px; font-size: 11px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--soft);
+  }
+  .split::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
   .note {
     margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--rule);
     color: var(--soft); font-size: 13px; line-height: 1.7;
@@ -70,37 +76,18 @@
     <button id="b-dark" aria-pressed="false">Dark</button>
   </div>
 
+  <img class="only-light" src="page-light.svg" alt="Mitali Chincholikar, full profile" />
+  <img class="only-dark"  src="page-dark.svg"  alt="Mitali Chincholikar, full profile" />
+
+  <div class="split">
+    <span>Or as separate panels</span>
+  </div>
+
   <img class="only-light" src="hero-light.svg" alt="" />
-<img class="only-dark"  src="hero-dark.svg"  alt="" />
-
-  <img class="only-light" src="stats-light.svg" alt="" />
-<img class="only-dark"  src="stats-dark.svg"  alt="" />
-
-  <img class="only-light" src="about-light.svg" alt="" />
-<img class="only-dark"  src="about-dark.svg"  alt="" />
-
-  <img class="only-light" src="studying-light.svg" alt="" />
-<img class="only-dark"  src="studying-dark.svg"  alt="" />
-
-  <img class="only-light" src="stack-light.svg" alt="" />
-<img class="only-dark"  src="stack-dark.svg"  alt="" />
-
-  <img class="only-light" src="beyond-light.svg" alt="" />
-<img class="only-dark"  src="beyond-dark.svg"  alt="" />
-
-  <img class="only-light" src="hire-light.svg" alt="" />
-<img class="only-dark"  src="hire-dark.svg"  alt="" />
-
-  <a href="mailto:chincholikarmitali@gmail.com">
-    <img class="only-light" src="contact-light.svg" alt="" />
-    <img class="only-dark"  src="contact-dark.svg"  alt="" />
-  </a>
-
-  <img class="only-light" src="footer-light.svg" alt="" />
-<img class="only-dark"  src="footer-dark.svg"  alt="" />
+  <img class="only-dark"  src="hero-dark.svg"  alt="" />
 
   <p class="note">
-    <b>Nine panels, eighteen files, no animation.</b> Each panel exists twice — once for
+    <b>One image, two themes, no animation.</b> Each panel exists twice — once for
     light, once for dark — and the README switches between them with
     <code>&lt;picture&gt;</code>. Nothing here moves, loops, or resets, so a
     screenshot is always the whole design.<br />
